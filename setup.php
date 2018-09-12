@@ -122,7 +122,7 @@ border: 1px solid #000000;
 <input type="radio" name="license" value="read" checked> I read it and im fine with it<br>
 <input type="radio" name="license" value="unread"> I didn't read it, or chose not to agree<br><br>
 Your <b>MYSQL</b> user: <input type="text" name="username" value="root"><br>
-Your <b>MYSQL</b> password: <input type="pass" name="password"><br>
+Your <b>MYSQL</b> password: <input type="password" name="password"><br>
 MYSQL server url: <input type="text" name="location" value="localhost"> (leave default if unsure or if you are currently on the same server where mysql is installed and running)<br><br>
 <input type="submit" value="Submit">
 </form>
