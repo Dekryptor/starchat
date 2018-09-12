@@ -16,7 +16,7 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-
+if(isset($_POST["usetype"]) && isset($_POST["license"])) {
 $usetype = $_POST["usetype"];
 $license = $_POST["license"];
 
@@ -56,7 +56,7 @@ if ($conn->query($sql) === TRUE) {
 $conn->close();
 
 header("Location: index.php");
-
+die("END");
 
 }else{
 $conn = new mysqli($location, $username, $password, "starcat");
@@ -87,7 +87,8 @@ if ($conn->query($sql) === TRUE) {
 
 $conn->close();
 header("Location: privaccount.php"); 
-
+die("END");
+}
 }
 ?>
 <!DOCTYPE html>
