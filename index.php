@@ -7,21 +7,21 @@ body {
 animation-name: look;
 animation-duration: 1s;
 margin:0;
-background-color: #0099ff;
+background-color: #009933;
 color: white;
 font-family: arial;
 }
 @keyframes look {
 0% { background-color: #000000; }
-100% { background-color: #000066; }
+100% { background-color: #009933; }
 }
 .buttona {
-background-color: #0099ff;
+background-color: #009933;
 color: #ffffff;
 border: 3px solid #ffffff;
-padding: 20px;
-padding-top: 10px;
-padding-bottom: 10px;
+padding: 15px;
+padding-top: 5px;
+padding-bottom: 5px;
 transition: .5s;
 }
 .buttona:hover {
@@ -30,10 +30,10 @@ color: #000000;
 }
 .login {
 position: absolute;
-left: 50px;
+left: calc(50% - 180px);
 margin: 20px;
-border-left: 5px solid #003d66;
-top: calc(50% - 250px);
+border-left: 5px solid #006622;
+top: calc(50% - 100px);
 }
 </style>
 </head>
