@@ -7,16 +7,16 @@ body {
 animation-name: look;
 animation-duration: 1s;
 margin:0;
-background-color: #009933;
-color: white;
+background-color: #00e64d;
+color: #ffffff;
 font-family: arial;
 }
 @keyframes look {
 0% { background-color: #000000; }
-100% { background-color: #009933; }
+100% { background-color: #00e64d; }
 }
 .buttona {
-background-color: #009933;
+background-color: #00e64d;
 color: #ffffff;
 border: 3px solid #ffffff;
 padding: 15px;
@@ -31,7 +31,8 @@ color: #000000;
 .login {
 position: absolute;
 left: calc(50% - 180px);
-margin: 20px;
+padding: 20px;
+text-align: center;
 border-left: 5px solid #006622;
 top: calc(50% - 100px);
 }
