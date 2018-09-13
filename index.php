@@ -18,7 +18,7 @@ font-family: arial;
 .buttona {
 background-color: #f3f3f3;
 color: #000000;
-border: 3px solid #000000;
+border: 2px solid #000000;
 padding: 15px;
 padding-top: 5px;
 padding-bottom: 5px;
@@ -34,16 +34,24 @@ left: calc(50% - 180px);
 padding: 20px;
 background-color: #f3f3f3;
 text-align: center;
-border-left: 5px solid #00334d;
+border-radius: 10px;
+box-shadow: 0px 5px 10px #000000;
 top: calc(50% - 100px);
+}
+.textbox {
+padding: 10px;
+background-color: #ffffff;
+color: #000000;
+border: 1px solid #000000;
+border-radius: 3px;
 }
 </style>
 </head>
 <body>
 <div class="starcat">Starcat</div>
 <div class="login">
-Username: <input type="text" id="username"><br><br>
-Password: <input type="text" id="password"><br><br>
+Username: <input type="text" id="username" class="textbox"><br><br>
+Password: <input type="text" id="password" class="textbox"><br><br>
 <input type="button" value="Login" class="buttona">
 </div>
 </body>
