@@ -7,13 +7,13 @@ body {
 animation-name: look;
 animation-duration: 1s;
 margin:0;
-background-color: #006699;
+background-color: #f3f3f3;
 color: #000000;
 font-family: arial;
 }
 @keyframes look {
 0% { background-color: #000000; }
-100% { background-color: #006699; }
+100% { background-color: #f3f3f3; }
 }
 .buttona {
 background-color: #ffffff;
@@ -32,7 +32,7 @@ color: #ffffff;
 position: absolute;
 left: calc(50% - 180px);
 padding: 20px;
-background-color: #f3f3f3;
+background-color: #ffffff;
 text-align: center;
 border-radius: 10px;
 box-shadow: 0px 2px 5px #000000;
@@ -47,19 +47,19 @@ border-radius: 3px;
 }
 .starcat {
 position: absolute;
-left: 35px;
-top: 35px;
+left: 15px;
+top: 15px;
 animation-name: fallin;
 animation-duration: 1s
 }
 @keyframes fallin {
-0% { left: 35px; top: -150px; }
-100% { left: 35px; top: 35px; }
+0% { left: 15px; top: -150px; }
+100% { left: 15px; top: 15px; }
 }
 </style>
 </head>
 <body>
-<img src="img/logo.png" width="130" height="133" class="starcat">
+<img src="img/logo.png" width="65" height="66" class="starcat">
 <div class="login">
 Username: <input type="text" id="username" class="textbox"><br><br>
 Password: <input type="text" id="password" class="textbox"><br><br>
