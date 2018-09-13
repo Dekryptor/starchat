@@ -10,7 +10,7 @@ margin:0;
 background-color: #00b33c;
 color: #ffffff;
 font-family: arial;
-box-shadow: inset 0 -15px 3px -20px #000000;
+box-shadow: inset 0px 0px 3px 10px #000000;
 }
 @keyframes look {
 0% { background-color: #000000; }
