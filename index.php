@@ -12,7 +12,7 @@ color: #000000;
 font-family: arial;
 }
 @keyframes look {
-0% { background-color: #000000; }
+0% { background-color: #707070; }
 100% { background-color: #f3f3f3; }
 }
 .buttona {
