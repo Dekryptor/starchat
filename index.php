@@ -8,9 +8,8 @@ animation-name: look;
 animation-duration: 1s;
 margin:0;
 background-color: #00b33c;
-color: #ffffff;
+color: #000000;
 font-family: arial;
-box-shadow: inset 0px 0px 3px 10px #000000;
 }
 @keyframes look {
 0% { background-color: #000000; }
