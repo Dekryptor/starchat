@@ -16,9 +16,9 @@ font-family: arial;
 100% { background-color: #006699; }
 }
 .buttona {
-background-color: #f3f3f3;
+background-color: #ffffff;
 color: #000000;
-border: 2px solid #000000;
+border: 1px solid #000000;
 padding: 15px;
 padding-top: 5px;
 padding-bottom: 5px;
@@ -35,11 +35,11 @@ padding: 20px;
 background-color: #f3f3f3;
 text-align: center;
 border-radius: 10px;
-box-shadow: 0px 5px 10px #000000;
+box-shadow: 0px 2px 5px #000000;
 top: calc(50% - 100px);
 }
 .textbox {
-padding: 10px;
+padding: 8px;
 background-color: #ffffff;
 color: #000000;
 border: 1px solid #000000;
