@@ -7,33 +7,34 @@ body {
 animation-name: look;
 animation-duration: 1s;
 margin:0;
-background-color: #00b33c;
+background-color: #006699;
 color: #000000;
 font-family: arial;
 }
 @keyframes look {
 0% { background-color: #000000; }
-100% { background-color: #00b33c; }
+100% { background-color: #006699; }
 }
 .buttona {
-background-color: #00b33c;
-color: #ffffff;
-border: 3px solid #ffffff;
+background-color: #f3f3f3;
+color: #000000;
+border: 3px solid #000000;
 padding: 15px;
 padding-top: 5px;
 padding-bottom: 5px;
 transition: .5s;
 }
 .buttona:hover {
-background-color: #ffffff;
-color: #000000;
+background-color: #000000;
+color: #ffffff;
 }
 .login {
 position: absolute;
 left: calc(50% - 180px);
 padding: 20px;
+background-color: #f3f3f3;
 text-align: center;
-border-left: 5px solid #006622;
+border-left: 5px solid #00334d;
 top: calc(50% - 100px);
 }
 </style>
