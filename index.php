@@ -45,10 +45,21 @@ color: #000000;
 border: 1px solid #000000;
 border-radius: 3px;
 }
+.starcat {
+position: absolute;
+left: 35px;
+top: 35px;
+animation-name: fallin;
+animation-duration: 1s
+}
+@keyframes fallin {
+0% { left: 35px; top: -150px; }
+100% { left: 35px; top: 35px; }
+}
 </style>
 </head>
 <body>
-<div class="starcat">Starcat</div>
+<img src="img/logo.png" width="130" height="133" class="starcat">
 <div class="login">
 Username: <input type="text" id="username" class="textbox"><br><br>
 Password: <input type="text" id="password" class="textbox"><br><br>
