@@ -7,13 +7,13 @@ body {
 animation-name: look;
 animation-duration: 1s;
 margin:0;
-background-color: #f3f3f3;
+background-color: #dbdbdb;
 color: #000000;
 font-family: arial;
 }
 @keyframes look {
 0% { background-color: #707070; }
-100% { background-color: #f3f3f3; }
+100% { background-color: #dbdbdb; }
 }
 .buttona {
 background-color: #ffffff;
@@ -34,8 +34,6 @@ left: calc(50% - 180px);
 padding: 20px;
 background-color: #ffffff;
 text-align: center;
-border-radius: 10px;
-box-shadow: 0px 2px 5px #000000;
 top: calc(50% - 100px);
 }
 .textbox {
