@@ -54,9 +54,27 @@ animation-duration: 1s
 0% { left: 15px; top: -150px; }
 100% { left: 15px; top: 15px; }
 }
+.top {
+position: absolute;
+background-color: #7abaff;
+top: 0px;
+left: 0px;
+width: 100%;
+height: calc(50% + 25px);
+}
+.bottom {
+position: absolute;
+background-color: #e8e8e8;
+top: calc(50% + 25px);
+left: 0px;
+width: 100%;
+height: calc(50% - 25px);
+}
 </style>
 </head>
 <body>
+<div class="top"></div>
+<div class="bottom"></div>
 <img src="img/logo.png" width="65" height="66" class="starcat">
 <div class="login">
 Username: <input type="text" id="username" class="textbox"><br><br>
