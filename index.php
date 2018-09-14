@@ -35,6 +35,7 @@ padding: 20px;
 background-color: #ffffff;
 text-align: center;
 top: calc(50% - 100px);
+box-shadow: 0px 2px 5px #afafaf;
 }
 .textbox {
 padding: 8px;
