@@ -1,7 +1,7 @@
 <?php
 include 'mysqlinfo.php';
 
-if (isset($_POST["trylogin"])) {
+if (isset($_GET["trylogin"])) {
 
 // Create connection
 $conn = new mysqli($mysqlurl, $user, $pass, "starcat");
@@ -10,7 +10,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$doesexist = $conn->query("SELECT id, firstname, password, anonid FROM accounts WHERE firstname = '".$conn->real_escape_string($_POST["username"])."'");
+$doesexist = $conn->query("SELECT id, firstname, password, anonid FROM accounts WHERE firstname = '".$conn->real_escape_string(crypt($_POST["username"]))."'");
 
 $row = $doesexist->fetch_array(MYSQLI_NUM);
 
