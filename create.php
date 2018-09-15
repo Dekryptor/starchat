@@ -42,7 +42,7 @@ function generateRandomString($length = 40) {
 
 
 $sql = "INSERT INTO accounts (firstname, password, anonid)
-VALUES (\"".$mysqli->real_escape_string($_POST["username"])."\", \"".$mysqli->real_escape_string($_POST["password"])."\", \"".generateRandomString()."\")";
+VALUES (\"".$conn->real_escape_string($_POST["username"])."\", \"".$conn->real_escape_string($_POST["password"])."\", \"".generateRandomString()."\")";
 
 if ($conn->query($sql) === TRUE) {
     echo "New record created successfully";
