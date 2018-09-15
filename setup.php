@@ -33,6 +33,19 @@ $conn = new mysqli($location, $username, $password);
 if ($conn->connect_error) {
 die("Connection to MYSQL server failed! Reason: ".$conn->connect_error);
 }
+
+$info = "
+<?php
+die("This file is restricted from viewing, and permitted only to server side software only");
+
+\$user = \"$username\";
+\$pass = \"$password\";
+\$mysqlurl = \"$location\";
+?>
+";
+
+file_put_contents("mysqlinfo.php", $info);
+
 $sql = "CREATE DATABASE starcat";
 if ($conn->query($sql) === TRUE) {
 echo "Database created successfully!";
@@ -63,6 +76,21 @@ $conn = new mysqli($location, $username, $password, "starcat");
 if ($conn->connect_error) {
 die("Connection to MYSQL server failed! Reason: ".$conn->connect_error);
 }
+
+
+$info = "
+<?php
+die("This file is restricted from viewing, and permitted only to server side software only");
+
+\$user = \"$username\";
+\$pass = \"$password\";
+\$mysqlurl = \"$location\";
+\$loconly = \"yes\";
+?>
+";
+
+file_put_contents("mysqlinfo.php", $info);
+
 $sql = "CREATE DATABASE starcat";
 if ($conn->query($sql) === TRUE) {
 echo "Database created successfully!";

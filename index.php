@@ -1,3 +1,24 @@
+<?php
+include 'mysqlinfo.php';
+
+if (isset($_POST["trylogin"])) {
+
+// Create connection
+$conn = new mysqli($mysqlurl, $user, $pass, "starcat");
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+
+// Next we will work on account creation, then we can get back to this
+
+$conn->close();
+
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,7 +101,13 @@ height: calc(50% - 25px);
 <div class="login">
 Username: <input type="text" id="username" class="textbox"><br><br>
 Password: <input type="text" id="password" class="textbox"><br><br>
-<input type="button" value="Login" class="buttona">
+<input type="button" value="Login" class="buttona"><br><br>
+<?php
+if(isset($_GET["created"])) {
+echo "Account created, try loggin in now";
+}
+?>
+<a href="create.php">Don't have an account? Create it.</a>
 </div>
 </body>
 </html>
