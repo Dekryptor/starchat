@@ -1,7 +1,7 @@
 <?php
 include 'mysqlinfo.php';
 
-if (isset($_POST["trycreate"])) {
+if (isset($_GET["trycreate"])) {
 
 // Create connection
 $conn = new mysqli($mysqlurl, $user, $pass, "starcat");
@@ -21,7 +21,7 @@ die("You need a username");
 }
 
 if (isset($_POST["password"])) {
-if(preg_match('/^{3,50}$/', $_POST["password"])) {
+if(preg_match('/^(.*){3,50}/', $_POST["password"])) {
     echo "Password is set, will be encrypted";
 }else{
 die("Please choose a password above 3+ characters and below 50 characters");
@@ -42,7 +42,7 @@ function generateRandomString($length = 40) {
 
 
 $sql = "INSERT INTO accounts (firstname, password, anonid)
-VALUES (\".$mysqli->real_escape_string($_POST[\"username\"]).\", \".$mysqli->real_escape_string($_POST[\"password\"]).\", \".generateRandomString().\")";
+VALUES (\"".$mysqli->real_escape_string($_POST["username"])."\", \"".$mysqli->real_escape_string($_POST["password"])."\", \"".generateRandomString()."\")";
 
 if ($conn->query($sql) === TRUE) {
     echo "New record created successfully";

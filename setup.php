@@ -36,7 +36,6 @@ die("Connection to MYSQL server failed! Reason: ".$conn->connect_error);
 
 $info = "
 <?php
-die("This file is restricted from viewing, and permitted only to server side software only");
 
 \$user = \"$username\";
 \$pass = \"$password\";
@@ -52,27 +51,30 @@ echo "Database created successfully!";
 }else{
 echo "Error creating database: ".$conn->error;
 }
-$sql = "CREATE TABLE accounts (
-id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-firstname VARCHAR(30) NOT NULL,
-password VARCHAR(60) NOT NULL,
-anonid VARCHAR(50) NOT NULL,
-reg_date TIMESTAMP
-)";
-
-if ($conn->query($sql) === TRUE) {
-    echo "Tables created successfully! Redirecting to index.php";
-} else {
-    echo "Error creating table: " . $conn->error;
-}
-
 $conn->close();
 
+$conns = new mysqli($location, $username, $password, "starcat");
+
+$sql = "CREATE TABLE accounts (
+id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+firstname VARCHAR(50) NOT NULL,
+password VARCHAR(60) NOT NULL,
+anonid VARCHAR(50) NOT NULL
+)";
+
+if ($conns->query($sql) === TRUE) {
+    echo "Tables created successfully! Redirecting to index.php";
+} else {
+    echo "Error creating table: " . $conns->error;
+}
+
+
+$conns->close();
 header("Location: index.php");
 die("END");
 
 }else{
-$conn = new mysqli($location, $username, $password, "starcat");
+$conn = new mysqli($location, $username, $password);
 if ($conn->connect_error) {
 die("Connection to MYSQL server failed! Reason: ".$conn->connect_error);
 }
@@ -80,7 +82,6 @@ die("Connection to MYSQL server failed! Reason: ".$conn->connect_error);
 
 $info = "
 <?php
-die("This file is restricted from viewing, and permitted only to server side software only");
 
 \$user = \"$username\";
 \$pass = \"$password\";
@@ -97,23 +98,24 @@ echo "Database created successfully!";
 }else{
 echo "Error creating database: ".$conn->error;
 }
+$conn->close();
+
+$conns = new mysqli($location, $username, $password, "starcat");
 
 $sql = "CREATE TABLE accounts (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 firstname VARCHAR(30) NOT NULL,
 password VARCHAR(60) NOT NULL,
-anonid VARCHAR(50) NOT NULL,
-reg_date TIMESTAMP
+anonid VARCHAR(50) NOT NULL
 )";
 
-if ($conn->query($sql) === TRUE) {
+if ($conns->query($sql) === TRUE) {
     echo "Tables created successfully! Redirecting privaccount.php";
 } else {
-    echo "Error creating table: " . $conn->error;
+    echo "Error creating table: " . $conns->error;
 }
 
-
-$conn->close();
+$conns->close();
 header("Location: privaccount.php"); 
 die("END");
 }
