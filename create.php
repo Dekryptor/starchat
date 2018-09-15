@@ -40,9 +40,16 @@ function generateRandomString($length = 40) {
     return $randomString;
 }
 
+$resu = $conn->query("SELECT id FROM accounts WHERE firstname = '".$conn->real_escape_string($_POST["username"])."'");
+
+if ($resu->num_rows == 0) {
+echo "Name doesnt exist, thats good, lets keep going<br>";
+}else{
+die("Name is used, please go back and try a different username");
+}
 
 $sql = "INSERT INTO accounts (firstname, password, anonid)
-VALUES (\"".$conn->real_escape_string($_POST["username"])."\", \"".$conn->real_escape_string($_POST["password"])."\", \"".generateRandomString()."\")";
+VALUES (\"".$conn->real_escape_string($_POST["username"])."\", \"".$conn->real_escape_string(password_hash($_POST["password"],PASSWORD_DEFAULT)."\", \"".generateRandomString()."\")";
 
 if ($conn->query($sql) === TRUE) {
     echo "New record created successfully";

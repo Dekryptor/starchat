@@ -47,9 +47,9 @@ file_put_contents("mysqlinfo.php", $info);
 
 $sql = "CREATE DATABASE starcat";
 if ($conn->query($sql) === TRUE) {
-echo "Database created successfully!";
+echo "Database created successfully!<br>";
 }else{
-echo "Error creating database: ".$conn->error;
+echo "Error creating database: ".$conn->error . "<br>";
 }
 $conn->close();
 
@@ -63,9 +63,9 @@ anonid VARCHAR(50) NOT NULL
 )";
 
 if ($conns->query($sql) === TRUE) {
-    echo "Tables created successfully! Redirecting to index.php";
+    echo "Tables created successfully! Redirecting to index.php<br>";
 } else {
-    echo "Error creating table: " . $conns->error;
+    echo "Error creating table: " . $conns->error . "<br>";
 }
 
 
@@ -94,9 +94,9 @@ file_put_contents("mysqlinfo.php", $info);
 
 $sql = "CREATE DATABASE starcat";
 if ($conn->query($sql) === TRUE) {
-echo "Database created successfully!";
+echo "Database created successfully!<br>";
 }else{
-echo "Error creating database: ".$conn->error;
+echo "Error creating database: ".$conn->error . "<br>";
 }
 $conn->close();
 
@@ -110,9 +110,9 @@ anonid VARCHAR(50) NOT NULL
 )";
 
 if ($conns->query($sql) === TRUE) {
-    echo "Tables created successfully! Redirecting privaccount.php";
+    echo "Tables created successfully! Redirecting privaccount.php<br>";
 } else {
-    echo "Error creating table: " . $conns->error;
+    echo "Error creating table: " . $conns->error . "<br>";
 }
 
 $conns->close();

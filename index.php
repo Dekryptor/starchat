@@ -10,8 +10,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+$doesexist = $conn->query("SELECT id, firstname, password, anonid FROM accounts WHERE firstname = '".$conn->real_escape_string($_POST["username"])."'");
 
-// Next we will work on account creation, then we can get back to this
+$row = $doesexist->fetch_array(MYSQLI_NUM);
+
+echo print_r($row);
+// test this out
 
 $conn->close();
 
@@ -99,12 +103,13 @@ height: calc(50% - 25px);
 <div class="bottom"></div>
 <img src="img/logo.png" width="65" height="66" class="starcat">
 <div class="login">
-Username: <input type="text" id="username" class="textbox"><br><br>
-Password: <input type="text" id="password" class="textbox"><br><br>
-<input type="button" value="Login" class="buttona"><br><br>
+<form action="index.php?trylogin=yes" method="post">
+Username: <input type="text" id="username" name="username" class="textbox"><br><br>
+Password: <input type="text" id="password" name="password" class="textbox"><br><br>
+<input type="submit" value="Login" class="buttona"><br><br>
 <?php
 if(isset($_GET["created"])) {
-echo "Account created, try loggin in now";
+echo "<br>Account created, try loggin in now<br><br>";
 }
 ?>
 <a href="create.php">Don't have an account? Create it.</a>
