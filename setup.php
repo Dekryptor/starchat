@@ -44,7 +44,7 @@ id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 firstname VARCHAR(70) NOT NULL,
 password VARCHAR(100) NOT NULL,
 anonid VARCHAR(70) NOT NULL,
-contacts VARCHAR(21000) NOT NULL
+contacts VARCHAR(2100) NOT NULL
 )";
 
 if ($conns->query($sql) === TRUE) {
