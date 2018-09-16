@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'mysqlinfo.php';
 
 if (isset($_GET["trylogin"])) {
@@ -14,8 +15,14 @@ $doesexist = $conn->query("SELECT id, firstname, password, anonid FROM accounts 
 
 $row = $doesexist->fetch_array(MYSQLI_NUM);
 
-echo print_r($row);
-// test this out
+if ($row[2] == crypt($_POST["password"])) {
+$_SESSION["usernamedata"] = $_POST["username"];
+$_SESSION["passworddata"] = $_POST["password"];
+
+$conn->close();
+header("Location: home.php");
+die("Redirecting...");
+}
 
 $conn->close();
 
