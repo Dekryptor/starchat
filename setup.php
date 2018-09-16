@@ -57,9 +57,9 @@ $conns = new mysqli($location, $username, $password, "starcat");
 
 $sql = "CREATE TABLE accounts (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-firstname VARCHAR(50) NOT NULL,
-password VARCHAR(60) NOT NULL,
-anonid VARCHAR(50) NOT NULL
+firstname VARCHAR(70) NOT NULL,
+password VARCHAR(100) NOT NULL,
+anonid VARCHAR(70) NOT NULL
 )";
 
 if ($conns->query($sql) === TRUE) {
@@ -104,9 +104,9 @@ $conns = new mysqli($location, $username, $password, "starcat");
 
 $sql = "CREATE TABLE accounts (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-firstname VARCHAR(30) NOT NULL,
-password VARCHAR(60) NOT NULL,
-anonid VARCHAR(50) NOT NULL
+firstname VARCHAR(70) NOT NULL,
+password VARCHAR(100) NOT NULL,
+anonid VARCHAR(70) NOT NULL
 )";
 
 if ($conns->query($sql) === TRUE) {
