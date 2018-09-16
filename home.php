@@ -9,7 +9,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$doesexist = $conn->query("SELECT id, firstname, password, anonid FROM accounts WHERE firstname = '".$conn->real_escape_string($_SESSION["usernamedata"])."'");
+$doesexist = $conn->query("SELECT id, firstname, password, anonid, contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($_SESSION["usernamedata"])."'");
 
 $row = $doesexist->fetch_array(MYSQLI_NUM);
 

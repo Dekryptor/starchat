@@ -1,21 +1,5 @@
 <?php
 
-//     Starcat - Open source chat protocol
-//    Copyright (C) 2018  SadError256, Hyland B.
-
-//    This program is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    (at your option) any later version.
-
-//    This program is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-
-//    You should have received a copy of the GNU General Public License
-//    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 if(isset($_POST["usetype"]) && isset($_POST["license"])) {
 $usetype = $_POST["usetype"];
 $license = $_POST["license"];
@@ -59,7 +43,8 @@ $sql = "CREATE TABLE accounts (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 firstname VARCHAR(70) NOT NULL,
 password VARCHAR(100) NOT NULL,
-anonid VARCHAR(70) NOT NULL
+anonid VARCHAR(70) NOT NULL,
+contacts VARCHAR(21000) NOT NULL
 )";
 
 if ($conns->query($sql) === TRUE) {
@@ -106,7 +91,8 @@ $sql = "CREATE TABLE accounts (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 firstname VARCHAR(70) NOT NULL,
 password VARCHAR(100) NOT NULL,
-anonid VARCHAR(70) NOT NULL
+anonid VARCHAR(70) NOT NULL,
+contacts VARCHAR(21000) NOT NULL
 )";
 
 if ($conns->query($sql) === TRUE) {
@@ -148,7 +134,7 @@ border: 1px solid #000000;
 <b>Are you using starcat for public use or private use? if you are using for public, then account creations and other tweaks will be enabled [recommended]. If not, then only one account (the master account) will be used, and nobody can create an account.</b><br>
 <input type="radio" name="usetype" value="public" checked> Public use<br>
 <input type="radio" name="usetype" value="private"> Private use<br><br>
-<b>Have you read and chose to agree to the GPLv3 license?</b><br>
+<b>Have you read and chose to agree to the MIT license?</b><br>
 <input type="radio" name="license" value="read" checked> I read it and im fine with it<br>
 <input type="radio" name="license" value="unread"> I didn't read it, or chose not to agree<br><br>
 Your <b>MYSQL</b> user: <input type="text" name="username" value="root"><br>

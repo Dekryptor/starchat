@@ -17,4 +17,4 @@ Yep! Starcat's api is able to communicate with other servers, so one cannot just
 Probably, but we made Starcat a tool that lets everyone self-host it, but thats not its entire purpose, the other idea is that you can create your own starcat hosting service, and offer free accounts that others can use, depending on if your server is beefy enough to host it.
 
 # What's that license?
-The license is the GPLv3 license, because we also believe in freedom. We recommend you view the complete license at the **LICENSE** file
+The license is the MIT license. View LICENSE for details

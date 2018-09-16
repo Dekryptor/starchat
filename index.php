@@ -11,7 +11,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$doesexist = $conn->query("SELECT id, firstname, password, anonid FROM accounts WHERE firstname = '".$conn->real_escape_string($_POST["username"])."'");
+$doesexist = $conn->query("SELECT id, firstname, password, anonid, contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($_POST["username"])."'");
 
 $row = $doesexist->fetch_array(MYSQLI_NUM);
 
@@ -116,7 +116,7 @@ Password: <input type="text" id="password" name="password" class="textbox"><br><
 <input type="submit" value="Login" class="buttona"><br><br>
 <?php
 if(isset($_GET["created"])) {
-echo "<br>Account created, try loggin in now<br><br>";
+echo "<br>Account created, try logging in now<br><br>";
 }
 ?>
 <a href="create.php">Don't have an account? Create it.</a>

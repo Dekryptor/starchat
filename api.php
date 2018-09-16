@@ -1,20 +1,26 @@
 <?php
 
-//     Starcat - Open source chat protocol
-//    Copyright (C) 2018  SadError256, Hyland B.
-
-//    This program is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    (at your option) any later version.
-
-//    This program is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-
-//    You should have received a copy of the GNU General Public License
-//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+include 'mysqlinfo.php';
+// Create connection
+$conn = new mysqli($mysqlurl, $user, $pass, "starcat");
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+$doesexist = $conn->query("SELECT id, firstname, password, anonid, contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($_GET["username"])."'");
+$row = $doesexist->fetch_array(MYSQLI_NUM);
+if ($row[2] == hash("sha256",$_GET["password"])) {
+// logged in, move on
+$qid = $row[0];
+$qusername = $row[1];
+$qpassword = $row[2];
+$qanonid = $row[3];
+$qcontact = $row[4];
+}else{
+$conn->close();
+die("Login Failure");
+exit();
+}
 
 
 
