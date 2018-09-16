@@ -13,7 +13,7 @@ $doesexist = $conn->query("SELECT id, firstname, password, anonid FROM accounts 
 
 $row = $doesexist->fetch_array(MYSQLI_NUM);
 
-if ($row[2] == crypt($_SESSION["passworddata"])) {
+if ($row[2] == hash("sha256",$_SESSION["passworddata"])) {
 // logged in, move on
 }else{
 $conn->close();

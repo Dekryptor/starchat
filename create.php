@@ -49,7 +49,7 @@ die("Name is used, please go back and try a different username");
 }
 
 $sql = "INSERT INTO accounts (firstname, password, anonid)
-VALUES (\"".$conn->real_escape_string($_POST["username"])."\", \"".$conn->real_escape_string(crypt($_POST["password"]))."\", \"".generateRandomString()."\")";
+VALUES (\"".$conn->real_escape_string($_POST["username"])."\", \"".$conn->real_escape_string(hash("sha256",$_POST["password"]))."\", \"".generateRandomString()."\")";
 
 if ($conn->query($sql) === TRUE) {
     echo "New record created successfully";

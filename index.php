@@ -15,7 +15,7 @@ $doesexist = $conn->query("SELECT id, firstname, password, anonid FROM accounts 
 
 $row = $doesexist->fetch_array(MYSQLI_NUM);
 
-if ($row[2] == crypt($_POST["password"])) {
+if ($row[2] == hash("sha256",$_POST["password"])) {
 $_SESSION["usernamedata"] = $_POST["username"];
 $_SESSION["passworddata"] = $_POST["password"];
 
