@@ -34,7 +34,7 @@ $res = $conn->real_escape_string($_GET["username"]);
 // The code below will probably make you throw up
 $current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($qid)."'");
 $current = $current->fetch_array(MYSQLI_NUM);
-$conn->query("UPDATE accounts SET contacts = '".$current[0]."#####"./* we will do work here later*/echo('test')."' WHERE id = '".$conn->real_escape_string($qid)."'")
+$conn->query("UPDATE accounts SET contacts = '".$current[0]."#####"./* we will do work here later*/"test"."' WHERE id = '".$conn->real_escape_string($qid)."'");
 } else {
 die("Not a valid URL");
 exit();
