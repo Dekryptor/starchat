@@ -22,6 +22,24 @@ die("Login Failure");
 exit();
 }
 
+$filename = $qanonid + "......." + $qusername + "......." + $qpassword + "......." + htmlspecialchars($_GET["reciever"]) + ".txt";
 
+if (isset($_GET["addcontact"]) && isset($_GET["url"])) {
+
+$surl = $_GET["url"];
+
+if (filter_var($url, FILTER_VALIDATE_URL) !== false) {
+$res = file_get_contents($surl);
+$res = $conn->real_escape_string($_GET["username"]);
+// The code below will probably make you throw up
+$current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($qid)."'");
+$current = $current->fetch_array(MYSQLI_NUM);
+$conn->query("UPDATE accounts SET contacts = '".$current[0]."#####"./* we will do work here later*/echo('test')."' WHERE id = '".$conn->real_escape_string($qid)."'")
+} else {
+die("Not a valid URL");
+exit();
+}
+
+}
 
 ?>
