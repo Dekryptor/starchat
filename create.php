@@ -11,7 +11,7 @@ if ($conn->connect_error) {
 }
 
 if (isset($_POST["username"])) {
-if(preg_match('/^\w{3,30}$/', $_POST["username"])) {
+if(preg_match('/\w{3,30}$/', $_POST["username"])) {
    echo "Username passed";
 }else{
 die("Please choose a username with, a-z, A-Z, or _ characters only, and below 30 characters, and above 3 characters");
@@ -21,7 +21,7 @@ die("You need a username");
 }
 
 if (isset($_POST["password"])) {
-if(preg_match('/^(.*){3,50}/', $_POST["password"])) {
+if(preg_match('/(.*){3,50}/', $_POST["password"])) {
     echo "Password is set, will be encrypted";
 }else{
 die("Please choose a password above 3+ characters and below 50 characters");
