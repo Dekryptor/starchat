@@ -57,7 +57,7 @@ $current = $current->fetch_array(MYSQLI_NUM);
 $conn->query("UPDATE accounts SET contacts = '".$current[0]."|||||".$conn->real_escape_string($surl)."&&&&&".$conn->real_escape_string(substr(htmlspecialchars($_GET["addcontact"]), "0", "30"))."' WHERE id = '".$conn->real_escape_string($qid)."'");
 // First we add the url, then the username
 $conn->close();
-die("Success")
+die("Success");
 } else {
   $conn->close();
 die("Not a valid URL");
