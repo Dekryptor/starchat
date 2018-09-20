@@ -40,7 +40,7 @@ $conn->close();
 $conns = new mysqli($location, $username, $password, "starcat");
 
 $sql = "CREATE TABLE accounts (
-id INT(16000) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 firstname VARCHAR(70) NOT NULL,
 password VARCHAR(100) NOT NULL,
 anonid VARCHAR(70) NOT NULL,
@@ -88,7 +88,7 @@ $conn->close();
 $conns = new mysqli($location, $username, $password, "starcat");
 
 $sql = "CREATE TABLE accounts (
-id INT(16000) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 firstname VARCHAR(70) NOT NULL,
 password VARCHAR(100) NOT NULL,
 anonid VARCHAR(70) NOT NULL,
