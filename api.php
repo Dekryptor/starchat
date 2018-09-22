@@ -43,12 +43,12 @@ $surl = $_GET["addcontact"];
 
 $quickcheck = $conn->query("SELECT firstname, id FROM accounts WHERE firstname = '".$conn->real_escape_string($_GET["addcontact"])."'");
 
-if(mysql_num_rows($quickcheck)>0){
+$somedata = $quickcheck->fetch_array(MYSQLI_NUM);
+
+if (count($somedata)>0) {
   // move on
-  $somedata = $quickcheck->fetch_array(MYSQLI_NUM);
-}else{
-  die("User non-existant");
 }
+
 // $conn->real_escape_string($_GET["username"]);
 // The code below will probably make you throw up
 if(preg_match('/[a-zA-Z0-9]/', $_GET["username"])) {
@@ -59,7 +59,7 @@ if(preg_match('/[a-zA-Z0-9]/', $_GET["username"])) {
 }
 $current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($qid)."'");
 $current = $current->fetch_array(MYSQLI_NUM);
-$conn->query("UPDATE accounts SET contacts = '".$current[0]."|||||".$conn->real_escape_string($surl)."|||||".generateRandomString()."' WHERE id = '".$conn->real_escape_string($qid)."'");
+$conn->query("UPDATE accounts SET contacts = '&&&&&".$current[0]."|||||".$conn->real_escape_string($surl)."|||||".generateRandomString()."' WHERE id = '".$conn->real_escape_string($qid)."'");
 // First we add the url, then the username
 $conn->close();
 die("Success");
