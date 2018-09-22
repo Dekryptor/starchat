@@ -7,6 +7,7 @@ $conn = new mysqli($mysqlurl, $user, $pass, "starcat");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
 $doesexist = $conn->query("SELECT id, firstname, password, anonid, contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($_GET["username"])."'");
 $row = $doesexist->fetch_array(MYSQLI_NUM);
 if ($row[2] == hash("sha256",$_GET["password"])) {
@@ -22,27 +23,31 @@ die("Login Failure");
 exit();
 }
 
-$filename = $qanonid + "......." + $qusername + "......." + $qpassword + "......." + htmlspecialchars($_GET["reciever"]) + ".txt";
+// we need the function below to store conversation id
+function generateRandomString($length = 25) {
+    $characters = '0123456789!?-+=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
 
-if (isset($_GET["addcontact"]) && isset($_GET["url"])) {
+// preferably, we will try to keep conversations in one box, so if one person deletes the convo, it deletes it for other user as well
+$filename = $qanonid . "......." . $qusername . "......." . htmlspecialchars($_GET["contacter"]) + ".txt";
 
-$surl = $_GET["url"];
+if (isset($_GET["addcontact"])) {
 
-if (filter_var($surl, FILTER_VALIDATE_URL) !== false) {
-$res = file_get_contents($surl+"api.php?isrealuser="+htmlspecialchars($_GET["addcontact"]));
-if ($res == "yes") {
-  // User exists
-  if (preg_match('/[a-zA-Z0-9\_]/', $conn->real_escape_string($res))) {
-    // Matches well
-  }else{
-    $conn->close();
-    die("Invalid username, probably an untrusted server, avoid it");
-    exit();
-  }
+$surl = $_GET["addcontact"];
+
+$quickcheck = $conn->query("SELECT firstname, id FROM accounts WHERE firstname = '".$conn->real_escape_string($_GET["addcontact"])."'");
+
+if(mysql_num_rows($quickcheck)>0){
+  // move on
+  $somedata = $quickcheck->fetch_array(MYSQLI_NUM);
 }else{
-  $conn->close();
-  die("User does not exists on the responding server, Also, make sure to not append a slash to you're url");
-  exit();
+  die("User non-existant");
 }
 // $conn->real_escape_string($_GET["username"]);
 // The code below will probably make you throw up
@@ -54,15 +59,10 @@ if(preg_match('/[a-zA-Z0-9]/', $_GET["username"])) {
 }
 $current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($qid)."'");
 $current = $current->fetch_array(MYSQLI_NUM);
-$conn->query("UPDATE accounts SET contacts = '".$current[0]."|||||".$conn->real_escape_string($surl)."&&&&&".$conn->real_escape_string(substr(htmlspecialchars($_GET["addcontact"]), "0", "30"))."' WHERE id = '".$conn->real_escape_string($qid)."'");
+$conn->query("UPDATE accounts SET contacts = '".$current[0]."|||||".$conn->real_escape_string($surl)."|||||".generateRandomString()."' WHERE id = '".$conn->real_escape_string($qid)."'");
 // First we add the url, then the username
 $conn->close();
 die("Success");
-} else {
-  $conn->close();
-die("Not a valid URL");
-exit();
-}
 
 }
 
