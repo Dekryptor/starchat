@@ -1,7 +1,9 @@
 <?php
 
-if(isset($_POST["usetype"]) && isset($_POST["license"])) {
-$usetype = $_POST["usetype"];
+if(isset($_POST["license"])) {
+// $usetype = $_POST["usetype"];
+$usetype = "public";
+// please update above only if specific update comes out
 $license = $_POST["license"];
 
 $username = $_POST["username"];
