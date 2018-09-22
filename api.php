@@ -47,6 +47,8 @@ $somedata = $quickcheck->fetch_array(MYSQLI_NUM);
 
 if (count($somedata)>0) {
   // move on
+}else{
+  die("User non-existant");
 }
 
 // $conn->real_escape_string($_GET["username"]);
