@@ -48,9 +48,9 @@ if (isset($_GET["readmessages"])) {
     die("Not a valid id, nice try though.");
   }
   if(preg_match('/\.php$/', $_GET["readmessages"])) {
-    // if user bypasses, at least check if .php is disabled, most sensitive info for the most part is in php files
-  }else{
     die("final check failed, what");
+  }else{
+    // if user bypasses, at least check if .php is disabled, most sensitive info for the most part is in php files
   }
   // todo, extra important things to check if really is a valid id, for now above will work, but what if above fails, an error would probably get reported.
   // i know i sound paranoid or something, but someday, someone will figure out how to bypass this, thats when maximum security is needed
