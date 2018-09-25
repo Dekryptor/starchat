@@ -48,7 +48,7 @@ if (isset($_GET["readmessages"])) {
     die("Not a valid id, nice try though.");
   }
   if(preg_match('/\.php$/', $_GET["readmessages"])) {
-    die("final check failed, what");
+    die("final check failed, this shouldnt happen but something fishy is going on here");
   }else{
     // if user bypasses, at least check if .php is disabled, most sensitive info for the most part is in php files
   }
@@ -56,6 +56,29 @@ if (isset($_GET["readmessages"])) {
   // i know i sound paranoid or something, but someday, someone will figure out how to bypass this, thats when maximum security is needed
   // i mean cmon, some things have mysql passwords in plain text, a mysql password found is a whole life wasted
   die(htmlspecialchars(file_get_contents("convos/.ht".$_GET["readmessages"])));
+}
+
+if (isset($_GET["sendmessage"])) {
+  // the contents of sendmessage contain the message text that we want to send
+  if(preg_match('/[a-zA-Z0-9\-]{3,40}$/', $_GET["sendmessageto"])) {
+    // yep, seems safe enough
+  }else{
+    die("Not a valid id, nice try though.");
+  }
+  // i probably should strip out mysql commands, but this doesnt get passed anywhere through mysql, so for now this basically allows you to use commas and fancy characters
+  // for future commiters, remember this, messages do not get sent through mysql, only strip html special characters
+
+  // good idea to put timestamp but im not too sure yet, i will do a community vote and we will see what is best once this project gets popular
+  $safemess = "\n".htmlspecialchars($qusername).": ".htmlspecialchars($_GET["sendmessage"]);
+
+  if(file_exists("convos/.ht".$_GET["sendmessageto"])) {
+    // we need this to make sure file exists, since the person most likely created a conversation already
+    // lets move on
+  }else{
+    die("Contacter doesnt exist, maybe they deleted their account or your code isnt working");
+  }
+
+  file_put_contents("convos/.ht".$_GET["sendmessageto"], file_get_contents("convos/.ht".$_GET["sendmessageto"]).htmlspecialchars($safemess));
 }
 
 // preferably, we will try to keep conversations in one box, so if one person deletes the convo, it deletes it for other user as well
