@@ -79,6 +79,7 @@ if (isset($_GET["sendmessage"])) {
   }
 
   file_put_contents("convos/.ht".$_GET["sendmessageto"], file_get_contents("convos/.ht".$_GET["sendmessageto"]).htmlspecialchars($safemess));
+  die("Success");
 }
 
 // preferably, we will try to keep conversations in one box, so if one person deletes the convo, it deletes it for other user as well
