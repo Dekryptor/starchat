@@ -27,6 +27,24 @@ exit();
 
 
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Starcat</title>
+  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+</head>
+<body>
+  <div id="contacts">
+  <div class="box">
+  <img src="placeholder" class="pfp">
+  <div class="info">
+  SadErr
+  </div>
+  </div>
+  </div>
 
-
-test it works
+  <div id="topbar">
+  <img src="img/logo.png" class="logo"> <span class="logotext">Starcat</span>
+  </div>
+</body>
+</html>
