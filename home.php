@@ -34,6 +34,7 @@ exit();
   <script type="text/javascript">
     var username = '<?php echo htmlspecialchars($_SESSION["usernamedata"]); ?>';
     var password = '<?php echo htmlspecialchars($_SESSION["passworddata"]); ?>';
+    var tmpid = "EMPTY";
     function httpGet(theUrl) {
       // Allows us to do a http get and then return the contents
       var xmlHttp = new XMLHttpRequest();
@@ -46,26 +47,39 @@ exit();
       var contacts = str.split('&&&&&'); // we will use for loop to create next var
       var contacts_inside = [];
 
-      console.log(contacts);
-
 
       for (var x = 0; x <= contacts.length; x++) {
         contacts_inside.push(contacts[x].split('|||||'));
-        document.getElementById("contacts").innerHTML += "<div id='contacts'><div class='box'><img src='' class='pfp'><div class='info'>"+contacts_inside[0]+"</div><div class='nosee'>"+contacts_inside[1]+"</div></div></div>";
+        document.getElementById("contacts").innerHTML += "<div id='contacts'><div class='box'><img src='' class='pfp'><div class='info' onclick='switchcontact(\\'"+contacts_inside[x][1]+"\\')'>"+contacts_inside[x][0]+"</div></div></div>";
       }
 
-      console.log(contacts_inside);
-
+    }
+    splitcontacts(); // the function is defined, we run the code, just once for now
+    function switchcontact(vals) {
+      var resu = httpGet("api.php?username="+username+"&password="+password+"&readmessages="+vals);
+      document.getElementById("messbox").innerHTML = resu;
+    }
+    function sendmessage() {
+      var errorcode = httpGet("api.php?username="+username+"&password="+password+"&sendmessage="+document.getElementById("chatbox").value+"&sendmessageto="+tmpid);
+    }
+    function addacontact() {
+      var toadd = prompt("Please Enter Username to Add");
+      httpGet("api.php?username="+username+"&password="+password+"&addcontact="+toadd);
     }
   </script>
 </head>
 <body>
+  <div id="messbox">
+
+  </div>
+  <input type="text" id="chatbox">
+  <input type="button" value="Send" onclick="sendmessage()" id="chatboxbutton">
   <div id="contacts">
 
   </div>
 
   <div id="topbar">
-  <img src="img/logo.png" class="logo"> <span class="logotext">Starcat</span>
+  <img src="img/logo.png" class="logo" onclick="addacontact()"> <!-- temporary button, please remove in futures --> <span class="logotext">Starcat</span>
   </div>
 </body>
 </html>
