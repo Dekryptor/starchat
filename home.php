@@ -60,15 +60,10 @@ exit();
     function splitcontacts() {
       var str = httpGet("api.php?username="+username+"&password="+password+"&getcontacts=yes");
       var contacts = str.split('&&&&&'); // we will use for loop to create next var
-      var contacts_inside = [];
 
-
-      for (var x = 0; x <= contacts.length+1; x++) {
-        contacts_inside = contacts[x].split('|||||');
-        document.getElementById("contacts").innerHTML += "<div id='contacts'><div class='box'><img src='' class='pfp'><div class='info' onclick='switchcontact(\""+contacts_inside[x][1]+"\")'>"+contacts_inside[x][0]+"</div></div></div>";
+      for (var x = 0; x <= contacts.length; x++) {
+        document.getElementById("contacts").innerHTML += "<div id='contacts'><div class='box'><img src='' class='pfp'><div class='info' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'>"+contacts[x].split("|||||")[0]+"</div></div></div>";
       }
-      console.log(contacts);
-      console.log(contacts_inside);
     }
     splitcontacts(); // the function is defined, we run the code, just once for now
     function switchcontact(vals) {
