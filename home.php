@@ -31,6 +31,21 @@ exit();
 <head>
   <title>Starcat</title>
   <link rel="stylesheet" type="text/css" href="stylesheet.css">
+
+</head>
+<body>
+  <div id="messbox">
+
+  </div>
+  <input type="text" id="chatbox">
+  <input type="button" value="Send" onclick="sendmessage()" id="chatboxbutton">
+  <div id="contacts">
+
+  </div>
+
+  <div id="topbar">
+  <img src="img/logo.png" class="logo" onclick="addacontact()"> <!-- temporary button, please remove in futures --> <span class="logotext">Starcat</span>
+  </div>
   <script type="text/javascript">
     var username = '<?php echo htmlspecialchars($_SESSION["usernamedata"]); ?>';
     var password = '<?php echo htmlspecialchars($_SESSION["passworddata"]); ?>';
@@ -67,19 +82,5 @@ exit();
       httpGet("api.php?username="+username+"&password="+password+"&addcontact="+toadd);
     }
   </script>
-</head>
-<body>
-  <div id="messbox">
-
-  </div>
-  <input type="text" id="chatbox">
-  <input type="button" value="Send" onclick="sendmessage()" id="chatboxbutton">
-  <div id="contacts">
-
-  </div>
-
-  <div id="topbar">
-  <img src="img/logo.png" class="logo" onclick="addacontact()"> <!-- temporary button, please remove in futures --> <span class="logotext">Starcat</span>
-  </div>
 </body>
 </html>
