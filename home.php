@@ -62,7 +62,7 @@ exit();
       var contacts = str.split('&&&&&'); // we will use for loop to create next var
 
       for (var x = 0; x <= contacts.length; x++) {
-        document.getElementById("contacts").innerHTML += "<div id='contacts'><div class='box'><img src='' class='pfp'><div class='info' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'>"+contacts[x].split("|||||")[0]+"</div></div></div>";
+        document.getElementById("contacts").innerHTML += "<div id='contacts'><div class='box' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'><img src='' class='pfp'><div class='info'>"+contacts[x].split("|||||")[0]+"</div></div></div>";
       }
     }
     splitcontacts(); // the function is defined, we run the code, just once for now

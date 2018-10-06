@@ -87,16 +87,16 @@ body {
 }
 #chatbox {
   position: fixed;
-  left: 60px;
+  left: 250px;
   top: calc(100% - 20px);
-  width: calc(100% - 45px);
-  height: 20px;
+  width: calc(100% - 250px);
+  height: 40px;
   background-color: #ffffff;
 }
 #chatboxbutton {
   position: fixed;
   left: calc(100% - 45px);
-  top: calc(100% - 20px);
+  top: calc(100% - 40px);
   width: 45px;
-  height: 20px;
+  height: 40px;
 }
