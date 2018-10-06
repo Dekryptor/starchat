@@ -73,7 +73,7 @@ body {
   color: #ffffff;
 }
 * {
-  font-family: helvetica;
+  font-family: arial;
 }
 .nosee {
   visibility: hidden;
@@ -88,7 +88,7 @@ body {
 #chatbox {
   position: fixed;
   left: 250px;
-  top: calc(100% - 20px);
+  top: calc(100% - 40px);
   width: calc(100% - 250px);
   height: 40px;
   background-color: #ffffff;

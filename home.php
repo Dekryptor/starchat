@@ -53,7 +53,7 @@ exit();
     function httpGet(theUrl) {
       // Allows us to do a http get and then return the contents
       var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+      xmlHttp.open( "GET", theUrl ); // false for synchronous request
       xmlHttp.send( null );
       return xmlHttp.responseText;
     }
@@ -67,15 +67,19 @@ exit();
     }
     splitcontacts(); // the function is defined, we run the code, just once for now
     function switchcontact(vals) {
-      var resu = httpGet("api.php?username="+username+"&password="+password+"&readmessages="+vals);
-      document.getElementById("messbox").innerHTML = resu;
+
       tmpid = vals;
-      console.log(resu);
-      console.log(vals);
     }
+    setInterval(function() {
+      if (tmpid != "EMPTY") {
+        var resu = httpGet("api.php?username="+username+"&password="+password+"&readmessages="+vals);
+        var les = resu.replace("\n", "<br>");
+        document.getElementById("messbox").innerHTML = les;
+      }
+    },500)
     function sendmessage() {
       var errorcode = httpGet("api.php?username="+username+"&password="+password+"&sendmessage="+document.getElementById("chatbox").value+"&sendmessageto="+tmpid);
-      console.log(tmpid)
+      document.getElementById("chatbox").value = "";
     }
     function addacontact() {
       var toadd = prompt("Please Enter Username to Add");
