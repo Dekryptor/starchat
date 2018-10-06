@@ -65,17 +65,22 @@ exit();
 
       for (var x = 0; x <= contacts.length; x++) {
         contacts_inside.push(contacts[x].split('|||||'));
-        document.getElementById("contacts").innerHTML += "<div id='contacts'><div class='box'><img src='' class='pfp'><div class='info' onclick='switchcontact(\\'"+contacts_inside[x][1]+"\\')'>"+contacts_inside[x][0]+"</div></div></div>";
+        document.getElementById("contacts").innerHTML += "<div id='contacts'><div class='box'><img src='' class='pfp'><div class='info' onclick='switchcontact(\""+contacts_inside[x][1]+"\")'>"+contacts_inside[x][0]+"</div></div></div>";
       }
-
+      console.log(contacts);
+      console.log(contacts_inside);
     }
     splitcontacts(); // the function is defined, we run the code, just once for now
     function switchcontact(vals) {
       var resu = httpGet("api.php?username="+username+"&password="+password+"&readmessages="+vals);
       document.getElementById("messbox").innerHTML = resu;
+      tmpid = vals;
+      console.log(resu);
+      console.log(vals);
     }
     function sendmessage() {
       var errorcode = httpGet("api.php?username="+username+"&password="+password+"&sendmessage="+document.getElementById("chatbox").value+"&sendmessageto="+tmpid);
+      console.log(tmpid)
     }
     function addacontact() {
       var toadd = prompt("Please Enter Username to Add");
