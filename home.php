@@ -64,7 +64,7 @@ exit();
 
 
       for (var x = 0; x <= contacts.length+1; x++) {
-        contacts_inside.push(contacts[x].split('|||||'));
+        contacts_inside = contacts[x].split('|||||');
         document.getElementById("contacts").innerHTML += "<div id='contacts'><div class='box'><img src='' class='pfp'><div class='info' onclick='switchcontact(\""+contacts_inside[x][1]+"\")'>"+contacts_inside[x][0]+"</div></div></div>";
       }
       console.log(contacts);
