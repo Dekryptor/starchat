@@ -50,7 +50,6 @@ exit();
     var username = '<?php echo htmlspecialchars($_SESSION["usernamedata"]); ?>';
     var password = '<?php echo htmlspecialchars($_SESSION["passworddata"]); ?>';
     var tmpid = "EMPTY";
-    var inc = 0;
     function httpGet(theUrl, callback) {
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.onreadystatechange = function() {
@@ -60,17 +59,14 @@ exit();
       xmlHttp.open("GET", theUrl, true); // true for asynchronous, we need async to keep everything working
       xmlHttp.send(null);
     }
-    function donewith() {
-      inc++;
-      console.log("Finished http request "+inc);
-    }
     function splitcontacts() {
-      var str = httpGet("api.php?username="+username+"&password="+password+"&getcontacts=yes", donewith);
-      var contacts = str.split('&&&&&'); // we will use for loop to create next var
+      httpGet("api.php?username="+username+"&password="+password+"&getcontacts=yes", function(str) {
+        var contacts = str.split('&&&&&'); // we will use for loop to create next variable
 
-      for (var x = 0; x <= contacts.length; x++) {
-        document.getElementById("contacts").innerHTML += "<div id='contacts'><div class='box' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'><img src='' class='pfp'><div class='info'>"+contacts[x].split("|||||")[0]+"</div></div></div>";
-      }
+        for (var x = 0; x <= contacts.length; x++) {
+          document.getElementById("contacts").innerHTML += "<div id='contacts'><div class='box' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'><img src='' class='pfp'><div class='info'>"+contacts[x].split("|||||")[0]+"</div></div></div>";
+        }
+      });
     }
     splitcontacts(); // the function is defined, we run the code, just once for now
     function switchcontact(vals) {
@@ -79,18 +75,22 @@ exit();
     }
     setInterval(function() {
       if (tmpid != "EMPTY") {
-        var resu = httpGet("api.php?username="+username+"&password="+password+"&readmessages="+vals, donewith);
-        var les = resu.replace("\n", "<br>");
-        document.getElementById("messbox").innerHTML = les;
+        httpGet("api.php?username="+username+"&password="+password+"&readmessages="+vals, function(resu) {
+          var les = resu.replace("\n", "<br>");
+          document.getElementById("messbox").innerHTML = les;
+        });
       }
     },500)
     function sendmessage() {
-      var errorcode = httpGet("api.php?username="+username+"&password="+password+"&sendmessage="+document.getElementById("chatbox").value+"&sendmessageto="+tmpid, donewith);
-      document.getElementById("chatbox").value = "";
+      httpGet("api.php?username="+username+"&password="+password+"&sendmessage="+document.getElementById("chatbox").value+"&sendmessageto="+tmpid, function() {
+        document.getElementById("chatbox").value = "";
+      });
     }
     function addacontact() {
       var toadd = prompt("Please Enter Username to Add");
-      httpGet("api.php?username="+username+"&password="+password+"&addcontact="+toadd, donewith);
+      httpGet("api.php?username="+username+"&password="+password+"&addcontact="+toadd, function() {
+        console.log("Added User")
+      });
     }
   </script>
 </body>
