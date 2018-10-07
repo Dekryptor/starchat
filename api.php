@@ -78,7 +78,7 @@ if (isset($_GET["sendmessage"])) {
     die("Contacter doesnt exist, maybe they deleted their account or your code isnt working");
   }
 
-  file_put_contents("convos/.ht".$_GET["sendmessageto"], file_get_contents("convos/.ht".$_GET["sendmessageto"]).htmlspecialchars($safemess));
+  file_put_contents("convos/.ht".$_GET["sendmessageto"], file_get_contents("convos/.ht".$_GET["sendmessageto"]).$safemess);
   die("Success");
 }
 

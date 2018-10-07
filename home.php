@@ -37,7 +37,7 @@ exit();
   <div id="messbox">
 
   </div>
-  <input type="text" id="chatbox">
+  <input type="text" id="chatbox" onkeypress="checkkey(event)">
   <input type="button" value="Send" onclick="sendmessage()" id="chatboxbutton">
   <div id="contacts">
 
@@ -50,6 +50,11 @@ exit();
     var username = '<?php echo htmlspecialchars($_SESSION["usernamedata"]); ?>';
     var password = '<?php echo htmlspecialchars($_SESSION["passworddata"]); ?>';
     var tmpid = "EMPTY";
+    function checkkey(event) {
+      if (event.key == "Enter") {
+        sendmessage();
+      }
+    }
     function httpGet(theUrl, callback) {
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.onreadystatechange = function() {
@@ -64,7 +69,7 @@ exit();
         var contacts = str.split('&&&&&'); // we will use for loop to create next variable
 
         for (var x = 0; x <= contacts.length; x++) {
-          document.getElementById("contacts").innerHTML += "<div id='contacts'><div class='box' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'><img src='' class='pfp'><div class='info'>"+contacts[x].split("|||||")[0]+"</div></div></div>";
+          document.getElementById("contacts").innerHTML += "<div class='box' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'><img src='' class='pfp'><div class='info'>"+contacts[x].split("|||||")[0]+"</div></div>";
         }
       });
     }
@@ -76,8 +81,8 @@ exit();
     setInterval(function() {
       if (tmpid != "EMPTY") {
         httpGet("api.php?username="+username+"&password="+password+"&readmessages="+tmpid, function(resu) {
-          var les = resu.replace(/\n/g, "<br>");
-          document.getElementById("messbox").innerHTML = les;
+          var les = resu.replace(/\n/g, "</div><br><div class='smessage'>");
+          document.getElementById("messbox").innerHTML = ("<div>"+les+"</div>").slice(0, -27); // the slice function removes the unneeded extra divs
         });
       }
     },500)
