@@ -75,7 +75,7 @@ exit();
     }
     setInterval(function() {
       if (tmpid != "EMPTY") {
-        httpGet("api.php?username="+username+"&password="+password+"&readmessages="+vals, function(resu) {
+        httpGet("api.php?username="+username+"&password="+password+"&readmessages="+tmpid, function(resu) {
           var les = resu.replace("\n", "<br>");
           document.getElementById("messbox").innerHTML = les;
         });
