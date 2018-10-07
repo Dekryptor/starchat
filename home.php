@@ -76,7 +76,7 @@ exit();
     setInterval(function() {
       if (tmpid != "EMPTY") {
         httpGet("api.php?username="+username+"&password="+password+"&readmessages="+tmpid, function(resu) {
-          var les = resu.replace("\n", "<br>");
+          var les = resu.replace(/\n/g, "<br>");
           document.getElementById("messbox").innerHTML = les;
         });
       }
