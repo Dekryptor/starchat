@@ -69,7 +69,7 @@ exit();
         var contacts = str.split('&&&&&'); // we will use for loop to create next variable
 
         for (var x = 0; x <= contacts.length; x++) {
-          document.getElementById("contacts").innerHTML += "<div class='box' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'><img src='' class='pfp'><div class='info'>"+contacts[x].split("|||||")[0]+"</div></div>";
+          document.getElementById("contacts").innerHTML += "<div class='box' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'><img src='img/user.png' class='pfp'><div class='info'>"+contacts[x].split("|||||")[0]+"</div></div>";
         }
       });
     }
@@ -83,6 +83,8 @@ exit();
         httpGet("api.php?username="+username+"&password="+password+"&readmessages="+tmpid, function(resu) {
           var les = resu.replace(/\n/g, "</div><br><div class='smessage'>");
           document.getElementById("messbox").innerHTML = ("<div>"+les+"</div>").slice(0, -27); // the slice function removes the unneeded extra divs
+	  var objDiv = document.getElementById("messbox");
+	  objDiv.scrollTop = objDiv.scrollHeight;
         });
       }
     },500)
