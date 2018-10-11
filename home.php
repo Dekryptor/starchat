@@ -82,7 +82,7 @@ exit();
       if (tmpid != "EMPTY") {
         httpGet("api.php?username="+username+"&password="+password+"&readmessages="+tmpid, function(resu) {
           var les = resu.replace(/\n/g, "</div><br><div class='smessage'>");
-          document.getElementById("messbox").innerHTML = ("<div>"+les+"</div>").slice(0, -27); // the slice function removes the unneeded extra divs
+          document.getElementById("messbox").innerHTML = ("<div>"+les+"</div>");
 	  var objDiv = document.getElementById("messbox");
 	  objDiv.scrollTop = objDiv.scrollHeight;
         });
