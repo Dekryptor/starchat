@@ -110,8 +110,8 @@ body {
 #settings {
   position: fixed;
   padding: 30px;
-  left: calc(50% - 300px);
-  top: calc(50% - 400px);
+  left: calc(50% - 200px);
+  top: calc(50% - 200px);
   width: 400px;
   height: 400px;
   background-color: #ffffff;
