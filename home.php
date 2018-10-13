@@ -44,12 +44,24 @@ exit();
   </div>
 
   <div id="topbar">
-  <img src="img/logo.png" class="logo" onclick="addacontact()"> <!-- temporary button. please remove in futures --> <span class="logotext">Starcat</span>
+  <img src="img/logo.png" class="logo" onclick="opensettings()"> <!-- temporary button. please remove in futures --> <span class="logotext">Starcat</span>
+  </div>
+
+  <div id="settings">
+	<a href="#" onclick="closesettings()">Close Options</a>
+	<h1>Options</h1>
+	<p><input type="button" value="Add Contact" onclick="addacontact()"></p>
   </div>
   <script type="text/javascript">
     var username = '<?php echo htmlspecialchars($_SESSION["usernamedata"]); ?>';
     var password = '<?php echo htmlspecialchars($_SESSION["passworddata"]); ?>';
     var tmpid = "EMPTY";
+    function opensettings() {
+	document.getElementById("settings").style.visibility = "visible";
+    }
+    function closesettings() {
+	document.getElementById("settings").style.visibility = "hidden";
+    }
     function checkkey(event) {
       if (event.key == "Enter") {
         sendmessage();
@@ -96,7 +108,7 @@ exit();
     function addacontact() {
       var toadd = prompt("Please Enter Username to Add");
       httpGet("api.php?username="+username+"&password="+password+"&addcontact="+toadd, function() {
-        console.log("Added User")
+	      location.reload()
       });
     }
   </script>
