@@ -107,8 +107,12 @@ exit();
     }
     function addacontact() {
       var toadd = prompt("Please Enter Username to Add");
-      httpGet("api.php?username="+username+"&password="+password+"&addcontact="+toadd, function() {
-	      location.reload()
+      httpGet("api.php?username="+username+"&password="+password+"&addcontact="+toadd, function(code) {
+	      if (code == "0") {
+		      location.reload()
+	      }else{
+		      alert("User not found");
+	      }
       });
     }
   </script>

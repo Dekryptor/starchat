@@ -19,7 +19,7 @@ $qanonid = $row[3];
 $qcontact = $row[4];
 }else{
 $conn->close();
-die("Login Failure");
+die("6");
 exit();
 }
 
@@ -45,10 +45,10 @@ if (isset($_GET["readmessages"])) {
   if(preg_match('/[a-zA-Z0-9\-]{3,40}$/', $_GET["readmessages"])) {
     // yep, seems safe enough
   }else{
-    die("Not a valid id, nice try though.");
+    die("15");
   }
   if(preg_match('/\.php$/', $_GET["readmessages"])) {
-    die("final check failed, this shouldnt happen but something fishy is going on here");
+    die("12");
   }else{
     // if user bypasses, at least check if .php is disabled, most sensitive info for the most part is in php files
   }
@@ -63,7 +63,7 @@ if (isset($_GET["sendmessage"])) {
   if(preg_match('/[a-zA-Z0-9\-]{3,40}$/', $_GET["sendmessageto"])) {
     // yep, seems safe enough
   }else{
-    die("Not a valid id, nice try though.");
+    die("8");
   }
   // i probably should strip out mysql commands, but this doesnt get passed anywhere through mysql, so for now this basically allows you to use commas and fancy characters
   // for future commiters, remember this, messages do not get sent through mysql, only strip html special characters
@@ -75,11 +75,11 @@ if (isset($_GET["sendmessage"])) {
     // we need this to make sure file exists, since the person most likely created a conversation already
     // lets move on
   }else{
-    die("Contacter doesnt exist, maybe they deleted their account or your code isnt working");
+    die("4");
   }
 
   file_put_contents("convos/.ht".$_GET["sendmessageto"], file_get_contents("convos/.ht".$_GET["sendmessageto"]).$safemess);
-  die("Success");
+  die("0");
 }
 
 // preferably, we will try to keep conversations in one box, so if one person deletes the convo, it deletes it for other user as well
@@ -96,7 +96,7 @@ $somedata = $quickcheck->fetch_array(MYSQLI_NUM);
 if (count($somedata)>0) {
   // move on to next code
 }else{
-  die("User does not exist");
+  die("1");
 }
 
 // $conn->real_escape_string($_GET["username"]);
@@ -104,7 +104,7 @@ if (count($somedata)>0) {
 if(preg_match('/[a-zA-Z0-9]/', $_GET["username"])) {
 }else{
   $conn->close();
-  die("Name contains illegal characters");
+  die("2");
   exit;
 }
 $current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($qid)."'");
@@ -116,7 +116,7 @@ file_put_contents("convos/.ht".$vale, "Conversation has been created! Nobody els
 $conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($qusername)."|||||".$vale."' WHERE firstname = '".$conn->real_escape_string($_GET["addcontact"])."'");
 // First we add the url, then the username
 $conn->close();
-die("Success");
+die("0");
 
 }
 

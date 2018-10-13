@@ -112,8 +112,8 @@ body {
   padding: 30px;
   left: calc(50% - 300px);
   top: calc(50% - 400px);
-  width: 600px;
-  height: 800px;
+  width: 400px;
+  height: 400px;
   background-color: #ffffff;
   color: black;
   visibility: hidden;
