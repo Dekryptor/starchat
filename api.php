@@ -159,12 +159,13 @@ $contactlist = $conn->query("SELECT contacts FROM accounts WHERE firstname = '".
 
 $contactlist = $contactlist->fetch_array(MYSQLI_NUM);
 
-if (strpos($contactlist[0], $_GET["convoid"]) === false) {
+if (strpos($contactlist[0], "|||||".$_GET["convoid"]."&&&&&") === false) {
 die("32")
 }else{
 $current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
 $current = $current->fetch_array(MYSQLI_NUM);
 $conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($qusername." GC")."|||||".$conn->real_escape_string($_GET["convoid"])."' WHERE firstname = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
+file_put_contents("convos/.ht".$_GET["convoid"], file_get_contents("convos/.ht".$_GET["convoid"])."\n".htmlspecialchars($_GET["addtoconvo"])." has been added to the conversation");
 }
 
 $conn->close();
