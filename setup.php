@@ -31,7 +31,7 @@ $info = "
 
 file_put_contents("mysqlinfo.php", $info);
 
-$sql = "CREATE DATABASE starcat";
+$sql = "CREATE DATABASE starchat";
 if ($conn->query($sql) === TRUE) {
 echo "Database created successfully!<br>";
 }else{
@@ -39,7 +39,7 @@ echo "Error creating database: ".$conn->error . "<br>";
 }
 $conn->close();
 
-$conns = new mysqli($location, $username, $password, "starcat");
+$conns = new mysqli($location, $username, $password, "starchat");
 
 $sql = "CREATE TABLE accounts (
 id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -66,7 +66,7 @@ die("END");
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Starcat Setup</title>
+<title>Starchat Setup</title>
 <style>
 body {
 background-color: #afafaf;
@@ -83,8 +83,8 @@ border: 1px solid #000000;
 </head>
 <body>
 <div class="pushed">
-<h1>Starcat Install</h1>
-<p>You are here because you are doing the install. To proceed, the installer will create and setup mysql databases. Once this setup is done, starcat should be ready for production.</p>
+<h1>Starchat Install</h1>
+<p>You are here because you are doing the install. To proceed, the installer will create and setup mysql databases. Once this setup is done, starchat should be ready for production.</p>
 <form action="setup.php" method="post">
 <p>Lets setup some preferences first</p>
 <b>Have you read and chose to agree to the MIT license?</b><br>
