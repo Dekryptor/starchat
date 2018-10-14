@@ -160,7 +160,7 @@ $contactlist = $conn->query("SELECT contacts FROM accounts WHERE firstname = '".
 $contactlist = $contactlist->fetch_array(MYSQLI_NUM);
 
 if (strpos($contactlist[0], "|||||".$_GET["convoid"]."&&&&&") === false) {
-die("32")
+die("32");
 }else{
 $current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
 $current = $current->fetch_array(MYSQLI_NUM);
