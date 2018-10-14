@@ -149,7 +149,7 @@ height: calc(50% - 25px);
 <h1>Account creation</h1>
 <form action="create.php?trycreate=yes" method="post">
 Username: <input type="text" id="username" name="username" class="textbox"><br><br>
-Password: <input type="text" id="password" name="password" class="textbox"><br><br>
+Password: <input type="password" id="password" name="password" class="textbox"><br><br>
 <input type="submit" value="Create Account" class="buttona"><br><br>
 </form>
 <a href="index.php">Go back to login.</a>

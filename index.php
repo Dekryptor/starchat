@@ -112,7 +112,7 @@ height: calc(50% - 25px);
 <div class="login">
 <form action="index.php?trylogin=yes" method="post">
 Username: <input type="text" id="username" name="username" class="textbox"><br><br>
-Password: <input type="text" id="password" name="password" class="textbox"><br><br>
+Password: <input type="password" id="password" name="password" class="textbox"><br><br>
 <input type="submit" value="Login" class="buttona"><br><br>
 <?php
 if(isset($_GET["created"])) {
