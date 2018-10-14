@@ -4,7 +4,7 @@ include 'mysqlinfo.php';
 if (isset($_GET["trycreate"])) {
 
 // Create connection
-$conn = new mysqli($mysqlurl, $user, $pass, "starcat");
+$conn = new mysqli($mysqlurl, $user, $pass, "starchat");
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -69,7 +69,7 @@ die("Finished, redirecting");
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Starcat</title>
+<title>Starchat</title>
 <style>
 body {
 animation-name: look;
@@ -112,7 +112,7 @@ color: #000000;
 border: 1px solid #000000;
 border-radius: 3px;
 }
-.starcat {
+.starchat {
 position: absolute;
 left: 15px;
 top: 15px;
@@ -144,7 +144,7 @@ height: calc(50% - 25px);
 <body>
 <div class="top"></div>
 <div class="bottom"></div>
-<img src="img/logo.png" width="65" height="66" class="starcat">
+<img src="img/logo.png" width="65" height="66" class="starchat">
 <div class="login">
 <h1>Account creation</h1>
 <form action="create.php?trycreate=yes" method="post">
