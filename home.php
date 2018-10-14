@@ -50,7 +50,8 @@ exit();
   <div id="settings">
 	<a href="#" onclick="closesettings()">Close Options</a>
 	<h1>Options</h1>
-	<p><input type="button" value="Add Contact" onclick="addacontact()"></p>
+	<p><input type="button" value="Add Contact" onclick="addacontact()"><!-- TODO change this dialog to own function instead of alert --></p>
+	<p><input type="button" value="Add Contact to active conversation" onclick="addbcontact()"> (group chats)</p>
   </div>
   <script type="text/javascript">
     var username = '<?php echo htmlspecialchars($_SESSION["usernamedata"]); ?>';
@@ -114,6 +115,18 @@ exit();
 		      alert("User not found");
 	      }
       });
+    }
+    function addbcontact() {
+	if (tmpid == "EMPTY") {
+		alert("Please actually select a contact");
+	}else{
+      var toadd = prompt("Please Enter Username to Add");
+      httpGet("api.php?username="+username+"&password="+password+"&addtoconvo="+toadd+"&convoid="+tmpid, function(code) {
+	      if (code != "\n0") {
+		      alert("User not found or the conversation you are in does not exist (you should not get the second reason on the web client)");
+	      }
+      });
+	}
     }
   </script>
 </body>

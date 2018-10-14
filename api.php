@@ -164,7 +164,7 @@ die("32")
 }else{
 $current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
 $current = $current->fetch_array(MYSQLI_NUM);
-$conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($qusername)."|||||".$_GET["convoid"]."' WHERE firstname = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
+$conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($qusername." GC")."|||||".$conn->real_escape_string($_GET["convoid"])."' WHERE firstname = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
 }
 
 $conn->close();
