@@ -128,4 +128,49 @@ exit();
 
 }
 
+if (isset($_GET["addtoconvo"])) {
+
+$surl = $_GET["addtoconvo"];
+
+$quickcheck = $conn->query("SELECT firstname, id FROM accounts WHERE firstname = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
+
+$somedata = $quickcheck->fetch_array(MYSQLI_NUM);
+
+if (count($somedata)>0) {
+  // move on to next code
+}else{
+  echo "1";
+  exit();
+}
+
+// $conn->real_escape_string($_GET["username"]);
+// The code below will probably make you throw up
+if(preg_match('/[a-zA-Z0-9]/', $_GET["username"])) {
+}else{
+  $conn->close();
+  echo "2";
+  exit();
+}
+
+// Addtoconvo is the person we want to add, usual username
+// convoid is the conversation id, we need to verify it exists in the current users contact so we cant just add random people to random conversations
+
+$contactlist = $conn->query("SELECT contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
+
+$contactlist = $contactlist->fetch_array(MYSQLI_NUM);
+
+if (strpos($contactlist[0], $_GET["convoid"]) === false) {
+die("32")
+}else{
+$current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
+$current = $current->fetch_array(MYSQLI_NUM);
+$conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($qusername)."|||||".$_GET["convoid"]."' WHERE firstname = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
+}
+
+$conn->close();
+echo "0";
+exit();
+
+}
+
 ?>
