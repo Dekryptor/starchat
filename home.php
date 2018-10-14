@@ -81,8 +81,8 @@ exit();
       httpGet("api.php?username="+username+"&password="+password+"&getcontacts=yes", function(str) {
         var contacts = str.split('&&&&&'); // we will use for loop to create next variable
 
-        for (var x = 0; x <= contacts.length; x++) {
-          document.getElementById("contacts").innerHTML += "<div class='box' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'><img src='img/user.png' class='pfp'><div class='info'>"+contacts[x].split("|||||")[0]+"</div></div>";
+        for (var x = 1; x <= contacts.length; x++) {
+          document.getElementById("contacts").innerHTML += "<div class='box' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'><img src='img/user.png' class='pfp'><div class='info'>"+contacts[x].split("|||||")[0]+"</div></div>"; // due to a bug, we have to start at one, we will fix this in the future
         }
       });
     }
