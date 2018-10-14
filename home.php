@@ -3,7 +3,7 @@ session_start();
 include 'mysqlinfo.php';
 
 // Create connection
-$conn = new mysqli($mysqlurl, $user, $pass, "starcat");
+$conn = new mysqli($mysqlurl, $user, $pass, "starchat");
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -29,7 +29,7 @@ exit();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Starcat</title>
+  <title>Starchat</title>
   <link rel="stylesheet" type="text/css" href="stylesheet.css">
 
 </head>
@@ -44,7 +44,7 @@ exit();
   </div>
 
   <div id="topbar">
-  <img src="img/logo.png" class="logo" onclick="opensettings()"> <!-- temporary button. please remove in futures --> <span class="logotext">Starcat</span>
+  <img src="img/logo.png" class="logo" onclick="opensettings()"> <!-- temporary button. please remove in futures --> <span class="logotext">Starchat</span>
   </div>
 
   <div id="settings">
