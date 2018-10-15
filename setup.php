@@ -1,18 +1,13 @@
 <?php
 
-if(isset($_POST["license"])) {
+if(isset($_POST["jitsi"])) {
 // $usetype = $_POST["usetype"];
 $usetype = "public";
-// please update above only if specific update comes out
-$license = $_POST["license"];
 
 $username = $_POST["username"];
 $password = $_POST["password"];
 $location = $_POST["location"];
 
-if ($license == "unread") {
-die("Please view LICENSE file and restart the installer, or if you don't agree, uninstall this software.");
-}
 
 if ($usetype = "public") {
 $conn = new mysqli($location, $username, $password);
@@ -20,14 +15,27 @@ if ($conn->connect_error) {
 die("Connection to MYSQL server failed! Reason: ".$conn->connect_error);
 }
 
+if ($_POST["jitsi"] == "true") {
 $info = "
 <?php
 
 \$user = \"$username\";
 \$pass = \"$password\";
 \$mysqlurl = \"$location\";
+\$jitsi = \"true\";
 ?>
 ";
+}else{
+$info = "
+<?php
+
+\$user = \"$username\";
+\$pass = \"$password\";
+\$mysqlurl = \"$location\";
+\$jitsi = \"false\";
+?>
+";
+}
 
 file_put_contents("mysqlinfo.php", $info);
 
@@ -87,9 +95,9 @@ border: 1px solid #000000;
 <p>You are here because you are doing the install. To proceed, the installer will create and setup mysql databases. Once this setup is done, starchat should be ready for production.</p>
 <form action="setup.php" method="post">
 <p>Lets setup some preferences first</p>
-<b>Have you read and chose to agree to the MIT license?</b><br>
-<input type="radio" name="license" value="read" checked> I read it and im fine with it<br>
-<input type="radio" name="license" value="unread"> I didn't read it, or chose not to agree<br><br>
+<b>Do you want Jit.si support (video calling)?</b><br>
+<input type="radio" name="jitsi" value="true" checked> Yes<br>
+<input type="radio" name="jitsi" value="false"> No<br><br>
 Your <b>MYSQL</b> user: <input type="text" name="username" value="root"><br>
 Your <b>MYSQL</b> password: <input type="password" name="password"><br>
 MYSQL server url: <input type="text" name="location" value="localhost"> (leave default if unsure or if you are currently on the same server where mysql is installed and running)<br><br>

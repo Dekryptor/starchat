@@ -47,6 +47,10 @@ exit();
   <img src="img/logo.png" class="logo" onclick="opensettings()"> <!-- temporary button. please remove in futures --> <span class="logotext">Starchat</span>
   </div>
 
+  <div id="callform">
+
+  </div>
+
   <div id="settings">
 	<a href="#" onclick="closesettings()">Close Options</a>
 	<h1>Options</h1>
@@ -57,8 +61,24 @@ exit();
     var username = '<?php echo htmlspecialchars($_SESSION["usernamedata"]); ?>';
     var password = '<?php echo htmlspecialchars($_SESSION["passworddata"]); ?>';
     var tmpid = "EMPTY";
+    var calling = "no";
+    var jitsi = '<?php echo htmlspecialchars($jitsi); ?>';
     function opensettings() {
 	document.getElementById("settings").style.visibility = "visible";
+    }
+    function startcall() {
+	    if (calling == "yes") {
+		endcall();
+	    }else{
+	    document.getElementById("callform").innerHTML = "<button id='closeb' onclick='endcall()'>Close (end call)</button><iframe src='https://meet.jit.si/"+tmpid+"' allow='microphone; camera'>";
+	    document.getElementById("callform").style.visibility = "visible";
+	    calling = "yes";
+	    }
+    }
+    function endcall() {
+	document.getElementById("callform").innerHTML = "";
+	document.getElementById("callform").style.visibility = "hidden";
+	calling = "no";
     }
     function closesettings() {
 	document.getElementById("settings").style.visibility = "hidden";
@@ -88,6 +108,12 @@ exit();
     }
     splitcontacts(); // the function is defined, we run the code, just once for now
     function switchcontact(vals) {
+	if (tmpid == "EMPTY") {
+	    if (jitsi == 'true') {
+		document.getElementById("topbar").innerHTML += "<img src='img/call.png' id='call' onclick='startcall()'>";	
+	    }
+		
+	}
 
       tmpid = vals;
     }
