@@ -16,7 +16,7 @@ $doesexist = $conn->query("SELECT id, firstname, password, anonid, contacts FROM
 $row = $doesexist->fetch_array(MYSQLI_NUM);
 
 // akx says use bcrypt, i agree
-if ($row[2] == password_hash($_POST["password"], PASSWORD_BCRYPT)) {
+if (password_verify($_POST["password"], $row[2])) {
 $_SESSION["usernamedata"] = $_POST["username"];
 $_SESSION["passworddata"] = $_POST["password"];
 

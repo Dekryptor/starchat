@@ -22,7 +22,7 @@ if ($resu->num_rows == 0) {
 $resi = $conn->query("SELECT password FROM accounts WHERE firstname='$safename'");
 $resi = $resi->fetch_array(MYSQLI_NUM);
 
-if ($conn->real_escape_string(password_hash($_POST["password"],PASSWORD_BCRYPT)) == $resi[0]) {
+if (password_verify($_POST["password"],$resi[0])) {
 	$newpass = $conn->real_escape_string(password_hash($_POST["newpassword"],PASSWORD_BCRYPT));
 	$conn->query("UPDATE accounts SET password='$newpass' WHERE firstname='$safename'");
 }else{

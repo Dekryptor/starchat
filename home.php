@@ -12,7 +12,7 @@ $doesexist = $conn->query("SELECT id, firstname, password, anonid, contacts FROM
 
 $row = $doesexist->fetch_array(MYSQLI_NUM);
 
-if ($row[2] == password_hash($_SESSION["passworddata"],PASSWORD_BCRYPT)) {
+if (password_verify($_SESSION["passworddata"],$row[2])) {
 // logged in, move on
 }else{
 $conn->close();
