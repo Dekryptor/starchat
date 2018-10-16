@@ -153,6 +153,7 @@ Password: <input type="password" id="password" name="password" class="textbox"><
 <input type="submit" value="Create Account" class="buttona"><br><br>
 </form>
 <a href="index.php">Go back to login.</a>
+<a href="changepw.php">Change password</a>
 </div>
 </body>
 </html>
