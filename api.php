@@ -10,7 +10,7 @@ if ($conn->connect_error) {
 
 $doesexist = $conn->query("SELECT id, firstname, password, anonid, contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($_GET["username"])."'");
 $row = $doesexist->fetch_array(MYSQLI_NUM);
-if ($row[2] == hash("sha256",$_GET["password"])) {
+if ($row[2] == password_hash($_GET["password"],PASSWORD_BCRYPT)) {
 // logged in, move on
 $qid = $row[0];
 $qusername = $row[1];

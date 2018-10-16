@@ -1,8 +1,7 @@
 <?php
-session_start();
 include 'mysqlinfo.php';
 
-if (isset($_GET["trylogin"])) {
+if (isset($_GET["trycreate"])) {
 
 // Create connection
 $conn = new mysqli($mysqlurl, $user, $pass, "starchat");
@@ -11,21 +10,30 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$doesexist = $conn->query("SELECT id, firstname, password, anonid, contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($_POST["username"])."'");
+$safename = $conn->real_escape_string(htmlspecialchars($_GET["username"]));
 
-$row = $doesexist->fetch_array(MYSQLI_NUM);
-
-// akx says use bcrypt, i agree
-if ($row[2] == password_hash($_POST["password"], PASSWORD_BCRYPT)) {
-$_SESSION["usernamedata"] = $_POST["username"];
-$_SESSION["passworddata"] = $_POST["password"];
-
-$conn->close();
-header("Location: home.php");
-die("Redirecting...");
+$resu = $conn->query("SELECT id FROM accounts WHERE firstname = '$safename'");
+if ($resu->num_rows == 0) {
+	// Ok
+}else{
+	die("User does not exist");
 }
 
+$resi = $conn->query("SELECT password FROM accounts WHERE firstname='$safename'");
+$resi = $resi->fetch_array(MYSQLI_NUM);
+
+if ($conn->real_escape_string(password_hash($_POST["password"],PASSWORD_BCRYPT)) == $resi[0]) {
+	$newpass = $conn->real_escape_string(password_hash($_POST["newpassword"],PASSWORD_BCRYPT));
+	$conn->query("UPDATE accounts SET password='$newpass' WHERE firstname='$safename'");
+}else{
+	die("Password does not match");
+}
+
+
 $conn->close();
+header("Location: index.php");
+die("Finished, redirecting");
+
 
 }
 
@@ -67,7 +75,7 @@ left: calc(50% - 180px);
 padding: 20px;
 background-color: #ffffff;
 text-align: center;
-top: calc(50% - 100px);
+top: calc(50% - 115px);
 box-shadow: 0px 2px 5px #afafaf;
 }
 .textbox {
@@ -106,22 +114,19 @@ height: calc(50% - 25px);
 }
 </style>
 </head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <body>
 <div class="top"></div>
 <div class="bottom"></div>
 <img src="img/logo.png" width="65" height="66" class="starchat">
 <div class="login">
-<form action="index.php?trylogin=yes" method="post">
+<h1>Change Password</h1>
+<form action="changepw.php?trycreate=yes" method="post">
 Username: <input type="text" id="username" name="username" class="textbox"><br><br>
-Password: <input type="password" id="password" name="password" class="textbox"><br><br>
-<input type="submit" value="Login" class="buttona"><br><br>
-<?php
-if(isset($_GET["created"])) {
-echo "<br>Account created, try logging in now<br><br>";
-}
-?>
-<a href="create.php">Don't have an account? Create it.</a>
+Current Password: <input type="password" id="password" name="password" class="textbox"><br><br>
+New Password: <input type="password" id="newpassword" name="newpassword" class="textbox"><br><br>
+<input type="submit" value="Change Password" class="buttona"><br><br>
+</form>
+<a href="index.php">Go back to login.</a>
 </div>
 </body>
 </html>
