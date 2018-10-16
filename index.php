@@ -105,6 +105,7 @@ height: calc(50% - 25px);
 }
 </style>
 </head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <body>
 <div class="top"></div>
 <div class="bottom"></div>
