@@ -58,11 +58,25 @@ contacts VARCHAR(2100) NOT NULL
 )";
 
 if ($conns->query($sql) === TRUE) {
-    echo "Tables created successfully! Redirecting to index.php<br>";
+	// Tables created
 } else {
     echo "Error creating table: " . $conns->error . "<br>";
 }
 
+
+$sqla = "CREATE TABLE messages (
+id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+chatid VARCHAR(70) NOT NULL,
+dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+username VARCHAR(50) NOT NULL,
+message VARCHAR(2100) NOT NULL
+)";
+
+if ($conns->query($sqla) === TRUE) {
+	// Tables created
+} else {
+    echo "Error creating table: " . $conns->error . "<br>";
+}
 
 $conns->close();
 header("Location: index.php");

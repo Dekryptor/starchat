@@ -35,14 +35,11 @@ function generateRandomString($length = 25) {
 }
 
 if (isset($_GET["getcontacts"])) {
-  // Before you ask, we wont pass a html stripper from this, since we dont want clients dealing with pain of striping &amp like things and stuff, and for web clients no harm will be done
-  // Should i remove first 5 characters from contacts, since users first ever contact is probably just 5 ampersigns, but if we add contact removal this can become a tragedy
   echo $qcontact;
   exit();
 }
 
 if (isset($_GET["readmessages"])) {
-  // to prevent reading of unauthorized files, we will check if valid id, like for example, some could input ../../../sensitiveinfo.php and get access to that, lets prevent this from happening
   if(preg_match('/[a-zA-Z0-9\-]{3,40}$/', $_GET["readmessages"])) {
     // yep, seems safe enough
   }else{
@@ -55,10 +52,23 @@ if (isset($_GET["readmessages"])) {
   }else{
     // if user bypasses, at least check if .php is disabled, most sensitive info for the most part is in php files
   }
-  // todo, extra important things to check if really is a valid id, for now above will work, but what if above fails, an error would probably get reported.
-  // i know i sound paranoid or something, but someday, someone will figure out how to bypass this, thats when maximum security is needed
-  // i mean cmon, some things have mysql passwords in plain text, a mysql password found is a whole life wasted
-  die(htmlspecialchars(file_get_contents("convos/.ht".$_GET["readmessages"])));
+
+  $readmessage = $_GET["readmessages"];
+  $chatid = $conn->real_escape_string(htmlspecialchars($readmessage));
+  $messages = $conn->query("SELECT * FROM messages WHERE chatid='$chatid'");
+  if ($messages->num_rows > 0) {
+    while($row = $messages->fetch_assoc()) {
+	if ($row["username"] == "x") {
+      echo "\n".$row["message"];
+	}else{
+      echo "\n[".$row["dt"]."] ".$row["username"].": ".$row["message"];
+
+	}
+    }
+  }else{
+	echo "Nothing but crickets, Say Hello";
+  }
+  exit();
 }
 
 if (isset($_GET["sendmessage"])) {
@@ -69,27 +79,15 @@ if (isset($_GET["sendmessage"])) {
     echo "8";
     exit();
   }
-  // i probably should strip out mysql commands, but this doesnt get passed anywhere through mysql, so for now this basically allows you to use commas and fancy characters
-  // for future commiters, remember this, messages do not get sent through mysql, only strip html special characters
 
-  // good idea to put timestamp but im not too sure yet, i will do a community vote and we will see what is best once this project gets popular
-  $safemess = "\n".htmlspecialchars($qusername).": ".htmlspecialchars($_GET["sendmessage"]);
+  $chatid = $conn->real_escape_string(htmlspecialchars($_GET["sendmessageto"]));
+  $qusernamef = $conn->real_escape_string($qusername);
+  $messagef = $conn->real_escape_string(htmlspecialchars($_GET["sendmessage"]));
 
-  if(file_exists("convos/.ht".$_GET["sendmessageto"])) {
-    // we need this to make sure file exists, since the person most likely created a conversation already
-    // lets move on
-  }else{
-    echo "4";
-    exit();
-  }
-
-  file_put_contents("convos/.ht".$_GET["sendmessageto"], file_get_contents("convos/.ht".$_GET["sendmessageto"]).$safemess);
+  $conn->query("INSERT INTO messages (chatid, username, message) VALUES ('$chatid', '$qusernamef', '$messagef')"); // MYSQL generates timestamps for us
   echo "0";
   exit();
 }
-
-// preferably, we will try to keep conversations in one box, so if one person deletes the convo, it deletes it for other user as well
-// $filename = $qanonid . "......." . $qusername . "......." . htmlspecialchars($_GET["contacter"]) + ".txt";
 
 if (isset($_GET["addcontact"])) {
 
@@ -106,20 +104,24 @@ if (count($somedata)>0) {
   exit();
 }
 
-// $conn->real_escape_string($_GET["username"]);
-// The code below will probably make you throw up
 if(preg_match('/[a-zA-Z0-9]/', $_GET["username"])) {
 }else{
   $conn->close();
   echo "2";
   exit();
 }
+$vale = generateRandomString();
+$messagesa = $conn->query("SELECT * FROM accounts");
+if ($messagesa->num_rows > 0) {
+while($row = $messagesa->fetch_assoc()) {
+if (preg_match(/$vale/, $row["contacts"])) {
+die("Please rerun this, this chat id has been used before");
+}
+}
+}
 $current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($qid)."'");
 $current = $current->fetch_array(MYSQLI_NUM);
-$vale = generateRandomString();
 $conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($surl)."|||||".$vale."' WHERE id = '".$conn->real_escape_string($qid)."'");
-// Most servers add a .ht* by default to the apache file blacklist, this makes sure nobody can rotate scan through conversations (blocking access for plaintext), i bet its probably pretty easy to do
-file_put_contents("convos/.ht".$vale, "Conversation has been created! Nobody else can see these messages, only you and the other person.\n");
 $conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($qusername)."|||||".$vale."' WHERE firstname = '".$conn->real_escape_string($_GET["addcontact"])."'");
 // First we add the url, then the username
 $conn->close();
@@ -156,16 +158,22 @@ if(preg_match('/[a-zA-Z0-9]/', $_GET["username"])) {
 // convoid is the conversation id, we need to verify it exists in the current users contact so we cant just add random people to random conversations
 
 $contactlist = $conn->query("SELECT contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
+$contactlista = $conn->query("SELECT contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($qusername)."'");
 
 $contactlist = $contactlist->fetch_array(MYSQLI_NUM);
+$contactlista = $contactlist->fetch_array(MYSQLI_NUM);
 
 if (strpos($contactlist[0], "|||||".$_GET["convoid"]."&&&&&") === false) {
 die("32");
 }else{
+if (strpos($contactlista[0], "|||||".$_GET["convoid"]."&&&&&") === true) {
 $current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
 $current = $current->fetch_array(MYSQLI_NUM);
+$conn->query("INSERT INTO messages (chatid, username, message) VALUES ('".$conn->real_escape_string($_GET["convoid"])."', 'x', '".$conn->real_escape_string($_GET["addtoconvo"])." has been added to this conversation')"); // MYSQL generates timestamps for us
 $conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($qusername." GC")."|||||".$conn->real_escape_string($_GET["convoid"])."' WHERE firstname = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
-file_put_contents("convos/.ht".$_GET["convoid"], file_get_contents("convos/.ht".$_GET["convoid"])."\n".htmlspecialchars($_GET["addtoconvo"])." has been added to the conversation");
+}else{
+die("32");
+}
 }
 
 $conn->close();
