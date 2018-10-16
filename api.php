@@ -114,7 +114,7 @@ $vale = generateRandomString();
 $messagesa = $conn->query("SELECT * FROM accounts");
 if ($messagesa->num_rows > 0) {
 while($row = $messagesa->fetch_assoc()) {
-if (preg_match(/$vale/, $row["contacts"])) {
+	if (preg_match("/$vale/", $row["contacts"])) {
 die("Please rerun this, this chat id has been used before");
 }
 }
