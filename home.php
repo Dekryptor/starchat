@@ -121,6 +121,7 @@ exit();
     setInterval(function() {
       if (tmpid != "EMPTY") {
         httpGet("api.php?username="+username+"&password="+password+"&readmessages="+tmpid, function(resu) {
+	var resu = resu.substring(4);
           var les = resu.replace(/\n/g, "</div><br><div class='smessage'>");
           document.getElementById("messbox").innerHTML = ("<div>"+les+"</div>");
 	  var objDiv = document.getElementById("messbox");
