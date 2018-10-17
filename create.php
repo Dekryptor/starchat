@@ -110,9 +110,8 @@ top: 15px;
     <input type="password" class="form-control" id="password" name="password" placeholder="Password">
   </div>
   <div class="form-group">
-<button type="submit" class="btn btn-outline-success">Login</button>
+<button type="submit" class="btn btn-outline-success">Create Account</button>
 </div>
-<a href="changepw.php">Reset Password</a>
 </form>
 </div>
 </body>
