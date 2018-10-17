@@ -26,7 +26,7 @@ body {
   border-right: 1px solid #cccccc;
 }
 .box {
-  height: 50px;
+  height: 75px;
   padding: 10px;
   transition: .15s;
   cursor: pointer;

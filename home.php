@@ -57,8 +57,9 @@ exit();
   <div id="settings">
 	<a href="#" onclick="closesettings()">Close Options</a>
 	<h1>Options</h1>
-	<p><input type="button" value="Add Contact" onclick="addacontact()"><!-- TODO change this dialog to own function instead of alert --></p>
-	<p><input type="button" value="Add Contact to active conversation" onclick="addbcontact()"> (group chats)</p>
+	<p><input type="button" value="Add Contact" onclick="addacontact()" class="btn btn-success"><!-- TODO change this dialog to own function instead of alert --></p>
+	<p><input type="button" value="Add Contact to active conversation" onclick="addbcontact()" class="btn btn-success"> (group chats)</p>
+  <p><a href="logout.php" class="btn btn-danger">Logout</a></p>
   </div>
   <script type="text/javascript">
     var username = '<?php echo htmlspecialchars($_SESSION["usernamedata"]); ?>';
