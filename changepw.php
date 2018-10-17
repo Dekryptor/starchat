@@ -75,7 +75,7 @@ top: 15px;
 <img src="img/logo.png" width="65" height="66" class="starchat">
 <div class="login">
 <h3>Create Account</h3>
-<form action="create.php?trycreate=yes" method="post">
+<form action="changepw.php?trycreate=yes" method="post">
 <div class="form-group">
     <input type="text" class="form-control" id="username" name="username" placeholder="Username">
 </div>
@@ -85,7 +85,7 @@ top: 15px;
   <div class="form-group">
     <input type="password" class="form-control" id="newpassword" name="newpassword" placeholder="Current Password">
   </div>
-<button type="submit" class="btn btn-outline-success">Login</button>
+<button type="submit" class="btn btn-outline-success">Create Account</button>
 </form>
 </div>
 </body>
