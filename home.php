@@ -26,13 +26,15 @@ exit();
 
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <title>Starchat</title>
   <link rel="stylesheet" type="text/css" href="stylesheet.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
   <div id="messbox">
@@ -101,7 +103,6 @@ exit();
     function splitcontacts() {
       httpGet("api.php?username="+username+"&password="+password+"&getcontacts=yes", function(str) {
         var contacts = str.split('&&&&&'); // we will use for loop to create next variable
-
         for (var x = 1; x <= contacts.length; x++) {
           document.getElementById("contacts").innerHTML += "<div class='box' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'><img src='img/user.png' class='pfp'><div class='info'>"+contacts[x].split("|||||")[0]+"</div></div>"; // due to a bug, we have to start at one, we will fix this in the future
         }
@@ -111,11 +112,10 @@ exit();
     function switchcontact(vals) {
 	if (tmpid == "EMPTY") {
 	    if (jitsi == 'true') {
-		document.getElementById("topbar").innerHTML += "<img src='img/call.png' id='call' onclick='startcall()'>";	
+		document.getElementById("topbar").innerHTML += "<img src='img/call.png' id='call' onclick='startcall()'>";
 	    }
-		
-	}
 
+	}
       tmpid = vals;
     }
     setInterval(function() {

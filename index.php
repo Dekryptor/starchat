@@ -35,74 +35,29 @@ $conn->close();
 <html lang="en">
 <head>
 <title>Starchat</title>
+<link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body {
-animation-name: look;
-animation-duration: 1s;
 margin:0;
-background-color: #dbdbdb;
+background-color: #fafafa;
 color: #000000;
 font-family: arial;
 }
-@keyframes look {
-0% { background-color: #707070; }
-100% { background-color: #dbdbdb; }
-}
-.buttona {
-background-color: #ffffff;
-color: #000000;
-border: 1px solid #000000;
-padding: 15px;
-padding-top: 5px;
-padding-bottom: 5px;
-transition: .5s;
-}
-.buttona:hover {
-background-color: #000000;
-color: #ffffff;
-}
 .login {
 position: absolute;
-left: calc(50% - 180px);
+left: calc(50% - 140px);
 padding: 20px;
 background-color: #ffffff;
 text-align: center;
-top: calc(50% - 100px);
-box-shadow: 0px 2px 5px #afafaf;
-}
-.textbox {
-padding: 8px;
-background-color: #ffffff;
-color: #000000;
-border: 1px solid #000000;
-border-radius: 3px;
+top: calc(50% - 110px);
+box-shadow: 0px 7px 20px #afafaf;
+border-radius: 10px;
 }
 .starchat {
 position: absolute;
 left: 15px;
 top: 15px;
-animation-name: fallin;
-animation-duration: 1s
-}
-@keyframes fallin {
-0% { left: 15px; top: -150px; }
-100% { left: 15px; top: 15px; }
-}
-.top {
-position: absolute;
-background-color: #7abaff;
-top: 0px;
-left: 0px;
-width: 100%;
-height: calc(50% + 25px);
-}
-.bottom {
-position: absolute;
-background-color: #e8e8e8;
-top: calc(50% + 25px);
-left: 0px;
-width: 100%;
-height: calc(50% - 25px);
 }
 </style>
 </head>
@@ -113,15 +68,17 @@ height: calc(50% - 25px);
 <img src="img/logo.png" width="65" height="66" class="starchat">
 <div class="login">
 <form action="index.php?trylogin=yes" method="post">
-Username: <input type="text" id="username" name="username" class="textbox"><br><br>
-Password: <input type="password" id="password" name="password" class="textbox"><br><br>
-<input type="submit" value="Login" class="buttona"><br><br>
-<?php
-if(isset($_GET["created"])) {
-echo "<br>Account created, try logging in now<br><br>";
-}
-?>
+<div class="form-group">
+    <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+</div>
+<div class="form-group">
+    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+  </div>
+  <div class="form-group">
+<button type="submit" class="btn btn-outline-success">Login</button>
+</div>
 <a href="create.php">Don't have an account? Create it.</a>
+</form>
 </div>
 </body>
 </html>

@@ -9,7 +9,8 @@ body {
   top: 0px;
   height: 60px;
   width: 100%;
-  background-color: #3898ff;
+  background-color: #fcfcfc;
+  border-bottom: 1px solid #cccccc;
   color: #000000;
 }
 #contacts {
@@ -22,6 +23,7 @@ body {
   transition: .5s;
   overflow-y: auto;
   overflow-x: hidden;
+  border-right: 1px solid #cccccc;
 }
 .box {
   height: 50px;
@@ -65,14 +67,16 @@ body {
 }
 .logotext {
   position: relative;
-  top: -20px;
-  left: 5px;
+  top: 5px;
+  left: 10px;
   font-size: 20px;
-  text-shadow: 0px 2px 5px #235d9b;
-  color: #ffffff;
+  color: #555555;
 }
 * {
   font-family: arial;
+}
+*:focus {
+outline: none;
 }
 .nosee {
   visibility: hidden;
@@ -90,16 +94,27 @@ body {
   position: fixed;
   left: 250px;
   top: calc(100% - 40px);
-  width: calc(100% - 250px);
+  width: calc(100% - 313px);
   height: 40px;
-  background-color: #ffffff;
+  border: 0;
+  border-top: 1px solid #bbbbbb;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 #chatboxbutton {
   position: fixed;
-  left: calc(100% - 45px);
+  left: calc(100% - 63px);
   top: calc(100% - 40px);
-  width: 45px;
   height: 40px;
+  width: 63px;
+  background-color: #dfdfdf;
+  border: 0;
+  border-top: 1px solid #bbbbbb;
+  
+}
+#chatboxbutton:hover {
+  background-color: #cfcfcf;
+  cursor: pointer;
 }
 .smessage {
   padding: 10px;
@@ -117,7 +132,7 @@ body {
   background-color: #ffffff;
   color: black;
   visibility: hidden;
-  box-shadow: 0px 2px 5px #000000;
+  box-shadow: 0px 5px 10px #555555;
 }
 #call {
 position: absolute;
