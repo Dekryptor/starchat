@@ -1,6 +1,8 @@
 <?php
 session_start();
 include 'mysqlinfo.php';
+$is_error = false;
+$error;
 
 if (isset($_GET["trylogin"])) {
 
@@ -23,6 +25,11 @@ $_SESSION["passworddata"] = $_POST["password"];
 $conn->close();
 header("Location: home.php");
 die("Redirecting...");
+}
+
+else {
+	$is_error = true;
+	$error = "Invalid login credentinals";
 }
 
 $conn->close();
@@ -67,6 +74,7 @@ top: 15px;
 <div class="bottom"></div>
 <img src="img/logo.png" width="65" height="66" class="starchat">
 <div class="login">
+<?php if($is_error == true) { echo "<div class='alert alert-danger' role='alert'>$error</div>"; } ?>
 <form action="index.php?trylogin=yes" method="post">
 <div class="form-group">
     <input type="text" class="form-control" id="username" name="username" placeholder="Username">
