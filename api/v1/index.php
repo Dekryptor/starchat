@@ -137,19 +137,19 @@ if (isset($_GET["addcontact"])) {
 
 
 	$current2 = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($_GET["addcontact"])."'");
-	$current2 = $current->fetch_array(MYSQLI_NUM);
+	$current2 = $current2->fetch_array(MYSQLI_NUM);
 
 	$squrl = $conn->real_escape_string($surl);
 	$squsername = $conn->real_escape_string($qusername);
 	$saddcontact = $conn->real_escape_string($_GET["addcontact"]);
 	$svale = $conn->real_escape_string($vale); // Not really needed but ensures extra security
 
-	$current = json_decode($current[0]);
+	$current = json_decode($current[0],true);
 	$amo = count($current);
 	$current[$amo][0] = $squrl;
 	$current[$amo][1] = $vale;
 
-	$current2 = json_decode($current2[0]);
+	$current2 = json_decode($current2[0],true);
 	$amo = count($current2);
 	$current2[$amo][0] = $squsername;
 	$current2[$amo][1] = $vale;
