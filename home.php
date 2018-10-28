@@ -102,7 +102,7 @@ exit();
       xmlHttp.send(null);
     }
     function splitcontacts() {
-      httpGet("api.php?username="+username+"&password="+password+"&getcontacts=yes", function(str) {
+      httpGet("api/v1/?username="+username+"&password="+password+"&getcontacts=yes", function(str) {
         var contacts = str.split('&&&&&'); // we will use for loop to create next variable
         for (var x = 1; x <= contacts.length; x++) {
           document.getElementById("contacts").innerHTML += "<div class='box' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'><img src='img/user.png' class='pfp'><div class='info'>"+contacts[x].split("|||||")[0]+"</div></div>"; // due to a bug, we have to start at one, we will fix this in the future
@@ -121,7 +121,7 @@ exit();
     }
     setInterval(function() {
       if (tmpid != "EMPTY") {
-        httpGet("api.php?username="+username+"&password="+password+"&readmessages="+tmpid, function(resu) {
+        httpGet("api/v1/?username="+username+"&password="+password+"&readmessages="+tmpid, function(resu) {
           var les = resu.replace(/\n/g, "</div><br><div class='smessage'>");
           document.getElementById("messbox").innerHTML = ("<div>"+les+"</div>");
 	  var objDiv = document.getElementById("messbox");
@@ -130,13 +130,13 @@ exit();
       }
     },500)
     function sendmessage() {
-      httpGet("api.php?username="+username+"&password="+password+"&sendmessage="+document.getElementById("chatbox").value+"&sendmessageto="+tmpid, function() {
+      httpGet("api/v1/?username="+username+"&password="+password+"&sendmessage="+document.getElementById("chatbox").value+"&sendmessageto="+tmpid, function() {
         document.getElementById("chatbox").value = "";
       });
     }
     function addacontact() {
       var toadd = prompt("Please Enter Username to Add");
-      httpGet("api.php?username="+username+"&password="+password+"&addcontact="+toadd, function(code) {
+      httpGet("api/v1/?username="+username+"&password="+password+"&addcontact="+toadd, function(code) {
 	      if (code == "\n0") {
 		      location.reload()
 	      }else{
@@ -149,7 +149,7 @@ exit();
 		alert("Please actually select a contact");
 	}else{
       var toadd = prompt("Please Enter Username to Add");
-      httpGet("api.php?username="+username+"&password="+password+"&addtoconvo="+toadd+"&convoid="+tmpid, function(code) {
+      httpGet("api/v1/?username="+username+"&password="+password+"&addtoconvo="+toadd+"&convoid="+tmpid, function(code) {
 	      if (code != "\n0") {
 		      alert("User not found or the conversation you are in does not exist (you should not get the second reason on the web client)");
 	      }
