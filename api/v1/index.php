@@ -154,8 +154,8 @@ if (isset($_GET["addcontact"])) {
 	$current2[$amo][0] = $squsername;
 	$current2[$amo][1] = $vale;
 
-	$current = $conn->real_escape_string(json_encode($current));
-	$current2 = $conn->real_escape_string(json_encode($current2));
+	$current = $conn->real_escape_string(json_encode($current, JSON_PRETTY_PRINT));
+	$current2 = $conn->real_escape_string(json_encode($current2, JSON_PRETTY_PRINT));
 
 	$conn->query("UPDATE accounts SET contacts = '$current' WHERE id = '".$conn->real_escape_string($qid)."'");
 	$conn->query("UPDATE accounts SET contacts = '$current2' WHERE firstname = '$saddcontact'");
