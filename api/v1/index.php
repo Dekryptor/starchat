@@ -1,6 +1,6 @@
 <?php
 
-include 'mysqlinfo.php';
+include '../../mysqlinfo.php';
 // Create connection
 $conn = new mysqli($mysqlurl, $user, $pass, "starchat");
 // Check connection
