@@ -40,7 +40,10 @@ function generateRandomString($length = 40) {
     return $randomString;
 }
 
-$resu = $conn->query("SELECT id FROM accounts WHERE firstname = '".$conn->real_escape_string($_POST["username"])."'");
+$resu = $conn->prepare("SELECT id FROM accounts WHERE firstname = ?");
+$resu->bind_param('s', $_POST["username"]);
+$resu->execute();
+$resu->store_result();
 
 if ($resu->num_rows == 0) {
 echo "Name doesnt exist, thats good, lets keep going<br>";
@@ -48,14 +51,10 @@ echo "Name doesnt exist, thats good, lets keep going<br>";
 die("Name is used, please go back and try a different username");
 }
 
-$sql = "INSERT INTO accounts (firstname, password, anonid, contacts)
-VALUES (\"".$conn->real_escape_string($_POST["username"])."\", \"".$conn->real_escape_string(password_hash($_POST["password"], PASSWORD_BCRYPT))."\", \"".generateRandomString()."\", \"\")";
+$getn = $conn->prepare("INSERT INTO accounts (firstname, password, anonid, contacts) VALUES (?, ?, ?, ?)");
+$getn->bind_param('ssss', $_POST["username"], password_hash($_POST["password"], PASSWORD_BCRYPT), generateRandomString());
+$getn->execute();
 
-if ($conn->query($sql) === TRUE) {
-    echo "New record created successfully";
-} else {
-    echo "Error: <br>" . $conn->error;
-}
 
 $conn->close();
 header("Location: index.php?created=yes");

@@ -8,15 +8,18 @@ if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 }
 
-$doesexist = $conn->query("SELECT id, firstname, password, anonid, contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($_GET["username"])."'");
-$row = $doesexist->fetch_array(MYSQLI_NUM);
-if (password_verify($_GET["password"],$row[2])) {
+$checkg = $conn->prepare("SELECT id, firstname, password, anonid, contacts FROM accounts WHERE firstname = ?");
+$checkg->bind_param('s', $_GET["username"]);
+$checkg->execute();
+$row = $checkg->get_result();
+
+if (password_verify($_GET["password"],$row['password'])) {
 	// logged in, move on
-	$qid = $row[0];
-	$qusername = $row[1];
-	$qpassword = $row[2];
-	$qanonid = $row[3];
-	$qcontact = $row[4];
+	$qid = $row['id'];
+	$qusername = $row['firstname'];
+	$qpassword = $row['password']; // Returns our encrypted password
+	$qanonid = $row['anonid'];
+	$qcontact = $row['contacts'];
 }else{
 	$conn->close();
 	echo "6";
@@ -38,16 +41,6 @@ function generateRandomString($length = 25) {
 }
 
 if (isset($_GET["getcontacts"])) {
-	/*
-	$splitcontact = preg_split("/&&&&&/",$qcontact);
-	$i = 0;
-	foreach ($splitcontact as $schold) {
-		$toconvert = preg_split("/|||||/", $splitcontact[$i]);
-		$splitcontact[$i] = $toconvert;
-		$i++;
-	}
-	 */
-	// $scjson = json_encode($splitcontact, JSON_PRETTY_PRINT);
 	echo $qcontact;
 	exit();
 }
@@ -59,18 +52,15 @@ if (isset($_GET["readmessages"])) {
 		echo "15";
 		exit();
 	}
-	if(preg_match('/\.php$/', $_GET["readmessages"])) {
-		echo "12";
-		exit();
-	}else{
-		// if user bypasses, at least check if .php is disabled, most sensitive info for the most part is in php files
-	}
-
 	$readmessage = $_GET["readmessages"];
-	$chatid = $conn->real_escape_string(htmlspecialchars($readmessage));
-	$messages = $conn->query("SELECT * FROM messages WHERE chatid='$chatid'");
-	if ($messages->num_rows > 0) {
-		while($row = $messages->fetch_assoc()) {
+
+	$checkx = $conn->prepare("SELECT * FROM accounts WHERE chatid = ?");
+	$checkx->bind_param('s', htmlspecialchars($readmessage));
+	$checkx->execute();
+	$checkx->store_result();
+
+	if ($checkx->num_rows > 0) {
+		while($row = $checkx->fetch_assoc()) {
 			if ($row["username"] == "x") {
 				echo "\n".$row["message"];
 			}else{
@@ -79,13 +69,13 @@ if (isset($_GET["readmessages"])) {
 			}
 		}
 	}else{
-		echo "Nothing but crickets, Say Hello";
+		echo "Seems empty in here, say something!";
 	}
 	exit();
 }
 
 if (isset($_GET["sendmessage"])) {
-	// the contents of sendmessage contain the message text that we want to send
+	// TODO Verify chat id exists, security risk
 	if(preg_match('/[a-zA-Z0-9\-]{3,40}$/', $_GET["sendmessageto"])) {
 		// yep, seems safe enough
 	}else{
@@ -93,11 +83,14 @@ if (isset($_GET["sendmessage"])) {
 		exit();
 	}
 
-	$chatid = $conn->real_escape_string(htmlspecialchars($_GET["sendmessageto"]));
-	$qusernamef = $conn->real_escape_string($qusername);
-	$messagef = $conn->real_escape_string(htmlspecialchars($_GET["sendmessage"]));
+	$chatid = htmlspecialchars($_GET["sendmessageto"]);
+	$messagef = htmlspecialchars($_GET["sendmessage"]);
+	$susername = htmlspecialchars($qusername);
 
-	$conn->query("INSERT INTO messages (chatid, username, message) VALUES ('$chatid', '$qusernamef', '$messagef')"); // MYSQL generates timestamps for us
+	$getn = $conn->prepare("INSERT INTO messages (chatid, username, message) VALUES (?, ?, ?)");
+	$getn->bind_param('sss', $chatid, $susername, $messagef);
+	$getn->execute();
+
 	echo "0";
 	exit();
 }
@@ -106,25 +99,26 @@ if (isset($_GET["addcontact"])) {
 
 	$surl = $_GET["addcontact"];
 
-	$quickcheck = $conn->query("SELECT firstname, id FROM accounts WHERE firstname = '".$conn->real_escape_string($_GET["addcontact"])."'");
+	$checkf = $conn->prepare("SELECT firstname, id FROM accounts WHERE firstname = ?");
+	$checkf->bind_param('s', $_GET["addcontact"]);
+	$checkf->execute();
+	$quickcheck = $checkf->get_result();
 
-	$somedata = $quickcheck->fetch_array(MYSQLI_NUM);
-
-	if (count($somedata)>0) {
+	if (count($quickcheck)>0) {
 		// move on to next code
 	}else{
 		echo "1";
 		exit();
 	}
 
-	if(preg_match('/[a-zA-Z0-9]/', $_GET["username"])) {
+	if(preg_match('/[a-zA-Z0-9]/', $_GET["addcontact"])) {
 	}else{
 		$conn->close();
 		echo "2";
 		exit();
 	}
 	$vale = generateRandomString();
-	$messagesa = $conn->query("SELECT * FROM accounts");
+	$messagesa = $conn->query("SELECT * FROM accounts"); // For something as simple as this, we should be fine to use query
 	if ($messagesa->num_rows > 0) {
 		while($row = $messagesa->fetch_assoc()) {
 			if (preg_match("/$vale/", $row["contacts"])) {
@@ -132,38 +126,39 @@ if (isset($_GET["addcontact"])) {
 			}
 		}
 	}
-	$current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($qid)."'");
-	$current = $current->fetch_array(MYSQLI_NUM);
+	$checka = $conn->prepare("SELECT contacts FROM accounts WHERE id = ?");
+	$checka->bind_param('s', $qid);
+	$checka->execute();
+	$current = $checka->get_result();
 
 
-	$current2 = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($_GET["addcontact"])."'");
-	$current2 = $current2->fetch_array(MYSQLI_NUM);
+	$checkc = $conn->prepare("SELECT contacts FROM accounts WHERE id = ?");
+	$checkc->bind_param('s', $_GET["addcontact"]);
+	$checkc->execute();
+	$current2 = $checka->get_result();
 
-	$squrl = $conn->real_escape_string($surl);
-	$squsername = $conn->real_escape_string($qusername);
-	$saddcontact = $conn->real_escape_string($_GET["addcontact"]);
-	$svale = $conn->real_escape_string($vale); // Not really needed but ensures extra security
+	$saddcontact = htmlspecialchars($_GET["addcontact"]);
 
-	$current = json_decode($current[0],true);
+	$current = json_decode($current['contacts'],true);
 	$amo = count($current);
-	$current[$amo][0] = $squrl;
+	$current[$amo][0] = $surl;
 	$current[$amo][1] = $vale;
 
-	$current2 = json_decode($current2[0],true);
+	$current2 = json_decode($current2['contacts'],true);
 	$amo = count($current2);
-	$current2[$amo][0] = $squsername;
+	$current2[$amo][0] = $qusername;
 	$current2[$amo][1] = $vale;
 
 	$current = $conn->real_escape_string(json_encode($current, JSON_PRETTY_PRINT));
 	$current2 = $conn->real_escape_string(json_encode($current2, JSON_PRETTY_PRINT));
+	$cu1 = $conn->prepare("UPDATE accounts SET contacts = ? WHERE id = ?");
+	$cu1->bind_param('ss', $current, $qid);
+	$cu1->execute();
 
-	$conn->query("UPDATE accounts SET contacts = '$current' WHERE id = '".$conn->real_escape_string($qid)."'");
-	$conn->query("UPDATE accounts SET contacts = '$current2' WHERE firstname = '$saddcontact'");
+	$cu2 = $conn->prepare("UPDATE accounts SET contacts = ? WHERE firstname = ?");
+	$cu2->bind_param('ss', $current2, $saddcontact);
+	$cu2->execute();
 
-/*
-	$conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($surl)."|||||".$vale."' WHERE id = '".$conn->real_escape_string($qid)."'");
-	$conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($qusername)."|||||".$vale."' WHERE firstname = '".$conn->real_escape_string($_GET["addcontact"])."'");
- */
 	$conn->close();
 	echo "0";
 	exit();
