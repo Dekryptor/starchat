@@ -11,8 +11,12 @@ if ($conn->connect_error) {
 $checkg = $conn->prepare("SELECT id, firstname, password, anonid, contacts FROM accounts WHERE firstname = ?");
 $checkg->bind_param('s', $_GET["username"]);
 $checkg->execute();
-$row = $checkg->get_result();
+$resa = $checkg->get_result();
+$numrow = $resa->num_rows;
 
+
+if ($numrow >= 0) {
+while($row = $resa->fetch_assoc()) {
 if (password_verify($_GET["password"],$row['password'])) {
 	// logged in, move on
 	$qid = $row['id'];
@@ -24,6 +28,8 @@ if (password_verify($_GET["password"],$row['password'])) {
 	$conn->close();
 	echo "6";
 	exit();
+}
+}
 }
 
 // TODO move everything, even errors, to json
@@ -54,15 +60,15 @@ if (isset($_GET["readmessages"])) {
 	}
 	$readmessage = $_GET["readmessages"];
 
-	$checkx = $conn->prepare("SELECT * FROM accounts WHERE chatid = ?");
+	$checkx = $conn->prepare("SELECT * FROM messages WHERE chatid = ?");
 	$checkx->bind_param('s', htmlspecialchars($readmessage));
 	$checkx->execute();
-	$checkx->store_result();
+	$checkx->get_result();
 
 	if ($checkx->num_rows > 0) {
 		while($row = $checkx->fetch_assoc()) {
 			if ($row["username"] == "x") {
-				echo "\n".$row["message"];
+				echo "\n".$row["message"]; // TODO convert to JSON
 			}else{
 				echo "\n[".$row["dt"]."] ".$row["username"].": ".$row["message"];
 
