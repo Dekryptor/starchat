@@ -5,6 +5,7 @@ php:
 
 services:
   - mysql
+  - apache
   
 mysql:
   username: root
@@ -13,12 +14,11 @@ before_install:
   - sudo apt-get update
 
 install:
-  - sudo apt-get install -y mysql php apache curl
+  - sudo apt-get install -y curl
 
 before_script:
-  - cd 07typing/starchat
   - php -S localhost:8080 &
   - ls
 
 script:
-  - curl --data "username=root&password=&jitsi=true" https://localhost:8080/setup.php
+  - curl --data "username=root&password=&jitsi=true" http://localhost:8080/setup.php
