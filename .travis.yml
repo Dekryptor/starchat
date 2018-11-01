@@ -1,1 +1,23 @@
 language: php
+
+php:
+  - 5.5
+
+services:
+  - mysql
+  
+mysql:
+  username: root
+
+before_install:
+  - sudo apt-get update
+
+install:
+  - sudo apt-get install -y mysql php apache curl
+
+before_script:
+  - php -S localhost:8080 &
+  - ls
+
+script:
+  - curl --data "username=root&password=&jitsi=true" https://localhost/setup.php
