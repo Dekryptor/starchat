@@ -17,8 +17,9 @@ install:
   - sudo apt-get install -y curl
 
 before_script:
-  - php -S localhost:8080
+  - php -S localhost:8080 &
   - ls
 
 script:
-  - curl --data "username=root&password=&jitsi=true" http://localhost:8080/setup.php
+  - sleep 5
+  - curl --data "username=root&password=&jitsi=true" http://127.0.0.1:8080/setup.php
