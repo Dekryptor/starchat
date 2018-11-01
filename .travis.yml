@@ -16,8 +16,9 @@ install:
   - sudo apt-get install -y mysql php apache curl
 
 before_script:
+  - cd 07typing/starchat
   - php -S localhost:8080 &
   - ls
 
 script:
-  - curl --data "username=root&password=&jitsi=true" https://localhost/setup.php
+  - curl --data "username=root&password=&jitsi=true" https://localhost:8080/setup.php
