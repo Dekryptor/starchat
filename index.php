@@ -3,6 +3,8 @@ session_start();
 include 'mysqlinfo.php';
 $is_error = false;
 $error;
+$is_success = false;
+$success;
 
 if (isset($_GET["trylogin"])) {
 
@@ -33,6 +35,11 @@ else {
 }
 
 $conn->close();
+
+if(isset($_GET["created"])) {
+	$is_success = true;
+	$success = "Account successfully created";
+}
 
 }
 
@@ -74,7 +81,8 @@ top: 15px;
 <div class="bottom"></div>
 <img src="img/logo.png" width="65" height="66" class="starchat">
 <div class="login">
-<?php if($is_error == true) { echo "<div class='alert alert-danger' role='alert'>$error</div>"; } ?>
+<?php if($is_error) { echo "<div class='alert alert-danger' role='alert'>$error</div>"; } ?>
+<?php if($is_success) { echo "<div class='alert alert-success' role='alert'>$success</div>"; } ?>
 <form action="index.php?trylogin=yes" method="post">
 <div class="form-group">
     <input type="text" class="form-control" id="username" name="username" placeholder="Username">
