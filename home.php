@@ -29,6 +29,9 @@ exit();
 
 <!DOCTYPE html>
 <html lang="en">
+	
+<!-- Starchat Web Client v0.7 -->
+	
 <head>
   <title>Starchat</title>
   <link rel="stylesheet" type="text/css" href="stylesheet.css">
@@ -58,7 +61,7 @@ exit();
 	<a href="#" onclick="closesettings()">Close Options</a>
 	<h1>Options</h1>
 	<p><input type="button" value="Add Contact" onclick="addacontact()" class="btn btn-success"><!-- TODO change this dialog to own function instead of alert --></p>
-	<p><input type="button" value="Add Contact to active conversation" onclick="addbcontact()" class="btn btn-success"> (group chats)</p>
+	<p><input type="button" value="Add Contact to active conversation" disabled="disabled" onclick="addbcontact()" class="btn btn-success"> (group chats) (Currently Broken)</p>
   <p><a href="logout.php" class="btn btn-danger">Logout</a></p>
   </div>
   <script type="text/javascript">
@@ -103,9 +106,10 @@ exit();
     }
     function splitcontacts() {
       httpGet("api/v1/?username="+username+"&password="+password+"&getcontacts=yes", function(str) {
-        var contacts = str.split('&&&&&'); // we will use for loop to create next variable
-        for (var x = 1; x <= contacts.length; x++) {
-          document.getElementById("contacts").innerHTML += "<div class='box' onclick='switchcontact(\""+contacts[x].split("|||||")[1]+"\")'><img src='img/user.png' class='pfp'><div class='info'>"+contacts[x].split("|||||")[0]+"</div></div>"; // due to a bug, we have to start at one, we will fix this in the future
+		  
+        var contacts = JSON.parse(str);
+        for (var x = 0; x <= contacts.length; x++) {
+          document.getElementById("contacts").innerHTML += "<div class='box' onclick='switchcontact(\""+contacts[x][1]+"\")'><img src='img/user.png' class='pfp'><div class='info'>"+contacts[x][0]+"</div></div>";
         }
       });
     }
@@ -122,10 +126,15 @@ exit();
     setInterval(function() {
       if (tmpid != "EMPTY") {
         httpGet("api/v1/?username="+username+"&password="+password+"&readmessages="+tmpid, function(resu) {
-          var les = resu.replace(/\n/g, "</div><br><div class='smessage'>");
-          document.getElementById("messbox").innerHTML = ("<div>"+les+"</div>");
-	  var objDiv = document.getElementById("messbox");
-	  objDiv.scrollTop = objDiv.scrollHeight;
+			var les = JSON.parse(resu);
+			document.getElementById("messbox").innerHTML = "";
+			for (var x = 0; x < les.length; x++) {
+				document.getElementById("messbox").innerHTML += "<div class='smessage'>"+les[x].username+": "+les[x].message+"</div>"; // In 0.8 we will include datetime float datetime to right
+			}
+			
+			// scroll to bottom
+			var objDiv = document.getElementById("messbox");
+			objDiv.scrollTop = objDiv.scrollHeight;
         });
       }
     },500)

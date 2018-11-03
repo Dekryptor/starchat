@@ -43,7 +43,7 @@ function generateRandomString($length = 40) {
 $resu = $conn->prepare("SELECT id FROM accounts WHERE firstname = ?");
 $resu->bind_param('s', $_POST["username"]);
 $resu->execute();
-$resu->store_result();
+$resu->get_result();
 
 if ($resu->num_rows == 0) {
 echo "Name doesnt exist, thats good, lets keep going<br>";

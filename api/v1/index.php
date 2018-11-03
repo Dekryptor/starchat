@@ -1,5 +1,7 @@
 <?php
 
+// Starchat API v0.7
+
 include '../../mysqlinfo.php';
 // Create connection
 $conn = new mysqli($mysqlurl, $user, $pass, "starchat");
@@ -32,7 +34,7 @@ if (password_verify($_GET["password"],$row['password'])) {
 }
 }
 
-// TODO move everything, even errors, to json
+// TODO move everything, even errors, to json, 0.8
 header('Content-type: application/json');
 
 // we need the function below to store conversation id
@@ -64,29 +66,55 @@ if (isset($_GET["readmessages"])) {
 	$checkx->bind_param('s', htmlspecialchars($readmessage));
 	$checkx->execute();
 	$checkx->get_result();
+	
+	$mbuffer = NULL;
 
 	if ($checkx->num_rows > 0) {
 		while($row = $checkx->fetch_assoc()) {
 			if ($row["username"] == "x") {
-				echo "\n".$row["message"]; // TODO convert to JSON
+				$mbuffer[count($mbuffer)]["username"] = "0"; // No username to show, system message
+				$mbuffer[count($mbuffer)]["datetime"] = $row["datetime"];
+				$mbuffer[count($mbuffer)]["message"] = $row["message"];
 			}else{
-				echo "\n[".$row["dt"]."] ".$row["username"].": ".$row["message"];
-
+				$mbuffer[count($mbuffer)]["username"] = $row["username"];
+				$mbuffer[count($mbuffer)]["datetime"] = $row["datetime"];
+				$mbuffer[count($mbuffer)]["message"] = $row["message"];
 			}
+			echo json_encode($mbuffer, JSON_PRETTY_PRINT);
 		}
 	}else{
-		echo "Seems empty in here, say something!";
+		$mbuffer[count($mbuffer)]["username"] = "0";
+		$mbuffer[count($mbuffer)]["datetime"] = "You just started a conversation! Say hello.";
 	}
 	exit();
 }
 
 if (isset($_GET["sendmessage"])) {
-	// TODO Verify chat id exists, security risk
 	if(preg_match('/[a-zA-Z0-9\-]{3,40}$/', $_GET["sendmessageto"])) {
 		// yep, seems safe enough
 	}else{
 		echo "8";
 		exit();
+	}
+	
+	$checka = $conn->prepare("SELECT contacts FROM accounts WHERE firstname = ?");
+	$checka->bind_param('s', $qusername);
+	$checka->execute();
+	$cheeka = $checka->get_result();
+	
+	$confirm = 0;
+	$vale = preg_replace("/^[a-zA-Z0-9\-]/","",$_GET["sendmessageto"]);
+	
+	if ($cheeka->num_rows > 0) {
+		while($row = $cheeka->fetch_assoc()) {
+			if (preg_match("/$vale/", $row["contacts"])) {
+				$confirm = 1;
+			}
+		}
+	}
+	
+	if ($confirm == 0) {
+		die("Error: Chat ID is unused therefor not yours");
 	}
 
 	$chatid = htmlspecialchars($_GET["sendmessageto"]);
@@ -225,6 +253,6 @@ if (isset($_GET["addtoconvo"])) {
 }
  */
 
-// TODO rewrite the addtoconvo function
+// TODO version 0.8
 
 ?>
