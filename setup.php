@@ -51,7 +51,7 @@ $conns = new mysqli($location, $username, $password, "starchat");
 
 $sql = "CREATE TABLE accounts (
 id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-firstname VARCHAR(70) NOT NULL,
+username VARCHAR(70) NOT NULL,
 password VARCHAR(100) NOT NULL,
 anonid VARCHAR(70) NOT NULL,
 contacts VARCHAR(2100) NOT NULL

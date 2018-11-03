@@ -15,7 +15,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$doesexist = $conn->query("SELECT id, firstname, password, anonid, contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($_POST["username"])."'");
+$doesexist = $conn->query("SELECT id, username, password, anonid, contacts FROM accounts WHERE username = '".$conn->real_escape_string($_POST["username"])."'");
 
 $row = $doesexist->fetch_array(MYSQLI_NUM);
 
