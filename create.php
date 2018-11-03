@@ -40,7 +40,7 @@ function generateRandomString($length = 40) {
     return $randomString;
 }
 
-$resu = $conn->prepare("SELECT id FROM accounts WHERE firstname = ?");
+$resu = $conn->prepare("SELECT id FROM accounts WHERE username = ?");
 $resu->bind_param('s', $_POST["username"]);
 $resu->execute();
 $resu->get_result();
@@ -51,7 +51,7 @@ echo "Name doesnt exist, thats good, lets keep going<br>";
 die("Name is used, please go back and try a different username");
 }
 
-$getn = $conn->prepare("INSERT INTO accounts (firstname, password, anonid, contacts) VALUES (?, ?, ?, \"\")");
+$getn = $conn->prepare("INSERT INTO accounts (username, password, anonid, contacts) VALUES (?, ?, ?, \"\")");
 $getn->bind_param('sss', $_POST["username"], password_hash($_POST["password"], PASSWORD_BCRYPT), generateRandomString());
 $getn->execute();
 

@@ -10,7 +10,7 @@ if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 }
 
-$checkg = $conn->prepare("SELECT id, firstname, password, anonid, contacts FROM accounts WHERE firstname = ?");
+$checkg = $conn->prepare("SELECT id, username, password, anonid, contacts FROM accounts WHERE username = ?");
 $checkg->bind_param('s', $_GET["username"]);
 $checkg->execute();
 $resa = $checkg->get_result();
@@ -22,7 +22,7 @@ while($row = $resa->fetch_assoc()) {
 if (password_verify($_GET["password"],$row['password'])) {
 	// logged in, move on
 	$qid = $row['id'];
-	$qusername = $row['firstname'];
+	$qusername = $row['username'];
 	$qpassword = $row['password']; // Returns our encrypted password
 	$qanonid = $row['anonid'];
 	$qcontact = $row['contacts'];
@@ -97,7 +97,7 @@ if (isset($_GET["sendmessage"])) {
 		exit();
 	}
 	
-	$checka = $conn->prepare("SELECT contacts FROM accounts WHERE firstname = ?");
+	$checka = $conn->prepare("SELECT contacts FROM accounts WHERE username = ?");
 	$checka->bind_param('s', $qusername);
 	$checka->execute();
 	$cheeka = $checka->get_result();
@@ -133,7 +133,7 @@ if (isset($_GET["addcontact"])) {
 
 	$surl = $_GET["addcontact"];
 
-	$checkf = $conn->prepare("SELECT firstname, id FROM accounts WHERE firstname = ?");
+	$checkf = $conn->prepare("SELECT username, id FROM accounts WHERE username = ?");
 	$checkf->bind_param('s', $_GET["addcontact"]);
 	$checkf->execute();
 	$quickcheck = $checkf->get_result();
@@ -189,7 +189,7 @@ if (isset($_GET["addcontact"])) {
 	$cu1->bind_param('ss', $current, $qid);
 	$cu1->execute();
 
-	$cu2 = $conn->prepare("UPDATE accounts SET contacts = ? WHERE firstname = ?");
+	$cu2 = $conn->prepare("UPDATE accounts SET contacts = ? WHERE username = ?");
 	$cu2->bind_param('ss', $current2, $saddcontact);
 	$cu2->execute();
 
@@ -204,7 +204,7 @@ if (isset($_GET["addtoconvo"])) {
 
 	$surl = $_GET["addtoconvo"];
 
-	$quickcheck = $conn->query("SELECT firstname, id FROM accounts WHERE firstname = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
+	$quickcheck = $conn->query("SELECT username, id FROM accounts WHERE username = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
 
 	$somedata = $quickcheck->fetch_array(MYSQLI_NUM);
 
@@ -227,8 +227,8 @@ if (isset($_GET["addtoconvo"])) {
 	// Addtoconvo is the person we want to add, usual username
 	// convoid is the conversation id, we need to verify it exists in the current users contact so we cant just add random people to random conversations
 
-	$contactlist = $conn->query("SELECT contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
-	$contactlista = $conn->query("SELECT contacts FROM accounts WHERE firstname = '".$conn->real_escape_string($qusername)."'");
+	$contactlist = $conn->query("SELECT contacts FROM accounts WHERE username = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
+	$contactlista = $conn->query("SELECT contacts FROM accounts WHERE username = '".$conn->real_escape_string($qusername)."'");
 
 	$contactlist = $contactlist->fetch_array(MYSQLI_NUM);
 	$contactlista = $contactlist->fetch_array(MYSQLI_NUM);
@@ -240,7 +240,7 @@ if (isset($_GET["addtoconvo"])) {
 			$current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
 			$current = $current->fetch_array(MYSQLI_NUM);
 			$conn->query("INSERT INTO messages (chatid, username, message) VALUES ('".$conn->real_escape_string($_GET["convoid"])."', 'x', '".$conn->real_escape_string($_GET["addtoconvo"])." has been added to this conversation')"); // MYSQL generates timestamps for us
-			$conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($qusername." GC")."|||||".$conn->real_escape_string($_GET["convoid"])."' WHERE firstname = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
+			$conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($qusername." GC")."|||||".$conn->real_escape_string($_GET["convoid"])."' WHERE username = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
 		}else{
 			die("32");
 		}
