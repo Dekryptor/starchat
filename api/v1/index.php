@@ -1,6 +1,6 @@
 <?php
 
-// Starchat API v0.7
+// Starchat API v0.7.1
 
 include '../../mysqlinfo.php';
 // Create connection
@@ -78,8 +78,9 @@ if (isset($_GET["readmessages"])) {
 			$mbuffer[$y]["datetime"] = $row["datetime"];
 			$mbuffer[$y]["message"] = $row["message"];
 		
-			echo json_encode($mbuffer, JSON_PRETTY_PRINT);
+			
 		}
+		echo json_encode($mbuffer, JSON_PRETTY_PRINT);
 	}
 	exit();
 }
@@ -191,9 +192,6 @@ if (isset($_GET["addcontact"])) {
 
 	$cu2 = $conn->prepare("UPDATE accounts SET contacts = ? WHERE username = ?");
 	$cu2->bind_param('ss', $currentb, $saddcontact);
-
-	$cu2 = $conn->prepare("UPDATE accounts SET contacts = ? WHERE username = ?");
-	$cu2->bind_param('ss', $current2, $saddcontact);
 
 	$cu2->execute();
 
