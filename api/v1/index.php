@@ -188,13 +188,13 @@ if (isset($_GET["addcontact"])) {
 	$cu1->bind_param('ss', $currenta, $qid);
 	$cu1->execute();
 
-<<<<<<< HEAD
+
 	$cu2 = $conn->prepare("UPDATE accounts SET contacts = ? WHERE username = ?");
 	$cu2->bind_param('ss', $currentb, $saddcontact);
-=======
+
 	$cu2 = $conn->prepare("UPDATE accounts SET contacts = ? WHERE username = ?");
 	$cu2->bind_param('ss', $current2, $saddcontact);
->>>>>>> 578cfb35343bbc3163920964b367bf049b9391a7
+
 	$cu2->execute();
 
 	$conn->close();
