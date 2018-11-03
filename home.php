@@ -50,7 +50,7 @@ exit();
   </div>
 
   <div id="topbar">
-  <img src="img/logo.png" class="logo" onclick="opensettings()"> <!-- temporary button. please remove in futures --> <span class="logotext">Starchat</span>
+  <img src="img/hammenu.png" class="logo" onclick="opensettings()"> <span class="logotext">Starchat</span>
   </div>
 
   <div id="callform">

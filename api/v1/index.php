@@ -5,7 +5,7 @@
 include '../../mysqlinfo.php';
 // Create connection
 $conn = new mysqli($mysqlurl, $user, $pass, "starchat");
-// Check connection
+// Check if connection works
 if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 }
@@ -60,31 +60,26 @@ if (isset($_GET["readmessages"])) {
 		echo "15";
 		exit();
 	}
-	$readmessage = $_GET["readmessages"];
+	$readmessage = htmlspecialchars($_GET["readmessages"]);
 
 	$checkx = $conn->prepare("SELECT * FROM messages WHERE chatid = ?");
-	$checkx->bind_param('s', htmlspecialchars($readmessage));
+	$checkx->bind_param('s', $readmessage);
 	$checkx->execute();
-	$checkx->get_result();
+	$keep = $checkx->get_result();
 	
-	$mbuffer = NULL;
+	$mbuffer[0]["username"] = "!SYSTEM";
+	$mbuffer[0]["datetime"] = "None";
+	$mbuffer[0]["message"] = "Conversation Created.";
 
-	if ($checkx->num_rows > 0) {
-		while($row = $checkx->fetch_assoc()) {
-			if ($row["username"] == "x") {
-				$mbuffer[count($mbuffer)]["username"] = "0"; // No username to show, system message
-				$mbuffer[count($mbuffer)]["datetime"] = $row["datetime"];
-				$mbuffer[count($mbuffer)]["message"] = $row["message"];
-			}else{
-				$mbuffer[count($mbuffer)]["username"] = $row["username"];
-				$mbuffer[count($mbuffer)]["datetime"] = $row["datetime"];
-				$mbuffer[count($mbuffer)]["message"] = $row["message"];
-			}
+	if ($keep->num_rows > 0) {
+		while($row = $keep->fetch_assoc()) {
+			$y = count($mbuffer);
+			$mbuffer[$y]["username"] = $row["username"];
+			$mbuffer[$y]["datetime"] = $row["datetime"];
+			$mbuffer[$y]["message"] = $row["message"];
+		
 			echo json_encode($mbuffer, JSON_PRETTY_PRINT);
 		}
-	}else{
-		$mbuffer[count($mbuffer)]["username"] = "0";
-		$mbuffer[count($mbuffer)]["datetime"] = "You just started a conversation! Say hello.";
 	}
 	exit();
 }
@@ -138,7 +133,7 @@ if (isset($_GET["addcontact"])) {
 	$checkf->execute();
 	$quickcheck = $checkf->get_result();
 
-	if (count($quickcheck)>0) {
+	if ($quickcheck->num_rows>0) {
 		// move on to next code
 	}else{
 		echo "1";
@@ -166,31 +161,40 @@ if (isset($_GET["addcontact"])) {
 	$current = $checka->get_result();
 
 
-	$checkc = $conn->prepare("SELECT contacts FROM accounts WHERE id = ?");
+	$checkc = $conn->prepare("SELECT contacts FROM accounts WHERE username = ?");
 	$checkc->bind_param('s', $_GET["addcontact"]);
 	$checkc->execute();
-	$current2 = $checka->get_result();
+	$current2 = $checkc->get_result();
 
 	$saddcontact = htmlspecialchars($_GET["addcontact"]);
 
-	$current = json_decode($current['contacts'],true);
-	$amo = count($current);
-	$current[$amo][0] = $surl;
-	$current[$amo][1] = $vale;
+	while ($row = $current->fetch_array(MYSQLI_NUM)) {
+	$currenta = json_decode($row[0],true);
+	$amo = count($currenta);
+	$currenta[$amo][0] = $surl;
+	$currenta[$amo][1] = $vale;
+	}
 
-	$current2 = json_decode($current2['contacts'],true);
-	$amo = count($current2);
-	$current2[$amo][0] = $qusername;
-	$current2[$amo][1] = $vale;
+	while ($row = $current2->fetch_array(MYSQLI_NUM)) {
+	$currentb = json_decode($row[0],true);
+	$amo = count($currentb);
+	$currentb[$amo][0] = $qusername;
+	$currentb[$amo][1] = $vale;
+	}
 
-	$current = $conn->real_escape_string(json_encode($current, JSON_PRETTY_PRINT));
-	$current2 = $conn->real_escape_string(json_encode($current2, JSON_PRETTY_PRINT));
+	$currenta = json_encode($currenta, JSON_PRETTY_PRINT);
+	$currentb = json_encode($currentb, JSON_PRETTY_PRINT);
 	$cu1 = $conn->prepare("UPDATE accounts SET contacts = ? WHERE id = ?");
-	$cu1->bind_param('ss', $current, $qid);
+	$cu1->bind_param('ss', $currenta, $qid);
 	$cu1->execute();
 
+<<<<<<< HEAD
+	$cu2 = $conn->prepare("UPDATE accounts SET contacts = ? WHERE username = ?");
+	$cu2->bind_param('ss', $currentb, $saddcontact);
+=======
 	$cu2 = $conn->prepare("UPDATE accounts SET contacts = ? WHERE username = ?");
 	$cu2->bind_param('ss', $current2, $saddcontact);
+>>>>>>> 578cfb35343bbc3163920964b367bf049b9391a7
 	$cu2->execute();
 
 	$conn->close();
