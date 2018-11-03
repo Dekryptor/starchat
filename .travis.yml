@@ -6,6 +6,7 @@ php:
 services:
   - mysql
   - apache
+  - python
   
 mysql:
   username: root
@@ -22,4 +23,14 @@ before_script:
 
 script:
   - sleep 5
-  - curl --data "username=root&password=&jitsi=true" http://127.0.0.1:8080/setup.php
+  - echo -e "========== RUNNING SETUP ==========\n"
+  - curl --data "username=root&password=&jitsi=true&location=localhost" "http://127.0.0.1:8080/setup.php"
+  - echo -e "\n========== CREATING USERS ==========\n"
+  - curl --data "username=user1&password=user1" "http://127.0.0.1:8080/create.php?trycreate=yes"
+  - curl --data "username=user2&password=user2" "http://127.0.0.1:8080/create.php?trycreate=yes"
+  - curl --data "username=user3&password=user3" "http://127.0.0.1:8080/create.php?trycreate=yes"
+  - curl --data "username=user4&password=user4" "http://127.0.0.1:8080/create.php?trycreate=yes"
+  - echo -e "\n========== ADDING CONTACT AND RETRIEVING ID ==========\n"
+  - curl "http://127.0.0.1:8080/api/v1/?username=user1&password=user1&addcontact=user2"
+  - cmd=$(curl "http://127.0.0.1:8080/api/v1/?username=user1&password=user1&getcontacts=true" | python3 -c "import sys, json; print(json.load(sys.stdin)[0][0])")
+  - echo $cmd
