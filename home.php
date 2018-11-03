@@ -30,7 +30,7 @@ exit();
 <!DOCTYPE html>
 <html lang="en">
 	
-<!-- Starchat Web Client v0.7 -->
+<!-- Starchat Web Client v0.7.1 -->
 	
 <head>
   <title>Starchat</title>
