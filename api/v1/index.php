@@ -1,6 +1,6 @@
 <?php
 
-// Starchat API v0.7.1
+// Starchat API v0.7.2
 
 include '../../mysqlinfo.php';
 // Create connection

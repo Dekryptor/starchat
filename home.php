@@ -30,11 +30,11 @@ exit();
 <!DOCTYPE html>
 <html lang="en">
 	
-<!-- Starchat Web Client v0.7.1 -->
+<!-- Starchat Web Client v0.7.2 -->
 	
 <head>
   <title>Starchat</title>
-  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+  <link id="stylesheeta" rel="stylesheet" type="text/css" href="themes/default.css">
 
 <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -60,8 +60,15 @@ exit();
   <div id="settings">
 	<a href="#" onclick="closesettings()">Close Options</a>
 	<h1>Options</h1>
-	<p><input type="button" value="Add Contact" onclick="addacontact()" class="btn btn-success"><!-- TODO change this dialog to own function instead of alert --></p>
-	<p><input type="button" value="Add Contact to active conversation" disabled="disabled" onclick="addbcontact()" class="btn btn-success"> (group chats) (Currently Broken)</p>
+	<p><select id="theme" onchange="themeChange();">
+    <option value="default">Default</option> 
+    <option value="night-blue">Night Blue</option>
+    <option value="hacker-green">Hacker Green</option>
+    <option value="sky-blue">Sky Blue</option>
+    <option value="material-pink">Material Pink</option>
+  </select></p>
+	<p><input type="button" value="Add Contact" onclick="addacontact()" class="btn btn-light"><!-- TODO change this dialog to own function instead of alert --></p>
+	<p><input type="button" value="Add Contact to active conversation" disabled="disabled" onclick="addbcontact()" class="btn btn-light"> (group chats) (Currently Broken)</p>
   <p><a href="logout.php" class="btn btn-danger">Logout</a></p>
   </div>
   <script type="text/javascript">
@@ -73,6 +80,38 @@ exit();
     function opensettings() {
 	document.getElementById("settings").style.visibility = "visible";
     }
+    function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+	function getCookie(cname) {
+		var name = cname + "=";
+		var decodedCookie = decodeURIComponent(document.cookie);
+		var ca = decodedCookie.split(';');
+		for(var i = 0; i <ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+	function swapSheet(sheet) {
+		document.getElementById("stylesheeta").setAttribute("href", sheet);
+	}
+	if (getCookie("starchattheme") != "") {
+		swapSheet(getCookie("starchattheme"));
+	}
+	  function themeChange() {
+  	setCookie("starchattheme", "themes/"+document.getElementById("theme").value+".css", 365);
+  	swapSheet(getCookie("starchattheme"));
+  }
+  
     function startcall() {
 	    if (calling == "yes") {
 		endcall();
@@ -129,7 +168,7 @@ exit();
 			var les = JSON.parse(resu);
 			document.getElementById("messbox").innerHTML = "";
 			for (var x = 0; x < les.length; x++) {
-				document.getElementById("messbox").innerHTML += "<div class='smessage'>"+les[x].username+": "+les[x].message+"</div>"; // In 0.8 we will include datetime float datetime to right
+				document.getElementById("messbox").innerHTML += "<div class='smessage'><div class='susername'>"+les[x].username+"</div> "+les[x].message+"</div>"; // In 0.8 we will include datetime float datetime to right
 			}
 			
 			// scroll to bottom

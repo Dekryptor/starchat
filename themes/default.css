@@ -87,7 +87,7 @@ outline: none;
   top: 60px;
   width: calc(100% - 250px);
   height: calc(100% - 100px);
-  overflow: scroll;
+  overflow: auto;
   word-wrap: break-word;
 }
 #chatbox {
@@ -100,6 +100,7 @@ outline: none;
   border-top: 1px solid #bbbbbb;
   padding-left: 10px;
   padding-right: 10px;
+  background-color: #ffffff;
 }
 #chatboxbutton {
   position: fixed;
@@ -110,6 +111,7 @@ outline: none;
   background-color: #dfdfdf;
   border: 0;
   border-top: 1px solid #bbbbbb;
+  color: #000000;
 }
 #chatboxbutton:hover {
   background-color: #cfcfcf;
@@ -120,6 +122,8 @@ outline: none;
   padding-bottom: 10px;
   font-size: 16px;
   border-top: 1px solid #dadada;
+  margin-left: 5px;
+  margin-right: 5px
 }
 #settings {
   position: fixed;
@@ -132,6 +136,12 @@ outline: none;
   color: black;
   visibility: hidden;
   box-shadow: 0px 5px 10px #555555;
+}
+.susername {
+background-color: #dadada;
+padding: 3px;
+border-radius: 5px;
+margin-right: 5px;
 }
 #call {
 position: absolute;
