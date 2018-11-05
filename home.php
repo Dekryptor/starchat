@@ -168,7 +168,7 @@ exit();
 			var les = JSON.parse(resu);
 			document.getElementById("messbox").innerHTML = "";
 			for (var x = 0; x < les.length; x++) {
-				document.getElementById("messbox").innerHTML += "<div class='smessage'><div class='susername'>"+les[x].username+"</div> "+les[x].message+"</div>"; // In 0.8 we will include datetime float datetime to right
+				document.getElementById("messbox").innerHTML += "<div class='smessage'><span class='susername'>"+les[x].username+"</span> "+les[x].message+"</div>"; // In 0.8 we will include datetime float datetime to right
 			}
 			
 			// scroll to bottom
