@@ -91,7 +91,7 @@ outline: none;
   overflow: auto;
   word-wrap: break-word;
   border-top: 1px solid #002200;
-  
+  background-color: #000000;
 }
 #chatbox {
   position: fixed;
