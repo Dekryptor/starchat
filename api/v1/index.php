@@ -3,8 +3,6 @@
 // Starchat API v0.7.2
 
 include '../../mysqlinfo.php';
-// Create connection
-$conn = new mysqli($mysqlurl, $user, $pass, "starchat");
 // Check if connection works
 if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);

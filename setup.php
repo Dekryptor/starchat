@@ -23,6 +23,7 @@ $info = "
 \$pass = \"$password\";
 \$mysqlurl = \"$location\";
 \$jitsi = \"true\";
+\$conn = new mysqli(\$mysqlurl, \$user, \$pass, 'starchat');
 ?>
 ";
 }else{
@@ -33,6 +34,7 @@ $info = "
 \$pass = \"$password\";
 \$mysqlurl = \"$location\";
 \$jitsi = \"false\";
+\$conn = new mysqli($mysqlurl, $user, $pass, 'starchat');
 ?>
 ";
 }
