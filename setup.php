@@ -34,7 +34,7 @@ $info = "
 \$pass = \"$password\";
 \$mysqlurl = \"$location\";
 \$jitsi = \"false\";
-\$conn = new mysqli($mysqlurl, $user, $pass, 'starchat');
+\$conn = new mysqli(\$mysqlurl, \$user, \$pass, 'starchat');
 ?>
 ";
 }
