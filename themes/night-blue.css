@@ -1,6 +1,6 @@
 body {
   background-color: #1c1f31;
-  color: #000000;
+  color: #ffffff;
   margin: 0;
 }
 #topbar {
@@ -19,7 +19,6 @@ body {
   width: 250px;
   height: calc(100% - 60px);
   background-color: #23283f;
-  transition: .5s;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -63,6 +62,7 @@ body {
   top: 2px;
   width: 55px;
   height: 55px;
+  filter: invert(100%);
 }
 .logotext {
   position: relative;
@@ -73,6 +73,7 @@ body {
 }
 * {
   font-family: arial;
+  color: #ffffff;
 }
 *:focus {
 outline: none;
@@ -96,6 +97,7 @@ outline: none;
   top: calc(100% - 40px);
   width: calc(100% - 313px);
   height: 40px;
+  color: #ffffff;
   border: 0;
   padding-left: 10px;
   padding-right: 10px;
@@ -130,8 +132,8 @@ outline: none;
   top: calc(50% - 200px);
   width: 400px;
   height: 400px;
-  background-color: #ffffff;
-  color: black;
+  background-color: #23283f;
+  color: #ffffff;
   visibility: hidden;
   box-shadow: 0px 5px 10px #555555;
 }

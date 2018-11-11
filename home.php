@@ -75,6 +75,9 @@ exit();
     var tmpid = "EMPTY";
     var calling = "no";
     var jitsi = '<?php echo htmlspecialchars($jitsi); ?>';
+    var mesapn = [];
+    var prevmsg = false;
+    var unread = 0;
     function opensettings() {
 	document.getElementById("settings").style.visibility = "visible";
     }
@@ -160,7 +163,7 @@ exit();
 	}
       tmpid = vals;
     }
-    setInterval(function() {
+    setInterval(function() { 
       if (tmpid != "EMPTY") {
         httpGet("api/v1/?username="+username+"&password="+password+"&readmessages="+tmpid, function(resu) {
 			var les = JSON.parse(resu);
@@ -174,6 +177,54 @@ exit();
 			objDiv.scrollTop = objDiv.scrollHeight;
         });
       }
+      
+        if (document.hasFocus()) {
+			if (unread == 1) {
+			document.title = "Starchat";
+			unread = 0;
+		}
+			if (prevmsg == false) {
+			httpGet("api/v1/?username="+username+"&password="+password+"&getcontacts=yes", function(str) {
+			    var contacts = JSON.parse(str);
+				for (var x = 0; x <= contacts.length; x++) {
+				  httpGet("api/v1/?username="+username+"&password="+password+"&readmessages="+contacts[x][1], function(resu) {
+					  mesapn[x][0] = contacts[x][0];
+					  mesapn[x][1] = resu;
+				  });
+				}
+			});
+			prevmsg = true;
+			
+		}
+		}else{
+					if (prevmsg == false) {
+			httpGet("api/v1/?username="+username+"&password="+password+"&getcontacts=yes", function(str) {
+			    var contacts = JSON.parse(str);
+				for (var x = 0; x <= contacts.length; x++) {
+				  httpGet("api/v1/?username="+username+"&password="+password+"&readmessages="+contacts[x][1], function(resu) {
+					  mesapn[x][0] = contacts[x][0];
+					  mesapn[x][1] = resu;
+				  });
+				}
+			});
+			prevmsg = true;
+			
+		}else{
+			httpGet("api/v1/?username="+username+"&password="+password+"&getcontacts=yes", function(str) {
+			    var contacts = JSON.parse(str);
+				for (var x = 0; x <= contacts.length; x++) {
+				  httpGet("api/v1/?username="+username+"&password="+password+"&readmessages="+contacts[x][1], function(resu) {
+					  if (resu != mesapn[x][1]) {
+						  var audio = new Audio('sounds/notification.wav');
+						  audio.play();
+						  document.title = "New Message - "+mesapn[x][0];
+						  unread = 1;
+					  }
+				  });
+				}
+			});
+		}
+		}
     },500)
     function sendmessage() {
       httpGet("api/v1/?username="+username+"&password="+password+"&sendmessage="+document.getElementById("chatbox").value+"&sendmessageto="+tmpid, function() {
@@ -190,6 +241,7 @@ exit();
 	      }
       });
     }
+
     function addbcontact() {
 	if (tmpid == "EMPTY") {
 		alert("Please actually select a contact");

@@ -64,13 +64,14 @@ body {
   top: 2px;
   width: 55px;
   height: 55px;
+  filter: invert(100%);
 }
 .logotext {
   position: relative;
   top: 5px;
   left: 10px;
   font-size: 20px;
-  color: #000000;
+  color: #ffffff;
 }
 * {
   font-family: arial;
