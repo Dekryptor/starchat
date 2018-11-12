@@ -163,6 +163,26 @@ exit();
 	}
       tmpid = vals;
     }
+    function meshan(x, contacts) {
+       httpGet("api/v1/?username="+username+"&password="+password+"&readmessages="+contacts[x][1], function(data2) {
+         if (prevmsg == true) {
+             if (mesapn[x] != data2) {
+                 if (unread == 0) {
+                     var audio = new Audio('sounds/notification.wav');
+                     audio.play();
+                     document.title = "New Message!!";
+                     unread = 1;
+                }
+             }
+         }else{
+             setTimeout(function() {
+             mesapn[x] = data2;
+             prevmsg = true;
+             // do nothing
+             }, 5000);
+          }
+       });
+	}
     setInterval(function() { 
       if (tmpid != "EMPTY") {
         httpGet("api/v1/?username="+username+"&password="+password+"&readmessages="+tmpid, function(resu) {
@@ -177,58 +197,43 @@ exit();
 			objDiv.scrollTop = objDiv.scrollHeight;
         });
       }
-      
-        if (document.hasFocus()) {
-			if (unread == 1) {
-			document.title = "Starchat";
-			unread = 0;
-		}
-			if (prevmsg == false) {
-			httpGet("api/v1/?username="+username+"&password="+password+"&getcontacts=yes", function(str) {
-			    var contacts = JSON.parse(str);
-				for (var x = 0; x <= contacts.length; x++) {
-				  httpGet("api/v1/?username="+username+"&password="+password+"&readmessages="+contacts[x][1], function(resu) {
-					  mesapn[x][0] = contacts[x][0];
-					  mesapn[x][1] = resu;
-				  });
-				}
-			});
-			prevmsg = true;
-			
-		}
-		}else{
-					if (prevmsg == false) {
-			httpGet("api/v1/?username="+username+"&password="+password+"&getcontacts=yes", function(str) {
-			    var contacts = JSON.parse(str);
-				for (var x = 0; x <= contacts.length; x++) {
-				  httpGet("api/v1/?username="+username+"&password="+password+"&readmessages="+contacts[x][1], function(resu) {
-					  mesapn[x][0] = contacts[x][0];
-					  mesapn[x][1] = resu;
-				  });
-				}
-			});
-			prevmsg = true;
-			
-		}else{
-			httpGet("api/v1/?username="+username+"&password="+password+"&getcontacts=yes", function(str) {
-			    var contacts = JSON.parse(str);
-				for (var x = 0; x <= contacts.length; x++) {
-				  httpGet("api/v1/?username="+username+"&password="+password+"&readmessages="+contacts[x][1], function(resu) {
-					  if (resu != mesapn[x][1]) {
-						  var audio = new Audio('sounds/notification.wav');
-						  audio.play();
-						  document.title = "New Message - "+mesapn[x][0];
-						  unread = 1;
-					  }
-				  });
-				}
-			});
-		}
-		}
-    },500)
+              
+         if (document.hasFocus() == false) {
+            httpGet("api/v1/?username="+username+"&password="+password+"&getcontacts=yes", function(data) {
+                var contacts = JSON.parse(data);
+                for (var x = 0; x <= contacts.length-1; x++) {
+                    //console.log(contacts[x][1]);
+                    meshan(x, contacts);
+                }
+            });
+        }else{
+        if (unread == 1) {
+            unread = 0;
+            prevmsg = false;
+            document.title = "Starchat";
+            httpGet("api/v1/?username="+username+"&password="+password+"&getcontacts=yes", function(data) {
+                var contacts = JSON.parse(data);
+                for (var x = 0; x <= contacts.length-1; x++) {
+                    //console.log(contacts[x][1]);
+                    meshan(x, contacts);
+                }
+            });
+        }
+        }
+
+    },1000)
     function sendmessage() {
       httpGet("api/v1/?username="+username+"&password="+password+"&sendmessage="+document.getElementById("chatbox").value+"&sendmessageto="+tmpid, function() {
         document.getElementById("chatbox").value = "";
+            unread = 0;
+            prevmsg = false;
+            httpGet("api/v1/?username="+username+"&password="+password+"&getcontacts=yes", function(data) {
+                var contacts = JSON.parse(data);
+                for (var x = 0; x <= contacts.length-1; x++) {
+                    //console.log(contacts[x][1]);
+                    meshan(x, contacts);
+                }
+            });
       });
     }
     function addacontact() {
