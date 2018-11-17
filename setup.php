@@ -7,6 +7,7 @@ $usetype = "public";
 $username = $_POST["username"];
 $password = $_POST["password"];
 $location = $_POST["location"];
+$dbname = $_POST["dbname"];
 
 
 if ($usetype = "public") {
@@ -22,8 +23,9 @@ $info = "
 \$user = \"$username\";
 \$pass = \"$password\";
 \$mysqlurl = \"$location\";
+\$dbname = \"$dbname\";
 \$jitsi = \"true\";
-\$conn = new mysqli(\$mysqlurl, \$user, \$pass, 'starchat');
+\$conn = new mysqli(\$mysqlurl, \$user, \$pass, \$dbname);
 ?>
 ";
 }else{
@@ -33,15 +35,16 @@ $info = "
 \$user = \"$username\";
 \$pass = \"$password\";
 \$mysqlurl = \"$location\";
+\$dbname = \"$dbname\";
 \$jitsi = \"false\";
-\$conn = new mysqli(\$mysqlurl, \$user, \$pass, 'starchat');
+\$conn = new mysqli(\$mysqlurl, \$user, \$pass, \$dbname);
 ?>
 ";
 }
 
 file_put_contents("mysqlinfo.php", $info);
 
-$sql = "CREATE DATABASE starchat";
+$sql = "CREATE DATABASE $dbname";
 if ($conn->query($sql) === TRUE) {
 echo "Database created successfully!<br>";
 }else{
@@ -49,7 +52,7 @@ echo "Error creating database: ".$conn->error . "<br>";
 }
 $conn->close();
 
-$conns = new mysqli($location, $username, $password, "starchat");
+$conns = new mysqli($location, $username, $password, $dbname);
 
 $sql = "CREATE TABLE accounts (
 id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -116,7 +119,8 @@ border: 1px solid #000000;
 <input type="radio" name="jitsi" value="false"> No<br><br>
 Your <b>MYSQL</b> user: <input type="text" name="username" value="root"><br>
 Your <b>MYSQL</b> password: <input type="password" name="password"><br>
-MYSQL server url: <input type="text" name="location" value="localhost"> (leave default if unsure or if you are currently on the same server where mysql is installed and running)<br><br>
+MYSQL server url: <input type="text" name="location" value="localhost"> (leave default if unsure or if you are currently on the same server where mysql is installed and running)<br>
+MYSQL Database name: <input type="text" name="dbname" value="starchat"><br><br>
 <input type="submit" value="Submit">
 </form>
 </div>
