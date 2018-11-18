@@ -2,6 +2,10 @@
 
 // Starchat API v0.8.0
 
+// Usually for debugging, but also hide html warnings and errors if the users config is set up strangely
+error_reporting(0); // Set to E_ALL for error reporting
+ini_set('display_errors', 0);
+
 require '../../mysqlinfo.php';
 // Check if connection works
 if ($conn->connect_error) {
