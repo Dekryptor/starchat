@@ -1,50 +1,102 @@
 <?php
 
-// Starchat API v0.7.2
+// Starchat API v0.8.0
 
-include '../../mysqlinfo.php';
+// Usually for debugging, but also hide html warnings and errors if the users config is set up strangely
+error_reporting(0); // Set to E_ALL for error reporting
+ini_set('display_errors', 0);
+
+require '../../mysqlinfo.php';
 // Check if connection works
 if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 }
 
-$checkg = $conn->prepare("SELECT id, username, password, anonid, contacts FROM accounts WHERE username = ?");
-$checkg->bind_param('s', $_GET["username"]);
-$checkg->execute();
-$resa = $checkg->get_result();
-$numrow = $resa->num_rows;
-
-
-if ($numrow >= 0) {
-while($row = $resa->fetch_assoc()) {
-if (password_verify($_GET["password"],$row['password'])) {
-	// logged in, move on
-	$qid = $row['id'];
-	$qusername = $row['username'];
-	$qpassword = $row['password']; // Returns our encrypted password
-	$qanonid = $row['anonid'];
-	$qcontact = $row['contacts'];
-}else{
+function starchat_error($message) {
 	$conn->close();
-	echo "6";
-	exit();
-}
-}
+	die($message);
 }
 
-// TODO move everything, even errors, to json, 0.8
+// We start with the most secure options then slowly drop, great for supporting older releases
+function generateRandomString($length = 32) {
+	if (function_exists("random_bytes")) {
+		return bin2hex(random_bytes($length)); // Supported Random Generator
+	} elseif (function_exists("openssl_random_pseudo_bytes")) {
+		return bin2hex(openssl_random_pseudo_bytes($length)); // Supported Random Generator
+	} else {
+		starchat_error("Secure random number not generated, your PHP version is most likely out of date");
+	}
+}
+
+// bumpedDate is really useful when dealing with tokens
+function bumpedDate() {
+	$datetime = new DateTime('tomorrow');
+	return $datetime->format('Y-m-d H:i:s');
+}
+
+$check_login = $conn->prepare("SELECT id, username, password, anonid, contacts FROM accounts WHERE username = ?");
+$check_login->bind_param('s', $_GET["username"]);
+$check_login->execute();
+$check_login_results = $check_login->get_result();
+$check_login_numrows = $check_login_results->num_rows;
+
+
+if ($check_login_numrows >= 0) {
+	while($row = $check_login_results->fetch_assoc()) {
+		if (password_verify($_GET["password"],$row['password'])) {
+			// User is logged in
+			$qid = $row['id'];
+			$qusername = $row['username']; // Returns username
+			$qpassword = $row['password']; // Returns our encrypted password
+			$qanonid = $row['anonid']; // Returns anonymous id
+			$qcontact = $row['contacts']; // Returns our json contacts
+			
+			// At this point the only thing the user can do is generate a token.
+			if (isset($_GET["gentoken"])) {
+				$token = generateRandomString();
+				$token_date = date("Y-m-d H:i:s");
+				$token_exp_date = bumpedDate();
+				
+				$token_check = $conn->prepare("SELECT token FROM tokens WHERE token=?");
+				$token_check->bind_param('s', $token);
+				$token_check->execute();
+				$token_check_results = $token_check->get_result();
+				$token_check_rows = $token_check_results->num_rows;
+				
+				if ($token_check_rows > 0) {
+					starchat_error("Token has been used, please try again.");
+				}
+
+				$token_query = $conn->prepare("INSERT INTO tokens (token, creation, expiration) VALUES (?, ?, ?)");
+				$token_query->bind_param('sss', $token, $token_date, $token_exp_date);
+				$token_query->execute();
+			}
+		}else{
+			if (isset($_GET["token"])) {
+				$token_use = $conn->prepare("SELECT * FROM tokens WHERE token=?");
+				$token_use->bind_param('s', $token);
+				$token_use->execute();
+				$token_use_results = $token_use->get_result();
+				$token_use_rows = $token_use_results->num_rows;
+				
+				if ($token_use_rows > 0) {
+					while($row = $token_use_results->fetch_assoc()) {
+						
+					}
+				}
+			}
+
+			//starchat_error("Starchat Error: Login failed");
+		}
+	}
+}
+
+
+
+
 header('Content-type: application/json');
 
-// we need the function below to store conversation id
-function generateRandomString($length = 25) {
-	$characters = '0123456789-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	$charactersLength = strlen($characters);
-	$randomString = '';
-	for ($i = 0; $i < $length; $i++) {
-		$randomString .= $characters[rand(0, $charactersLength - 1)];
-	}
-	return $randomString;
-}
+
 
 if (isset($_GET["getcontacts"])) {
 	echo $qcontact;
@@ -52,11 +104,22 @@ if (isset($_GET["getcontacts"])) {
 }
 
 if (isset($_GET["readmessages"])) {
+	if(!isset($_GET["count"])) {
+		$read_count = 25;
+	}
+	if(!ctype_digit($_GET["count"])) {
+		if($_GET["count"] != "all") {
+			starchat_error("Value is not an integer or \"all\"");
+		}else{
+			$read_count = -1;
+		}
+	}else{
+		$read_count = (int)$_GET["count"];
+	}
 	if(preg_match('/[a-zA-Z0-9\-]{3,40}$/', $_GET["readmessages"])) {
 		// yep, seems safe enough
 	}else{
-		echo "15";
-		exit();
+		starchat_error("Value of readmessages is not a valid id");
 	}
 	$readmessage = htmlspecialchars($_GET["readmessages"]);
 
@@ -75,8 +138,6 @@ if (isset($_GET["readmessages"])) {
 			$mbuffer[$y]["username"] = $row["username"];
 			$mbuffer[$y]["datetime"] = $row["datetime"];
 			$mbuffer[$y]["message"] = $row["message"];
-		
-			
 		}
 		echo json_encode($mbuffer, JSON_PRETTY_PRINT);
 	}
@@ -87,8 +148,7 @@ if (isset($_GET["sendmessage"])) {
 	if(preg_match('/[a-zA-Z0-9\-]{3,40}$/', $_GET["sendmessageto"])) {
 		// yep, seems safe enough
 	}else{
-		echo "8";
-		exit();
+		starchat_error("The sender conversation id is invalid");
 	}
 	
 	$checka = $conn->prepare("SELECT contacts FROM accounts WHERE username = ?");
@@ -109,6 +169,7 @@ if (isset($_GET["sendmessage"])) {
 	
 	if ($confirm == 0) {
 		die("Error: Chat ID is unused therefor not yours");
+		starchat_error("Chat ID is not in your contacts list, or might not exist");
 	}
 
 	$chatid = htmlspecialchars($_GET["sendmessageto"]);
@@ -139,18 +200,18 @@ if (isset($_GET["addcontact"])) {
 		exit();
 	}
 
-	if(preg_match('/[a-zA-Z0-9]/', $_GET["addcontact"])) {
-	}else{
+	if(!preg_match('/[a-zA-Z0-9]/', $_GET["addcontact"])) {
 		$conn->close();
 		echo "2";
 		exit();
+		starchat_error("The username is not valid and contains invalid characters");
 	}
 	$vale = generateRandomString();
 	$messagesa = $conn->query("SELECT * FROM accounts"); // For something as simple as this, we should be fine to use query
 	if ($messagesa->num_rows > 0) {
 		while($row = $messagesa->fetch_assoc()) {
 			if (preg_match("/$vale/", $row["contacts"])) {
-				die("Please rerun this, this chat id has been used before");
+				starchat_error("Chat ID collision, please retry and add this contact again");
 			}
 		}
 	}
@@ -168,17 +229,17 @@ if (isset($_GET["addcontact"])) {
 	$saddcontact = htmlspecialchars($_GET["addcontact"]);
 
 	while ($row = $current->fetch_array(MYSQLI_NUM)) {
-	$currenta = json_decode($row[0],true);
-	$amo = count($currenta);
-	$currenta[$amo][0] = $surl;
-	$currenta[$amo][1] = $vale;
+		$currenta = json_decode($row[0],true);
+		$amo = count($currenta);
+		$currenta[$amo][0] = $surl;
+		$currenta[$amo][1] = $vale;
 	}
 
 	while ($row = $current2->fetch_array(MYSQLI_NUM)) {
-	$currentb = json_decode($row[0],true);
-	$amo = count($currentb);
-	$currentb[$amo][0] = $qusername;
-	$currentb[$amo][1] = $vale;
+		$currentb = json_decode($row[0],true);
+		$amo = count($currentb);
+		$currentb[$amo][0] = $qusername;
+		$currentb[$amo][1] = $vale;
 	}
 
 	$currenta = json_encode($currenta, JSON_PRETTY_PRINT);
@@ -194,9 +255,7 @@ if (isset($_GET["addcontact"])) {
 	$cu2->execute();
 
 	$conn->close();
-	echo "0";
 	exit();
-
 }
 
 /*
@@ -253,6 +312,5 @@ if (isset($_GET["addtoconvo"])) {
 }
  */
 
-// TODO version 0.8
 
 ?>
