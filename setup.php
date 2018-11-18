@@ -1,5 +1,9 @@
 <?php
 
+if(file_exists('mysqlinfo.php')) {
+	die('For security reasons you are not allowed to run the setup again as long as mysqlinfo.php exists');
+}
+
 if(isset($_POST["jitsi"])) {
 // $usetype = $_POST["usetype"];
 $usetype = "public";
