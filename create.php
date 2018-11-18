@@ -1,5 +1,5 @@
 <?php
-include 'mysqlinfo.php';
+require 'mysqlinfo.php';
 
 if (isset($_GET["trycreate"])) {
 

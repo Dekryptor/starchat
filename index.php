@@ -1,6 +1,12 @@
 <?php
 session_start();
-include 'mysqlinfo.php';
+if(!file_exists('mysqlinfo.php')) {
+    header("Location: setup.php");
+    die("You should be <a href='setup.php'>here</a>");
+}
+
+require 'mysqlinfo.php';
+
 $is_error = false;
 $error;
 $is_success = false;
