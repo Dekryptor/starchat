@@ -2,7 +2,7 @@
 
 // Starchat API v0.7.2
 
-include '../../mysqlinfo.php';
+require '../../mysqlinfo.php';
 // Check if connection works
 if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);

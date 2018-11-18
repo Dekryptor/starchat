@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'mysqlinfo.php';
+require 'mysqlinfo.php';
 
 // Check connection
 if ($conn->connect_error) {
