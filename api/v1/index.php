@@ -13,7 +13,6 @@ if ($conn->connect_error) {
 }
 
 function starchat_error($message) {
-	$conn->close();
 	die($message);
 }
 
@@ -27,13 +26,6 @@ function generateRandomString($length = 32) {
 		starchat_error("Secure random number not generated, your PHP version is most likely out of date");
 	}
 }
-
-// bumpedDate is really useful when dealing with tokens
-function bumpedDate() {
-	$datetime = new DateTime('tomorrow');
-	return $datetime->format('Y-m-d H:i:s');
-}
-
 
 // API Login System
 if (isset($_GET["username"])) {
@@ -52,8 +44,7 @@ if (isset($_GET["username"])) {
 				if (isset($_GET["gentoken"])) {
 					$token = generateRandomString();
 					$token_date = date("Y-m-d H:i:s");
-					$token_exp_date = bumpedDate();
-					
+
 					$token_check = $conn->prepare("SELECT token FROM tokens WHERE token=?");
 					$token_check->bind_param('s', $token);
 					$token_check->execute();
@@ -64,8 +55,8 @@ if (isset($_GET["username"])) {
 						starchat_error("Token has been used, please try again.");
 					}
 
-					$token_query = $conn->prepare("INSERT INTO tokens (token, creation, expiration) VALUES (?, ?, ?)");
-					$token_query->bind_param('sss', $token, $token_date, $token_exp_date);
+					$token_query = $conn->prepare("INSERT INTO tokens (token, username, created) VALUES (?, ?, ?)");
+					$token_query->bind_param('sss', $token, $_GET["username"], $token_date);
 					$token_query->execute();
 					$conn->close();
 					exit();
@@ -84,23 +75,25 @@ if (isset($_GET["token"])) {
 	
 	if ($token_use_rows == 1) {
 		while($row = $token_use_results->fetch_assoc()) {
-			$retrieve_info = $conn->prepare("SELECT * FROM accounts WHERE username=?");
-			$retrieve_info->bind_param('s', $row['username']);
-			$retrieve_info->execute();
-			$retrieve_info_results = $retrieve_info->get_result();
-			$retrieve_info_rows = $retrieve_info_results->num_rows;
+			if (strtotime($row["created"]) < strtotime("-24 hours")) {
+				$retrieve_info = $conn->prepare("SELECT * FROM accounts WHERE username=?");
+				$retrieve_info->bind_param('s', $row['username']);
+				$retrieve_info->execute();
+				$retrieve_info_results = $retrieve_info->get_result();
+				$retrieve_info_rows = $retrieve_info_results->num_rows;
 
-			if ($retrieve_info_rows == 1) {
-				while($rowa = $retrieve_info_results->fetch_assoc()) {
-					// User is logged in
-					$qid = $rowa['id'];
-					$qusername = $rowa['username']; // Returns username
-					$qpassword = $rowa['password']; // Returns our encrypted password
-					$qanonid = $rowa['anonid']; // Returns anonymous id
-					$qcontact = $rowa['contacts']; // Returns our json contacts
+				if ($retrieve_info_rows == 1) {
+					while($rowa = $retrieve_info_results->fetch_assoc()) {
+						// User is logged in
+						$qid = $rowa['id'];
+						$qusername = $rowa['username']; // Returns username
+						$qpassword = $rowa['password']; // Returns our encrypted password
+						$qanonid = $rowa['anonid']; // Returns anonymous id
+						$qcontact = $rowa['contacts']; // Returns our json contacts
+					}
+				}else{
+					starchat_error("User of token no longer exists");
 				}
-			}else{
-				starchat_error("User of token no longer exists");
 			}
 		}
 	}else{

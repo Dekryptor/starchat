@@ -91,17 +91,17 @@ $sqlb = "CREATE TABLE tokens (
 id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 token VARCHAR(70) NOT NULL,
 username VARCHAR(50) NOT NULL,
-created VARCHAR(50) NOT NULL,
-expires VARCHAR(50) NOT NULL
+created VARCHAR(50) NOT NULL
 )";
 
-if ($conns->query($sqla) === TRUE) {
+if ($conns->query($sqlb) === TRUE) {
 	// Tables created
 } else {
     echo "Error creating table: " . $conns->error . "<br>";
 }
 
 $conns->close();
+unlink(__FILE__); // Delete the setup, just to prevent future issues
 header("Location: index.php");
 die("END");
 
