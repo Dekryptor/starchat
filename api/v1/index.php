@@ -34,72 +34,97 @@ function bumpedDate() {
 	return $datetime->format('Y-m-d H:i:s');
 }
 
-$check_login = $conn->prepare("SELECT id, username, password, anonid, contacts FROM accounts WHERE username = ?");
-$check_login->bind_param('s', $_GET["username"]);
-$check_login->execute();
-$check_login_results = $check_login->get_result();
-$check_login_numrows = $check_login_results->num_rows;
+
+// API Login System
+if (isset($_GET["username"])) {
+	$check_login = $conn->prepare("SELECT id, username, password, anonid, contacts FROM accounts WHERE username = ?");
+	$check_login->bind_param('s', $_GET["username"]);
+	$check_login->execute();
+	$check_login_results = $check_login->get_result();
+	$check_login_numrows = $check_login_results->num_rows;
 
 
-if ($check_login_numrows >= 0) {
-	while($row = $check_login_results->fetch_assoc()) {
-		if (password_verify($_GET["password"],$row['password'])) {
-			// User is logged in
-			$qid = $row['id'];
-			$qusername = $row['username']; // Returns username
-			$qpassword = $row['password']; // Returns our encrypted password
-			$qanonid = $row['anonid']; // Returns anonymous id
-			$qcontact = $row['contacts']; // Returns our json contacts
-			
-			// At this point the only thing the user can do is generate a token.
-			if (isset($_GET["gentoken"])) {
-				$token = generateRandomString();
-				$token_date = date("Y-m-d H:i:s");
-				$token_exp_date = bumpedDate();
+	if ($check_login_numrows >= 0) {
+		while($row = $check_login_results->fetch_assoc()) {
+			if (password_verify($_GET["password"],$row['password'])) {
 				
-				$token_check = $conn->prepare("SELECT token FROM tokens WHERE token=?");
-				$token_check->bind_param('s', $token);
-				$token_check->execute();
-				$token_check_results = $token_check->get_result();
-				$token_check_rows = $token_check_results->num_rows;
-				
-				if ($token_check_rows > 0) {
-					starchat_error("Token has been used, please try again.");
-				}
-
-				$token_query = $conn->prepare("INSERT INTO tokens (token, creation, expiration) VALUES (?, ?, ?)");
-				$token_query->bind_param('sss', $token, $token_date, $token_exp_date);
-				$token_query->execute();
-			}
-		}else{
-			if (isset($_GET["token"])) {
-				$token_use = $conn->prepare("SELECT * FROM tokens WHERE token=?");
-				$token_use->bind_param('s', $token);
-				$token_use->execute();
-				$token_use_results = $token_use->get_result();
-				$token_use_rows = $token_use_results->num_rows;
-				
-				if ($token_use_rows > 0) {
-					while($row = $token_use_results->fetch_assoc()) {
-						
+				// At this point the only thing the user can do is generate a token.
+				if (isset($_GET["gentoken"])) {
+					$token = generateRandomString();
+					$token_date = date("Y-m-d H:i:s");
+					$token_exp_date = bumpedDate();
+					
+					$token_check = $conn->prepare("SELECT token FROM tokens WHERE token=?");
+					$token_check->bind_param('s', $token);
+					$token_check->execute();
+					$token_check_results = $token_check->get_result();
+					$token_check_rows = $token_check_results->num_rows;
+					
+					if ($token_check_rows > 0) {
+						starchat_error("Token has been used, please try again.");
 					}
+
+					$token_query = $conn->prepare("INSERT INTO tokens (token, creation, expiration) VALUES (?, ?, ?)");
+					$token_query->bind_param('sss', $token, $token_date, $token_exp_date);
+					$token_query->execute();
+					$conn->close();
+					exit();
 				}
 			}
-
-			//starchat_error("Starchat Error: Login failed");
 		}
 	}
 }
 
+if (isset($_GET["token"])) {
+	$token_use = $conn->prepare("SELECT * FROM tokens WHERE token=?");
+	$token_use->bind_param('s', $_GET["token"]);
+	$token_use->execute();
+	$token_use_results = $token_use->get_result();
+	$token_use_rows = $token_use_results->num_rows;
+	
+	if ($token_use_rows == 1) {
+		while($row = $token_use_results->fetch_assoc()) {
+			$retrieve_info = $conn->prepare("SELECT * FROM accounts WHERE username=?");
+			$retrieve_info->bind_param('s', $row['username']);
+			$retrieve_info->execute();
+			$retrieve_info_results = $retrieve_info->get_result();
+			$retrieve_info_rows = $retrieve_info_results->num_rows;
 
+			if ($retrieve_info_rows == 1) {
+				while($rowa = $retrieve_info_results->fetch_assoc()) {
+					// User is logged in
+					$qid = $rowa['id'];
+					$qusername = $rowa['username']; // Returns username
+					$qpassword = $rowa['password']; // Returns our encrypted password
+					$qanonid = $rowa['anonid']; // Returns anonymous id
+					$qcontact = $rowa['contacts']; // Returns our json contacts
+				}
+			}else{
+				starchat_error("User of token no longer exists");
+			}
+		}
+	}else{
+		starchat_error("Token not found");
+	}
+}else{
+	starchat_error("No token provided");
+}
 
+// API Features
 
 header('Content-type: application/json');
 
-
+if (!isset($qusername)) {
+	starchat_error("Username not set, possibly API error");
+}else{
+	if (!isset($qpassword)) {
+		starchat_error("Password not set, possibly API error");
+	}
+}
 
 if (isset($_GET["getcontacts"])) {
 	echo $qcontact;
+	$conn->close();
 	exit();
 }
 
@@ -141,6 +166,7 @@ if (isset($_GET["readmessages"])) {
 		}
 		echo json_encode($mbuffer, JSON_PRETTY_PRINT);
 	}
+	$conn->close();
 	exit();
 }
 
@@ -181,6 +207,7 @@ if (isset($_GET["sendmessage"])) {
 	$getn->execute();
 
 	echo "0";
+	$conn->close();
 	exit();
 }
 
@@ -257,60 +284,5 @@ if (isset($_GET["addcontact"])) {
 	$conn->close();
 	exit();
 }
-
-/*
-if (isset($_GET["addtoconvo"])) {
-
-	$surl = $_GET["addtoconvo"];
-
-	$quickcheck = $conn->query("SELECT username, id FROM accounts WHERE username = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
-
-	$somedata = $quickcheck->fetch_array(MYSQLI_NUM);
-
-	if (count($somedata)>0) {
-		// move on to next code
-	}else{
-		echo "1";
-		exit();
-	}
-
-	// $conn->real_escape_string($_GET["username"]);
-	// The code below will probably make you throw up
-	if(preg_match('/[a-zA-Z0-9]/', $_GET["username"])) {
-	}else{
-		$conn->close();
-		echo "2";
-		exit();
-	}
-
-	// Addtoconvo is the person we want to add, usual username
-	// convoid is the conversation id, we need to verify it exists in the current users contact so we cant just add random people to random conversations
-
-	$contactlist = $conn->query("SELECT contacts FROM accounts WHERE username = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
-	$contactlista = $conn->query("SELECT contacts FROM accounts WHERE username = '".$conn->real_escape_string($qusername)."'");
-
-	$contactlist = $contactlist->fetch_array(MYSQLI_NUM);
-	$contactlista = $contactlist->fetch_array(MYSQLI_NUM);
-
-	if (strpos($contactlist[0], "|||||".$_GET["convoid"]."&&&&&") === false) {
-		die("32");
-	}else{
-		if (strpos($contactlista[0], "|||||".$_GET["convoid"]."&&&&&") === true) {
-			$current = $conn->query("SELECT contacts FROM accounts WHERE id = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
-			$current = $current->fetch_array(MYSQLI_NUM);
-			$conn->query("INSERT INTO messages (chatid, username, message) VALUES ('".$conn->real_escape_string($_GET["convoid"])."', 'x', '".$conn->real_escape_string($_GET["addtoconvo"])." has been added to this conversation')"); // MYSQL generates timestamps for us
-			$conn->query("UPDATE accounts SET contacts = '".$conn->real_escape_string($current[0])."&&&&&".$conn->real_escape_string($qusername." GC")."|||||".$conn->real_escape_string($_GET["convoid"])."' WHERE username = '".$conn->real_escape_string($_GET["addtoconvo"])."'");
-		}else{
-			die("32");
-		}
-	}
-
-	$conn->close();
-	echo "0";
-	exit();
-
-}
- */
-
 
 ?>
