@@ -58,6 +58,7 @@ if (isset($_GET["username"])) {
 					$token_query = $conn->prepare("INSERT INTO tokens (token, username, created) VALUES (?, ?, ?)");
 					$token_query->bind_param('sss', $token, $_GET["username"], $token_date);
 					$token_query->execute();
+					echo $token;
 					$conn->close();
 					exit();
 				}
