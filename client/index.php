@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'mysqlinfo.php';
+require '../mysqlinfo.php';
 
 // Check connection
 if ($conn->connect_error) {
@@ -38,14 +38,16 @@ if ($doesexistnumrows >= 0 ) {
 	
 <head>
   <title>Starchat</title>
-  <link id="stylesheeta" rel="stylesheet" type="text/css" href="themes/default.css">
+  <link id="stylesheeta" rel="stylesheet" type="text/css" href="../themes/default.css">
 
-<link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="../libs/bootstrap/css/bootstrap.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
   <div id="messbox">
+	  <div id="messboxsmall">
 
+	  </div>
   </div>
   <input type="text" id="chatbox" onkeypress="checkkey(event)">
   <input type="button" value="Send" onclick="sendmessage()" id="chatboxbutton">
@@ -54,7 +56,7 @@ if ($doesexistnumrows >= 0 ) {
   </div>
 
   <div id="topbar">
-  <img src="img/hammenu.png" class="logo" onclick="opensettings()"> <span class="logotext">Starchat</span>
+  <img src="../img/hammenu.png" class="logo" onclick="opensettings()"> <span class="logotext">Starchat</span>
   </div>
 
   <div id="callform">
@@ -73,7 +75,7 @@ if ($doesexistnumrows >= 0 ) {
   </select></p>
 	<p><input type="button" value="Add Contact" onclick="addacontact()" class="btn btn-light"><!-- TODO change this dialog to own function instead of alert --></p>
 	<p><input type="button" value="Add Contact to active conversation" disabled="disabled" onclick="addbcontact()" class="btn btn-light"> (group chats) (Currently Broken)</p>
-  <p><a href="logout.php" class="btn btn-danger">Logout</a></p>
+  <p><a href="../logout.php" class="btn btn-danger">Logout</a></p>
   </div>
   <script type="text/javascript">
 	var tmpid = "EMPTY";
@@ -121,7 +123,7 @@ if ($doesexistnumrows >= 0 ) {
 	var token = getCookie("stoken");
 
 	function themeChange() {
-		setCookie("starchattheme", "themes/"+document.getElementById("theme").value+".css", 365);
+		setCookie("starchattheme", "../themes/"+document.getElementById("theme").value+".css", 365);
 		swapSheet(getCookie("starchattheme"));
 	}
 
@@ -162,7 +164,7 @@ if ($doesexistnumrows >= 0 ) {
 	}
 
 	function splitcontacts() {
-		httpGet("api/v1/?token="+token+"&getcontacts=yes", function(str) {
+		httpGet("../api/v1/?token="+token+"&getcontacts=yes", function(str) {
 
 		var contacts = JSON.parse(str);
 		for (var x = 0; x <= contacts.length; x++) {
@@ -176,18 +178,18 @@ if ($doesexistnumrows >= 0 ) {
 	function switchcontact(vals) {
 		if (tmpid == "EMPTY") {
 			if (jitsi == 'true') {
-				document.getElementById("topbar").innerHTML += "<img src='img/call.png' id='call' onclick='startcall()'>";
+				document.getElementById("topbar").innerHTML += "<img src='../img/call.png' id='call' onclick='startcall()'>";
 			}
 		}
 		tmpid = vals;
 	}
 
 	function meshan(x, contacts) {
-		httpGet("api/v1/?token="+token+"&readmessages="+contacts[x][1], function(data2) {
+		httpGet("../api/v1/?token="+token+"&readmessages="+contacts[x][1]+"&count=2", function(data2) {
 			if (prevmsg == true) {
 				if (mesapn[x] != data2) {
 					if (unread == 0) {
-					var audio = new Audio('sounds/notification.wav');
+					var audio = new Audio('../sounds/notification.wav');
 					audio.play();
 					document.title = "New Message!!";
 					unread = 1;
@@ -205,21 +207,26 @@ if ($doesexistnumrows >= 0 ) {
 
 	setInterval(function() { 
 		if (tmpid != "EMPTY") {
-			httpGet("api/v1/?token="+token+"&readmessages="+tmpid, function(resu) {
+			httpGet("../api/v1/?token="+token+"&readmessages="+tmpid+"&count=25", function(resu) {
 				var les = JSON.parse(resu);
-				document.getElementById("messbox").innerHTML = "";
+				document.getElementById("messboxsmall").innerHTML = "";
 				for (var x = 0; x < les.length; x++) {
-					document.getElementById("messbox").innerHTML += "<div class='smessage'><span class='susername'>"+les[x].username+"</span> "+les[x].message+"</div>"; // In 0.8 we will include datetime float datetime to right
+					if (les[x].username == "<?php echo preg_replace('/[^a-zA-Z0-9]/', '', $_SESSION["usernamedata"]); ?>") {
+						document.getElementById("messboxsmall").innerHTML += "<div class='smessage'>"+les[x].message+"</div>"; // In 0.8 we will include datetime float datetime to right
+					}else{
+						document.getElementById("messboxsmall").innerHTML += "<div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div>"; // In 0.8 we will include datetime float datetime to right
+
+					}
 				}
 
 				// scroll to bottom
-				var objDiv = document.getElementById("messbox");
+				var objDiv = document.getElementById("messboxsmall");
 				objDiv.scrollTop = objDiv.scrollHeight;
 			});
 		}
 
 		if (document.hasFocus() == false) {
-			httpGet("api/v1/?token="+token+"&getcontacts=yes", function(data) {
+			httpGet("../api/v1/?token="+token+"&getcontacts=yes", function(data) {
 			var contacts = JSON.parse(data);
 			for (var x = 0; x <= contacts.length-1; x++) {
 			//console.log(contacts[x][1]);
@@ -231,7 +238,7 @@ if ($doesexistnumrows >= 0 ) {
 			unread = 0;
 			prevmsg = false;
 			document.title = "Starchat";
-			httpGet("api/v1/?token="+password+"&getcontacts=yes", function(data) {
+			httpGet("../api/v1/?token="+password+"&getcontacts=yes", function(data) {
 				var contacts = JSON.parse(data);
 				for (var x = 0; x <= contacts.length-1; x++) {
 					//console.log(contacts[x][1]);
@@ -241,16 +248,16 @@ if ($doesexistnumrows >= 0 ) {
 			}
 		}
 
-	},1000)
+	},2000)
 
 	function sendmessage() {
 		var usermessage = document.getElementById("chatbox").value;
 		usermessage = encodeURIComponent(usermessage);
-		httpGet("api/v1/?token="+token+"&sendmessage="+usermessage+"&sendmessageto="+tmpid, function() {
+		httpGet("../api/v1/?token="+token+"&sendmessage="+usermessage+"&sendmessageto="+tmpid, function() {
 			document.getElementById("chatbox").value = "";
 			unread = 0;
 			prevmsg = false;
-			httpGet("api/v1/?token="+token+"&getcontacts=yes", function(data) {
+			httpGet("../api/v1/?token="+token+"&getcontacts=yes", function(data) {
 				var contacts = JSON.parse(data);
 				for (var x = 0; x <= contacts.length-1; x++) {
 				//console.log(contacts[x][1]);
@@ -262,12 +269,8 @@ if ($doesexistnumrows >= 0 ) {
 
 	function addacontact() {
 		var toadd = encodeURIComponent(prompt("Please Enter Username to Add"));
-		httpGet("api/v1/?token="+token+"&addcontact="+toadd, function(code) {
-			if (code == "\n0") {
-				location.reload()
-			}else{
-				alert("User not found");
-			}
+		httpGet("../api/v1/?token="+token+"&addcontact="+toadd, function(code) {
+			location.reload()
 		});
 	}
 
@@ -276,7 +279,7 @@ if ($doesexistnumrows >= 0 ) {
 			alert("Please actually select a contact");
 		}else{
 			var toadd = prompt("Please Enter Username to Add");
-			httpGet("api/v1/?token="+token+"&addtoconvo="+toadd+"&convoid="+tmpid, function(code) {
+			httpGet("../api/v1/?token="+token+"&addtoconvo="+toadd+"&convoid="+tmpid, function(code) {
 				if (code != "\n0") {
 					alert("User not found or the conversation you are in does not exist (you should not get the second reason on the web client)");
 				}

@@ -20,10 +20,10 @@ if ($conn->connect_error) {
 }
 
 $doesexist = $conn->prepare("SELECT id, username, password, anonid, contacts FROM accounts WHERE username = ?");
-$doesexist->bind_param('s', $POST["username"]);
+$doesexist->bind_param('s', $_POST["username"]);
 $doesexist->execute();
 $doesexistresult = $doesexist->get_result();
-$doesexistrows = $doesexist->num_rows;
+$doesexistrows = $doesexistresult->num_rows;
 
 function generateRandomString($length = 32) {
 	if (function_exists("random_bytes")) {
@@ -35,8 +35,8 @@ function generateRandomString($length = 32) {
 	}
 }
 
-if ($doesexistnumrows >= 0 ) {
-	while ($row = $doesexistresults->fetch_assoc()) {
+if ($doesexistrows >= 0 ) {
+	while ($row = $doesexistresult->fetch_assoc()) {
 		if (password_verify($_POST["password"], $row['password'])) {
 			$_SESSION["usernamedata"] = $_POST["username"];
 			$_SESSION["passworddata"] = $_POST["password"];
@@ -69,11 +69,11 @@ if ($doesexistnumrows >= 0 ) {
 
 $conn->close();
 
+}
+
 if(isset($_GET["created"])) {
 	$is_success = true;
 	$success = "Account successfully created";
-}
-
 }
 
 ?>

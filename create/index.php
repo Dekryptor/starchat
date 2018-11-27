@@ -1,5 +1,5 @@
 <?php
-require 'mysqlinfo.php';
+require '../mysqlinfo.php';
 
 if (isset($_GET["trycreate"])) {
 
@@ -55,7 +55,7 @@ $getn->execute();
 
 
 $conn->close();
-header("Location: index.php?created=yes");
+header("Location: ../index.php?created=yes");
 die("Finished, redirecting");
 
 
@@ -68,7 +68,7 @@ die("Finished, redirecting");
 <head>
 <title>Starchat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="../libs/bootstrap/css/bootstrap.min.css">
 <style>
 body {
 margin:0;
@@ -96,10 +96,10 @@ top: 15px;
 <body>
 <div class="top"></div>
 <div class="bottom"></div>
-<img src="img/logo.png" width="65" height="66" class="starchat">
+<img src="../img/logo.png" width="65" height="66" class="starchat">
 <div class="login">
 <h3>Create Account</h3>
-<form action="create.php?trycreate=yes" method="post">
+<form action="index.php?trycreate=yes" method="post">
 <div class="form-group">
     <input type="text" class="form-control" id="username" name="username" placeholder="Username">
 </div>

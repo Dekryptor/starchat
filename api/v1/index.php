@@ -76,7 +76,7 @@ if (isset($_GET["token"])) {
 	
 	if ($token_use_rows == 1) {
 		while($row = $token_use_results->fetch_assoc()) {
-			if (strtotime($row["created"]) < strtotime("-24 hours")) {
+			if (strtotime($row["created"]) > strtotime("-24 hours")) {
 				$retrieve_info = $conn->prepare("SELECT * FROM accounts WHERE username=?");
 				$retrieve_info->bind_param('s', $row['username']);
 				$retrieve_info->execute();
@@ -95,6 +95,8 @@ if (isset($_GET["token"])) {
 				}else{
 					starchat_error("User of token no longer exists");
 				}
+			}else{
+				starchat_error("Token Expired");
 			}
 		}
 	}else{
