@@ -210,12 +210,24 @@ if ($doesexistnumrows >= 0 ) {
 			httpGet("../api/v1/?token="+token+"&readmessages="+tmpid+"&count=25", function(resu) {
 				var les = JSON.parse(resu);
 				document.getElementById("messboxsmall").innerHTML = "";
+				var opres = 0;
 				for (var x = 0; x < les.length; x++) {
 					if (les[x].username == "<?php echo preg_replace('/[^a-zA-Z0-9]/', '', $_SESSION["usernamedata"]); ?>") {
-						document.getElementById("messboxsmall").innerHTML += "<div class='clear:both;color:#ffffff;'><div class='smessage'>"+les[x].message+"</div></div>"; // In 0.8 we will include datetime float datetime to right
+						opres = 0;
+						document.getElementById("messboxsmall").innerHTML += "<div style='clear:both;color:#ffffff;padding:5px;display:block;'><div class='smessage'>"+les[x].message+"</div></div>"; // In 0.8 we will include datetime float datetime to right
 					}else{
-						document.getElementById("messboxsmall").innerHTML += "<div class='clear:both;'><div class='susername'>"+les[x].username+"</div></div><div><div class='sopmessage'>"+les[x].message+"</div></div>"; // In 0.8 we will include datetime float datetime to right
+						if (opres == 0) {
+							document.getElementById("messboxsmall").innerHTML += "<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div></div>"; // In 0.8 we will include datetime float datetime to right
+							opres = les[x].username;
+						}else{
+							if (opres == les[x].username) {
+							document.getElementById("messboxsmall").innerHTML += "<div style='clear:both;padding:5px;display:block;'><div class='sopmessage'>"+les[x].message+"</div></div>"; // In 0.8 we will include datetime float datetime to right
+							}else{
+							document.getElementById("messboxsmall").innerHTML += "<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div></div>"; // In 0.8 we will include datetime float datetime to right
+							opres = les[x].username;
 
+							}
+						}
 					}
 				}
 
