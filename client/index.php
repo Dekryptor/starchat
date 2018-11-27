@@ -168,7 +168,7 @@ if ($doesexistnumrows >= 0 ) {
 
 		var contacts = JSON.parse(str);
 		for (var x = 0; x <= contacts.length; x++) {
-			document.getElementById("contacts").innerHTML += "<div class='box' onclick='switchcontact(\""+contacts[x][1]+"\")'><img src='img/user.png' class='pfp'><div class='info'>"+contacts[x][0]+"</div></div>";
+			document.getElementById("contacts").innerHTML += "<div class='box' onclick='switchcontact(\""+contacts[x][1]+"\")'><img src='../img/user.png' class='pfp'><div class='info'>"+contacts[x][0]+"</div></div>";
 		}
 		});
 	}
@@ -212,9 +212,9 @@ if ($doesexistnumrows >= 0 ) {
 				document.getElementById("messboxsmall").innerHTML = "";
 				for (var x = 0; x < les.length; x++) {
 					if (les[x].username == "<?php echo preg_replace('/[^a-zA-Z0-9]/', '', $_SESSION["usernamedata"]); ?>") {
-						document.getElementById("messboxsmall").innerHTML += "<div class='smessage'>"+les[x].message+"</div>"; // In 0.8 we will include datetime float datetime to right
+						document.getElementById("messboxsmall").innerHTML += "<div class='clear:both;color:#ffffff;'><div class='smessage'>"+les[x].message+"</div></div>"; // In 0.8 we will include datetime float datetime to right
 					}else{
-						document.getElementById("messboxsmall").innerHTML += "<div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div>"; // In 0.8 we will include datetime float datetime to right
+						document.getElementById("messboxsmall").innerHTML += "<div class='clear:both;'><div class='susername'>"+les[x].username+"</div></div><div><div class='sopmessage'>"+les[x].message+"</div></div>"; // In 0.8 we will include datetime float datetime to right
 
 					}
 				}

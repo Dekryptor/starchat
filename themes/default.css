@@ -126,14 +126,14 @@ outline: none;
   cursor: pointer;
 }
 .smessage {
-  padding: 3px;
-  margin: 3px;
+  padding: 5px;
   font-size: 16px;
   background-color: #00cc00;
+  color: #ffffff;
   float: right;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 20px;
   border-bottom-right-radius: 0px;
 }
 .sopmessage {
