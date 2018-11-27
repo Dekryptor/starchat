@@ -38,9 +38,9 @@ if ($doesexistnumrows >= 0 ) {
 	
 <head>
   <title>Starchat</title>
+  <link rel="stylesheet" type="text/css" href="../libs/bootstrap/css/bootstrap.min.css">
   <link id="stylesheeta" rel="stylesheet" type="text/css" href="../themes/default.css">
 
-<link rel="stylesheet" type="text/css" href="../libs/bootstrap/css/bootstrap.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
