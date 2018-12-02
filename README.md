@@ -1,6 +1,6 @@
 # Starchat - Chat together
 
-[![Build Status](https://travis-ci.org/07typing/starchat.svg?branch=master)](https://travis-ci.org/07typing/starchat)
+[![Build Status](https://travis-ci.org/nekobit1/starchat.svg?branch=master)](https://travis-ci.org/nekobit1/starchat)
 
 Starchat has a specific goal, to make communication easy again. Starchat is an open source chat program that is hosted on a web server, offering an easy api that lets developers create applications.
 
