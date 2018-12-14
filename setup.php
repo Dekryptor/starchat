@@ -49,7 +49,7 @@ $info = "
 file_put_contents("mysqlinfo.php", $info);
 
 $sql = "CREATE DATABASE ?";
-$funs = $conn->prepare($sql) or die("There was an error in creating your database, try to not use any characters that mysql does not like.");
+$funs = $conn->prepare($sql);
 $funs->bind_param($dbname);
 $funs->execute();
 $conn->close();
