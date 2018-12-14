@@ -24,10 +24,10 @@ if ($_POST["jitsi"] == "true") {
 $info = "
 <?php
 
-\$user = \"$username\";
-\$pass = \"$password\";
-\$mysqlurl = \"$location\";
-\$dbname = \"$dbname\";
+\$user = \"".addslashes($username)."\";
+\$pass = \"".addslashes($password)."\";
+\$mysqlurl = \"".addslashes($location)."\";
+\$dbname = \"".addslashes($dbname)."\";
 \$jitsi = \"true\";
 \$conn = new mysqli(\$mysqlurl, \$user, \$pass, \$dbname);
 ?>
@@ -36,10 +36,10 @@ $info = "
 $info = "
 <?php
 
-\$user = \"$username\";
-\$pass = \"$password\";
-\$mysqlurl = \"$location\";
-\$dbname = \"$dbname\";
+\$user = \"".addslashes($username)."\";
+\$pass = \"".addslashes($password)."\";
+\$mysqlurl = \"".addslashes($location)."\";
+\$dbname = \"".addslashes($dbname)."\";
 \$jitsi = \"false\";
 \$conn = new mysqli(\$mysqlurl, \$user, \$pass, \$dbname);
 ?>
@@ -48,12 +48,10 @@ $info = "
 
 file_put_contents("mysqlinfo.php", $info);
 
-$sql = "CREATE DATABASE $dbname";
-if ($conn->query($sql) === TRUE) {
-echo "Database created successfully!<br>";
-}else{
-echo "Error creating database: ".$conn->error . "<br>";
-}
+$sql = "CREATE DATABASE ?";
+$funs = $conn->prepare($sql) or die("There was an error in creating your database, try to not use any characters that mysql does not like.");
+$funs->bind_param($dbname);
+$funs->execute();
 $conn->close();
 
 $conns = new mysqli($location, $username, $password, $dbname);

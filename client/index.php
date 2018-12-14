@@ -34,7 +34,7 @@ if ($doesexistnumrows >= 0 ) {
 <!DOCTYPE html>
 <html lang="en">
 	
-<!-- Starchat Web Client v0.7.2 -->
+<!-- Starchat Web Client v0.8.0 -->
 	
 <head>
   <title>Starchat</title>

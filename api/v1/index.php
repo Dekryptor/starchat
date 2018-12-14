@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 }
 
 function starchat_error($message) {
-	die($message);
+	die("Starchat Error: ".htmlspecialchars($message));
 }
 
 // We start with the most secure options then slowly drop, great for supporting older releases
@@ -144,10 +144,18 @@ if (isset($_GET["readmessages"])) {
 	}
 	$readmessage = htmlspecialchars($_GET["readmessages"]);
 
-	$checkx = $conn->prepare("SELECT * FROM messages WHERE chatid = ?");
-	$checkx->bind_param('s', $readmessage);
-	$checkx->execute();
-	$keep = $checkx->get_result();
+	if ($read_count == -1) {
+		$checkx = $conn->prepare("SELECT * FROM messages WHERE chatid = ?");
+		$checkx->bind_param('s', $readmessage);
+		$checkx->execute();
+		$keep = $checkx->get_result();
+	}else{
+		$checkx = $conn->prepare("SELECT * FROM messages WHERE chatid = ? ORDER BY id DESC LIMIT ?");
+		$checkx->bind_param('si', $readmessage, $read_count);
+		$checkx->execute();
+		$keep = $checkx->get_result();
+	}
+		
 	
 	$mbuffer[0]["username"] = "!SYSTEM";
 	$mbuffer[0]["datetime"] = "None";

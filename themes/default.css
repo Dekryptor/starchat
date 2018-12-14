@@ -1,5 +1,5 @@
 body {
-  background-color: #000066;
+  background-color: #dbdbdb;
   color: #000000;
   margin: 0;
 }
@@ -9,7 +9,7 @@ body {
   top: 0px;
   height: 60px;
   width: 100%;
-  background-color: #000066;
+  background-color: #dbdbdb;
   color: #000000;
 }
 #contacts {
@@ -64,14 +64,14 @@ body {
   top: 2px;
   width: 55px;
   height: 55px;
-  filter: invert(95%);
+  filter: invert(5%);
 }
 .logotext {
   position: relative;
   top: 5px;
   left: 10px;
   font-size: 20px;
-  color: #ffffff;
+  color: #000000;
 }
 * {
   font-family: arial;

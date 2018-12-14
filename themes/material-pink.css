@@ -127,15 +127,6 @@ border-bottom: 2px solid #f4258c;
   background-color: #cfcfcf;
   cursor: pointer;
 }
-.smessage {
-  padding: 10px;
-  padding-bottom: 10px;
-  font-size: 16px;
-  border-top: 1px solid #dadada;
-  margin-left: 5px;
-  margin-right: 5px;
-  font-weight: 400;
-}
 #settings {
   position: fixed;
   padding: 30px;
@@ -186,6 +177,36 @@ height: 100%;
 position: absolute;
 left: 20px;
 top: 20px;
+}
+.smessage {
+  padding: 5px;
+  font-size: 16px;
+  background-color: #00cc00;
+  color: #ffffff;
+  float: right;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 0px;
+  max-width: 400px;
+}
+.sopmessage {
+  padding: 3px;
+  margin: 3px;
+  font-size: 16px;
+  background-color: #e6e6e6;
+  color: #000000;
+  float: left;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 10px;
+  max-width: 400px;
+}
+.susername {
+padding: 3px;
+font-size: 10px;
+text-transform: uppercase;
 }
 @media only screen and (max-width: 800px) {
 #contacts {
