@@ -48,7 +48,9 @@ $info = "
 
 file_put_contents("mysqlinfo.php", $info);
 
-$sql = "CREATE DATABASE ?";
+// The database will not be created if it does not exist
+// Setup will crash otherwise
+$sql = "CREATE DATABASE IF NOT EXISTS ?";
 $funs = $conn->prepare($sql);
 $funs->bind_param($dbname);
 $funs->execute();
@@ -128,6 +130,7 @@ border: 1px solid #000000;
 <div class="pushed">
 <h1>Starchat Install</h1>
 <p>You are here because you are doing the install. To proceed, the installer will create and setup mysql databases. Once this setup is done, starchat should be ready for production.</p>
+<i>Note: The setup file will be removed once you press submit</i>
 <form action="setup.php" method="post">
 <p>Lets setup some preferences first</p>
 <b>Do you want Jit.si support in web client (video calling)?</b><br>

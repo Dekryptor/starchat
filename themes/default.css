@@ -19,7 +19,7 @@ body {
   left:0px;
   width: 250px;
   height: calc(100% - 60px);
-  background-color: #fcfcfc;
+  background-color: #ffffff;
   transition: .5s;
   overflow-y: auto;
   overflow-x: hidden;
@@ -117,15 +117,15 @@ outline: none;
   cursor: pointer;
 }
 .smessage {
-  padding: 5px;
+  padding: 7px;
   font-size: 16px;
-  background-color: #00cc00;
+  background-color: #0263ff;
   color: #ffffff;
   float: right;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 0px;
+  border-bottom-right-radius: 3px;
   max-width: 400px;
 }
 .sopmessage {

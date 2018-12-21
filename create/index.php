@@ -19,23 +19,27 @@ die("You need a username");
 }
 
 if (isset($_POST["password"])) {
-if(preg_match('/(.*){3,50}/', $_POST["password"])) {
-    echo "Password is set, will be encrypted";
+  if(strlen($_POST["password"]) >= 8) {
+    if (strlen($_POST["password"]) <= 256) {
+      echo "Password is set, will be encrypted";
+    }else{
+      die("Please choose a password above 8 characters and below 256 characters");
+    }
+  }else{
+    die("Please choose a password above 8 characters and below 256 characters");
+  }
 }else{
-die("Please choose a password above 3+ characters and below 50 characters");
-}
-}else{
-die("You need to enter a password for security reasons");
+  die("You need to enter a password for major security reasons");
 }
 
-function generateRandomString($length = 40) {
-    $characters = '0123456789!?-+=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
+function generateRandomString($length = 32) {
+	if (function_exists("random_bytes")) {
+		return bin2hex(random_bytes($length)); // Supported Random Generator
+	} elseif (function_exists("openssl_random_pseudo_bytes")) {
+		return bin2hex(openssl_random_pseudo_bytes($length)); // Supported Random Generator
+	} else {
+		starchat_error("Secure random number not generated, your PHP version is most likely out of date");
+	}
 }
 
 $resu = $conn->prepare("SELECT id FROM accounts WHERE username = ?");
