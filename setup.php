@@ -53,7 +53,7 @@ file_put_contents("mysqlinfo.php", $info);
 // DO NOT use prepared statement to create object
 // We instead will use preg_replace and mysqli real escape string, that is safe enough
 // In the future, do not use real escape string, it is insecure
-$sql = "CREATE DATABASE IF NOT EXISTS ".preg_replace($conn->real_escape_string($dbname), "[^a-zA-Z0-9]", "");
+$sql = "CREATE DATABASE IF NOT EXISTS ".$conn->real_escape_string($dbname);
 if ($conn->query($sql) === TRUE) {
 	// Database created
 }else{
