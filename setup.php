@@ -50,11 +50,15 @@ file_put_contents("mysqlinfo.php", $info);
 
 // The database will not be created if it does not exist
 // Setup will crash otherwise
-$sql = "CREATE DATABASE IF NOT EXISTS ?";
-$funs = $conn->prepare($sql);
-$funs->bind_param($dbname);
-$funs->execute();
-$conn->close();
+// DO NOT use prepared statement to create object
+// We instead will use preg_replace and mysqli real escape string, that is safe enough
+// In the future, do not use real escape string, it is insecure
+$sql = "CREATE DATABASE IF NOT EXISTS ".preg_replace($conn->real_escape_string($dbname), "[^a-zA-Z0-9]", "");
+if ($conn->query($sql) === TRUE) {
+	// Database created
+}else{
+	echo "Error creating database: " . $conn->error . "<br>";
+}
 
 $conns = new mysqli($location, $username, $password, $dbname);
 
