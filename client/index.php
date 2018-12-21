@@ -82,8 +82,9 @@ if ($doesexistnumrows >= 0 ) {
 	var calling = "no";
 	var jitsi = '<?php echo htmlspecialchars($jitsi); ?>';
 	var mesapn = [];
-	var prevmsg = false;
-	var unread = 0;
+  var oldmesapn = [];
+  var unread = 0;
+  var oldmessage = 0;
 
 	function opensettings() {
 		document.getElementById("settings").style.visibility = "visible";
@@ -184,26 +185,33 @@ if ($doesexistnumrows >= 0 ) {
 		tmpid = vals;
 	}
 
-	function meshan(x, contacts) {
-		httpGet("../api/v1/?token="+token+"&readmessages="+contacts[x][1]+"&count=2", function(data2) {
-			if (prevmsg == true) {
-				if (mesapn[x] != data2) {
-					if (unread == 0) {
-					var audio = new Audio('../sounds/notification.wav');
-					audio.play();
-					document.title = "New Message!!";
-					unread = 1;
-					}
-				}
-			}else{
-				setTimeout(function() {
-					mesapn[x] = data2;
-					prevmsg = true;
-					// do nothing
-				}, 5000);
-			}
+  function meshan(x, contacts) {
+		httpGet("../api/v1/?token="+token+"&readmessages="+contacts[x][1]+"&count=5", function(data) {
+      mesapn[x] = data;
+      if (document.hasFocus() == false) {
+        if (oldmesapn[x] != mesapn[x]) {
+          var audio = new Audio('../sounds/notification.wav');
+          audio.play();
+          unread += 1;
+          document.title = "Starchat("+unread+"+)";
+        }
+      }
+      oldmesapn[x] = data;
 		});
 	}
+
+  if (mesapn == []) {
+    httpGet("../api/v1/?token="+token+"&getcontacts=yes", function(data) {
+      var contacts = JSON.parse(data);
+      for (var x = 0; x <= contacts.length-1; x++) {
+        meshan(x, contacts);
+      }
+    });
+    oldmesapn = [];
+  }
+
+
+
 
 	setInterval(function() {
 		if (tmpid != "EMPTY") {
@@ -232,32 +240,26 @@ if ($doesexistnumrows >= 0 ) {
 				}
 
 				// scroll to bottom
-				var objDiv = document.getElementById("messboxsmall");
-				objDiv.scrollTop = objDiv.scrollHeight;
-			});
+        if (oldmessage != resu) {
+  				var objDiv = document.getElementById("messboxsmall");
+  				objDiv.scrollTop = objDiv.scrollHeight;
+        }
+        oldmessage = resu;
+      });
 		}
 
-		if (document.hasFocus() == false) {
-			httpGet("../api/v1/?token="+token+"&getcontacts=yes", function(data) {
-			var contacts = JSON.parse(data);
-			for (var x = 0; x <= contacts.length-1; x++) {
-			//console.log(contacts[x][1]);
-			meshan(x, contacts);
-			}
-			});
-		}else{
-			if (unread == 1) {
-			unread = 0;
-			prevmsg = false;
-			document.title = "Starchat";
-			httpGet("../api/v1/?token="+password+"&getcontacts=yes", function(data) {
-				var contacts = JSON.parse(data);
-				for (var x = 0; x <= contacts.length-1; x++) {
-					//console.log(contacts[x][1]);
-					meshan(x, contacts);
-				}
-				});
-			}
+    httpGet("../api/v1/?token="+token+"&getcontacts=yes", function(data) {
+      if (unread == 0) {
+        var contacts = JSON.parse(data);
+        for (var x = 0; x <= contacts.length-1; x++) {
+          meshan(x, contacts);
+        }
+      }
+    });
+
+		if (document.hasFocus()) {
+      unread = 0;
+      document.title = "Starchat";
 		}
 
 	},2000)
