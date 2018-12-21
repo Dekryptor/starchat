@@ -150,7 +150,7 @@ if (isset($_GET["readmessages"])) {
 		$checkx->execute();
 		$keep = $checkx->get_result();
 	}else{
-		$checkx = $conn->prepare("SELECT * FROM messages WHERE chatid = ? ORDER BY id LIMIT ?");
+		$checkx = $conn->prepare("(SELECT * FROM messages WHERE chatid = ? ORDER BY id DESC LIMIT ?) ORDER BY id ASC");
 		$checkx->bind_param('si', $readmessage, $read_count);
 		$checkx->execute();
 		$keep = $checkx->get_result();

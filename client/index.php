@@ -33,9 +33,9 @@ if ($doesexistnumrows >= 0 ) {
 
 <!DOCTYPE html>
 <html lang="en">
-	
+
 <!-- Starchat Web Client v0.8.0 -->
-	
+
 <head>
   <title>Starchat</title>
   <link rel="stylesheet" type="text/css" href="../libs/bootstrap/css/bootstrap.min.css">
@@ -67,7 +67,7 @@ if ($doesexistnumrows >= 0 ) {
 	<a href="#" onclick="closesettings()">Close Options</a>
 	<h1>Options</h1>
 	<p><select id="theme" onchange="themeChange();">
-    <option value="default">Default</option> 
+    <option value="default">Default</option>
     <option value="night-blue">Night Blue</option>
     <option value="hacker-green">Hacker Green</option>
     <option value="sky-blue">Sky Blue</option>
@@ -205,7 +205,7 @@ if ($doesexistnumrows >= 0 ) {
 		});
 	}
 
-	setInterval(function() { 
+	setInterval(function() {
 		if (tmpid != "EMPTY") {
 			httpGet("../api/v1/?token="+token+"&readmessages="+tmpid+"&count=25", function(resu) {
 				var les = JSON.parse(resu);

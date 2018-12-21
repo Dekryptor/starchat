@@ -1,5 +1,5 @@
 body {
-  background-color: #dbdbdb;
+  background-color: #eaeaea;
   color: #000000;
   margin: 0;
 }
@@ -9,7 +9,7 @@ body {
   top: 0px;
   height: 60px;
   width: 100%;
-  background-color: #dbdbdb;
+  background-color: #eaeaea;
   color: #000000;
 }
 #contacts {
@@ -48,15 +48,6 @@ body {
   left: 65px;
   font-family: arial;
   top: -30px;
-}
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-thumb {
-  background: #ddd;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #bbb;
 }
 .logo {
   position: relative;
