@@ -82,9 +82,9 @@ if ($doesexistnumrows >= 0 ) {
 	var calling = "no";
 	var jitsi = '<?php echo htmlspecialchars($jitsi); ?>';
 	var mesapn = [];
-  var oldmesapn = [];
-  var unread = 0;
-  var oldmessage = 0;
+	var oldmesapn = [];
+	var unread = 0;
+	var oldmessage = 0;
 
 	function opensettings() {
 		document.getElementById("settings").style.visibility = "visible";

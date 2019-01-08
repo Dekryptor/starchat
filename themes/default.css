@@ -1,5 +1,5 @@
 body {
-  background-color: #ffffff;
+  background-color: #66ff66;
   color: #000000;
   margin: 0;
 }
@@ -9,8 +9,7 @@ body {
   top: 0px;
   height: 60px;
   width: 100%;
-  background-color: #ffffff;
-  box-shadow: 0px 0px 5px #cccccc;
+  background-color: #66ff66;
   color: #000000;
 }
 #contacts {
@@ -24,6 +23,7 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   border-right: 1px solid #cccccc;
+  border-top-left-radius: 25px;
   box-shadow: 0px 0px 5px #cccccc;
 }
 .box {
@@ -81,6 +81,7 @@ outline: none;
   width: calc(100% - 250px);
   height: calc(100% - 100px);
   overflow: hidden;
+  border-top-right-radius: 25px;
   background-color: #fcfcfc;
 }
 #messboxsmall {
@@ -118,6 +119,7 @@ outline: none;
 }
 .smessage {
   padding: 7px;
+  margin: 3px;
   font-size: 16px;
   background-color: #0263ff;
   color: #ffffff;
@@ -129,16 +131,16 @@ outline: none;
   max-width: 400px;
 }
 .sopmessage {
-  padding: 3px;
+  padding: 7px;
   margin: 3px;
   font-size: 16px;
   background-color: #e6e6e6;
   color: #000000;
   float: left;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 10px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 20px;
   max-width: 400px;
 }
 #settings {
