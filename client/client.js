@@ -28,8 +28,8 @@ if (jitsi === undefined) {
 	jitsi = 'true';
 }
 
-var mesapn = [];
-var oldmesapn = [];
+var meslist = [];
+var oldmeslist = [];
 var unread = 0;
 var oldmessage = 0;
 
@@ -151,73 +151,100 @@ function meshan(x, contacts) {
 			'count': 5
 		},
 		success: function(data) {
-			mesapn[x] = data;
+			meslist[x] = data;
 			if (document.hasFocus() == false) {
-				if (oldmesapn[x] != mesapn[x]) {
+				if (oldmeslist[x] != meslist[x]) {
 					var audio = new Audio('../sounds/notification.wav');
 					audio.play();
 					unread += 1;
 					document.title = "Starchat("+unread+"+)";
 				}
 			}
-			oldmesapn[x] = data;
+			oldmeslist[x] = data;
 		}
 	});
 }
 
-if (mesapn == []) {
-	// TODO here
-	$.ajax("../api/v1/?token="+token+"&getcontacts=yes", function(data) {
-		var contacts = JSON.parse(data);
-		for (var x = 0; x <= contacts.length-1; x++) {
-			meshan(x, contacts);
+if (meslist == []) {
+	$.ajax({
+		url: "../api/v1/",
+		type: 'GET',
+		data: {
+			'token': token,
+			'getcontacts': 'true'
 		}
-	});
-	oldmesapn = [];
-}
-
-setInterval(function() {
-	if (tmpid != null) {
-		httpGet("../api/v1/?token="+token+"&readmessages="+tmpid+"&count=25", function(resu) {
-			var les = JSON.parse(resu);
-			document.getElementById("messboxsmall").innerHTML = "";
-			var opres = 0;
-			for (var x = 0; x < les.length; x++) {
-				if (les[x].username == username) {
-					opres = 0;
-				}
-			}
-		}
-		document.getElementById("messboxsmall").innerHTML += "<div style='clear:both;color:#ffffff;padding:5px;display:block;'><div class='smessage'>"+les[x].message+"</div></div>"; // In 0.8 we will include datetime float datetime to right
-	}else{
-		if (opres == 0) {
-			document.getElementById("messboxsmall").innerHTML += "<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div></div>"; // In 0.8 we will include datetime float datetime to right
-			opres = les[x].username;
-		}else{
-			if (opres == les[x].username) {
-				document.getElementById("messboxsmall").innerHTML += "<div style='clear:both;padding:5px;display:block;'><div class='sopmessage'>"+les[x].message+"</div></div>"; // In 0.8 we will include datetime float datetime to right
-			}else{
-			document.getElementById("messboxsmall").innerHTML += "<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div></div>"; // In 0.8 we will include datetime float datetime to right
-					opres = les[x].username;
-			}
-		}
-	}
-}
-
-// scroll to bottom
-if (oldmessage != resu) {
-	var objDiv = document.getElementById("messboxsmall");
-	objDiv.scrollTop = objDiv.scrollHeight;
-}
-oldmessage = resu;
-});
-	}
-
-	httpGet("../api/v1/?token="+token+"&getcontacts=yes", function(data) {
-		if (unread == 0) {
+		success: function(data) {
 			var contacts = JSON.parse(data);
 			for (var x = 0; x <= contacts.length-1; x++) {
 				meshan(x, contacts);
+			}
+		}
+	});
+	oldmeslist = [];
+}
+
+// Loop for grabbing messages
+setInterval(function() {
+	if (tmpid != null) {
+		$.ajax({
+			url: "../api/v1/",
+			type: 'GET',
+			data: {
+				'token': token,
+				'readmessages': tmpid,
+				'count': 25
+			},
+			dataType: 'json',
+			success: function(les) {
+				$("#messboxsmall").html("");
+				var opres = 0;
+				for (var x = 0; x < les.length; x++) {
+					if (les[x].username == username) {
+						opres = 0;
+					}
+				}
+			}
+		}
+		$("#messboxsmall").append("<div style='clear:both;color:#ffffff;padding:5px;display:block;'><div class='smessage'>"+les[x].message+"</div></div>");
+	}else{
+		// Decide weather user sent message or another person sent message in bubbles
+		if (opres == 0) {
+			// You sent message
+			$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div></div>");
+			opres = les[x].username;
+		}else{
+			if (opres == les[x].username) {
+				// Other user sent message
+				$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='sopmessage'>"+les[x].message+"</div></div>");
+			}else{
+				// Other user sent message for the first time (in a row), show there username
+				$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div></div>");
+				opres = les[x].username;
+			}
+		}
+	}
+
+
+	// scroll to bottom
+	if (oldmessage != resu) {
+		var objDiv = document.getElementById("messboxsmall");
+		objDiv.scrollTop = objDiv.scrollHeight;
+	}
+	oldmessage = resu;
+
+	$.ajax({
+		url: "../api/v1/",
+		type: 'GET',
+		data: {
+			'token': token,
+			'getcontacts': true
+		},
+		dataType: 'json',
+		success: function(contacts) {
+			if (unread == 0) {
+				for (var x = 0; x <= contacts.length-1; x++) {
+					meshan(x, contacts);
+				}
 			}
 		}
 	});
@@ -232,36 +259,50 @@ oldmessage = resu;
 function sendmessage() {
 	var usermessage = document.getElementById("chatbox").value;
 	usermessage = encodeURIComponent(usermessage);
-	httpGet("../api/v1/?token="+token+"&sendmessage="+usermessage+"&sendmessageto="+tmpid, function() {
-		document.getElementById("chatbox").value = "";
-		unread = 0;
-		prevmsg = false;
-		httpGet("../api/v1/?token="+token+"&getcontacts=yes", function(data) {
-			var contacts = JSON.parse(data);
-			for (var x = 0; x <= contacts.length-1; x++) {
-//console.log(contacts[x][1]);
-meshan(x, contacts);
-}
-});
+	$.ajax({
+		url: "../api/v1/",
+		type: 'GET',
+		data: {
+			'token': token,
+			'sendmessage': usermessage,
+			'sendmessageto': tmpid
+		},
+		dataType: 'json',
+		success: function(data) {
+			document.getElementById("chatbox").value = "";
+			unread = 0;
+			prevmsg = false;
+			$.ajax({
+				url: "../api/v1/",
+				type: 'GET',
+				data: {
+					'token': token,
+					'getcontacts': 'true'
+				},
+				dataType: 'json',
+				success: function(contacts) {
+					var contacts = JSON.parse(data);
+					for (var x = 0; x <= contacts.length-1; x++) {
+						//console.log(contacts[x][1]);
+						meshan(x, contacts);
+					}
+				}
+			});
+		}
 	});
 }
 
 function addacontact() {
 	var toadd = encodeURIComponent(prompt("Please Enter Username to Add"));
-	httpGet("../api/v1/?token="+token+"&addcontact="+toadd, function(code) {
-		location.reload()
+	$.ajax({
+		url: "../api/v1/",
+		type: 'GET',
+		data: {
+			'token': token,
+			'addcontact': toadd
+		}
+		success: function(code) {
+			location.reload()
+		}
 	});
-}
-
-function addbcontact() {
-	if (tmpid == null) {
-		alert("Please actually select a contact");
-	}else{
-		var toadd = prompt("Please Enter Username to Add");
-		httpGet("../api/v1/?token="+token+"&addtoconvo="+toadd+"&convoid="+tmpid, function(code) {
-			if (code != "\n0") {
-				alert("User not found or the conversation you are in does not exist (you should not get the second reason on the web client)");
-			}
-		});
-	}
 }
