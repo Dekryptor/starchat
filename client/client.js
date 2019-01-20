@@ -174,7 +174,7 @@ if (meslist == []) {
 		data: {
 			'token': token,
 			'getcontacts': 'true'
-		}
+		},
 		success: function(data) {
 			var contacts = JSON.parse(data);
 			for (var x = 0; x <= contacts.length-1; x++) {
@@ -302,7 +302,7 @@ function addacontact() {
 		data: {
 			'token': token,
 			'addcontact': toadd
-		}
+		},
 		success: function(code) {
 			location.reload()
 		}
