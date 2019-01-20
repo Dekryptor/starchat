@@ -114,6 +114,7 @@ function httpGet(theUrl, callback) {
 }
 
 function splitcontacts() {
+	$("#contacts").html("<div class='loading'></div>")
 	$.ajax({
 		url: "../api/v1/", 
 		type: 'GET',
@@ -138,6 +139,7 @@ function switchcontact(vals) {
 			$("#topbar").append("<img src='../img/call.png' id='call' onclick='startcall()'>");
 		}
 	}
+	$("messboxsmall").html("<div class='loading'></div>");
 	tmpid = vals;
 }
 
