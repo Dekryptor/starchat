@@ -203,36 +203,34 @@ setInterval(function() {
 				for (var x = 0; x < les.length; x++) {
 					if (les[x].username == username) {
 						opres = 0;
+						$("#messboxsmall").append("<div style='clear:both;color:#ffffff;padding:5px;display:block;'><div class='smessage'>"+les[x].message+"</div></div>");
+					}else{
+						// Decide weather user sent message or another person sent message in bubbles
+						if (opres == 0) {
+							// You sent message
+							$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div></div>");
+							opres = les[x].username;
+						}else{
+							if (opres == les[x].username) {
+								// Other user sent message
+								$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='sopmessage'>"+les[x].message+"</div></div>");
+							}else{
+								// Other user sent message for the first time (in a row), show there username
+								$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div></div>");
+								opres = les[x].username;
+							}
+						}
 					}
 				}
-			}
-		}
-		$("#messboxsmall").append("<div style='clear:both;color:#ffffff;padding:5px;display:block;'><div class='smessage'>"+les[x].message+"</div></div>");
-	}else{
-		// Decide weather user sent message or another person sent message in bubbles
-		if (opres == 0) {
-			// You sent message
-			$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div></div>");
-			opres = les[x].username;
-		}else{
-			if (opres == les[x].username) {
-				// Other user sent message
-				$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='sopmessage'>"+les[x].message+"</div></div>");
-			}else{
-				// Other user sent message for the first time (in a row), show there username
-				$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div></div>");
-				opres = les[x].username;
+				// scroll to bottom
+				if (oldmessage != resu) {
+					var objDiv = document.getElementById("messboxsmall");
+					objDiv.scrollTop = objDiv.scrollHeight;
+				}
+				oldmessage = resu;
 			}
 		}
 	}
-
-
-	// scroll to bottom
-	if (oldmessage != resu) {
-		var objDiv = document.getElementById("messboxsmall");
-		objDiv.scrollTop = objDiv.scrollHeight;
-	}
-	oldmessage = resu;
 
 	$.ajax({
 		url: "../api/v1/",
