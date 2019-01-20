@@ -78,7 +78,7 @@ if ($doesexistrows >= 0 ) {
 			$token_query->bind_param('sss', $token, $_POST["username"], $token_date);
 			$token_query->execute();
 			setcookie("stoken", $token, time() + (86400 * 30), "/");
-			setcookie("usernamedata", $_POST["username"])
+			setcookie("usernamedata", $_POST["username"]);
 
 			$conn->close();
 			header("Location: client/");
