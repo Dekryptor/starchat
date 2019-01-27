@@ -89,7 +89,7 @@ if ($doesexistnumrows >= 0 ) {
 		</select></p>
 		<p><input type="button" value="Add Contact" onclick="addacontact()" class="btn btn-light"><!-- TODO change this dialog to own function instead of alert --></p>
 		<p><input type="button" value="Add Contact to active conversation" disabled="disabled" onclick="addbcontact()" class="btn btn-light"> (group chats) (Currently Broken)</p>
-		<p><a href="../logout.php" class="btn btn-danger">Logout</a></p>
+		<p><a href="logout.php" class="btn btn-danger">Logout</a></p>
 	</div>
 	<script>
 		var jitsi = '<?php echo htmlspecialchars($jitsi); ?>';
