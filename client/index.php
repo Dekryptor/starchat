@@ -58,6 +58,7 @@ if ($doesexistnumrows >= 0 ) {
 	<link id="stylesheeta" rel="stylesheet" type="text/css" href="../themes/default.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script src="../libs/jquery.min.js"></script>
+	<script src="../libs/autobahn.min.js"></script>
 </head>
 <body>
 	<div id="messbox">
