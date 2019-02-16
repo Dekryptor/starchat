@@ -65,12 +65,12 @@ if ($doesexistnumrows >= 0 ) {
 
 		</div>
 	</div>
-	<input type="text" id="chatbox" onkeypress="checkkey(event)">
-	<input type="button" value="Send" onclick="sendmessage()" id="chatboxbutton">
+	<input type="text" id="chatbox" onkeypress="checkKey(event)">
+	<input type="button" value="Send" onclick="sendMessage()" id="chatboxbutton">
 	<div id="contacts"> <div class="loading"></div> </div>
 
 	<div id="topbar">
-		<img src="../img/hammenu.png" class="logo" onclick="opensettings()"> <span class="logotext">Starchat</span>
+		<img src="../img/hammenu.png" class="logo" onclick="openSettings()"> <span class="logotext">Starchat</span>
 	</div>
 
 	<div id="callform">
@@ -78,7 +78,7 @@ if ($doesexistnumrows >= 0 ) {
 	</div>
 
 	<div id="settings">
-		<a href="#" onclick="closesettings()">Close Options</a>
+		<a href="#" onclick="closeSettings()">Close Options</a>
 		<h1>Options</h1>
 		<p><select id="theme" onchange="themeChange();">
 			<option value="default">Default</option>
@@ -87,8 +87,7 @@ if ($doesexistnumrows >= 0 ) {
 			<option value="sky-blue">Sky Blue</option>
 			<option value="material-pink">Material Pink</option>
 		</select></p>
-		<p><input type="button" value="Add Contact" onclick="addacontact()" class="btn btn-light"><!-- TODO change this dialog to own function instead of alert --></p>
-		<p><input type="button" value="Add Contact to active conversation" disabled="disabled" onclick="addbcontact()" class="btn btn-light"> (group chats) (Currently Broken)</p>
+		<p><input type="button" value="Add Contact" onclick="addContact()" class="btn btn-light"><!-- TODO change this dialog to own function instead of alert --></p>
 		<p><a href="logout.php" class="btn btn-danger">Logout</a></p>
 	</div>
 	<script>

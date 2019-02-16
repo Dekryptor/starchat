@@ -3,7 +3,7 @@
 // Copyright (c) 2018-2019 NekoBit
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
+// of this software and associated documentation firesult (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
@@ -33,7 +33,7 @@ var oldmeslist = [];
 var unread = 0;
 var oldmessage = 0;
 
-function opensettings() {
+function openSettings() {
 	$("#settings").css({"visibility": "visible"});
 }
 
@@ -60,9 +60,8 @@ function getCookie(cname) {
 	return "";
 }
 
-
 function swapSheet(sheet) {
-	document.getElementById("stylesheeta").setAttribute("href", sheet);
+	document.getElementById("styresultheeta").setAttribute("href", sheet);
 }
 
 if (getCookie("starchattheme") !== "") {
@@ -77,29 +76,29 @@ function themeChange() {
 	swapSheet(getCookie("starchattheme"));
 }
 
-function startcall() {
+function startCall() {
 	if (calling === true) {
 		endcall();
 	}else{
-		$("#callform").html("<button id='closeb' onclick='endcall()'>Close (end call)</button><iframe src='https://meet.jit.si/"+tmpid+"' allow='microphone; camera'>");
+		$("#callform").html("<button id='closeb' onclick='endCall()'>Close (end call)</button><iframe src='https://meet.jit.si/"+tmpid+"' allow='microphone; camera'>");
 		$("#callform").css({"visibility": "visible"});
 		calling = true;
 	}
 }
 
-function endcall() {
+function endCall() {
 	$("#callform").html("");
 	$("#callform").css({"visibility": "hidden"});
 	calling = false;
 }
 
-function closesettings() {
+function closeSettings() {
 	$("#settings").css({"visibility": "hidden"});
 }
 
-function checkkey(event) {
+function checkKey(event) {
 	if (event.key == "Enter") {
-		sendmessage();
+		sendMessage();
 	}
 }
 
@@ -113,10 +112,10 @@ function httpGet(theUrl, callback) {
 	xmlHttp.send(null);
 }
 
-function splitcontacts() {
+function loadContacts() {
 	$("#contacts").html("<div class='loading'></div>")
 	$.ajax({
-		url: "../api/v1/", 
+		url: "../api/v1/",
 		type: 'GET',
 		data: {
 			"token": token,
@@ -124,26 +123,27 @@ function splitcontacts() {
 		},
 		dataType: 'json',
 		success: function(contacts) {
-			for (var x = 0; x <= contacts.length; x++) {
-				$("#contacts").append("<div class='box' onclick='switchcontact(\""+contacts[x][1]+"\")'><img src='../img/user.png' class='pfp'><div class='info'>"+contacts[x][0]+"</div></div>");
+			$("#contacts").html(""); // Clear result to remove loading animation
+			for (var x = 0; x <= contacts.length-1; x++) {
+				$("#contacts").append("<div class='box' onclick='switchContacts(\""+contacts[x][1]+"\")'><img src='../img/user.png' class='pfp'><div class='info'>"+contacts[x][0]+"</div></div>");
 			}
 		}
 	});
 }
 
-splitcontacts(); // the function is defined, we run the code, just once for now
+loadContacts(); // the function is defined, we run the code, just once for now
 
-function switchcontact(vals) {
+function switchContacts(vals) {
 	if (tmpid == null) {
 		if (jitsi == 'true') {
-			$("#topbar").append("<img src='../img/call.png' id='call' onclick='startcall()'>");
+			$("#topbar").append("<img src='../img/call.png' id='call' onclick='startCall()'>");
 		}
 	}
-	$("messboxsmall").html("<div class='loading'></div>");
+	$("#messboxsmall").html("<div class='loading'></div>");
 	tmpid = vals;
 }
 
-function meshan(x, contacts) {
+function checkNotification(x, contacts) {
 	$.ajax({
 		url: "../api/v1/",
 		type: 'GET',
@@ -175,10 +175,10 @@ if (meslist == []) {
 			'token': token,
 			'getcontacts': 'true'
 		},
-		success: function(data) {
-			var contacts = JSON.parse(data);
+		dataType: 'json',
+		success: function(contacts) {
 			for (var x = 0; x <= contacts.length-1; x++) {
-				meshan(x, contacts);
+				checkNotification(x, contacts);
 			}
 		}
 	});
@@ -197,37 +197,37 @@ setInterval(function() {
 				'count': 25
 			},
 			dataType: 'json',
-			success: function(les) {
+			success: function(result) {
 				$("#messboxsmall").html("");
 				var opres = 0;
-				for (var x = 0; x < les.length; x++) {
-					if (les[x].username == username) {
+				for (var x = 0; x < result.length; x++) {
+					if (result[x].username == username) {
 						opres = 0;
-						$("#messboxsmall").append("<div style='clear:both;color:#ffffff;padding:5px;display:block;'><div class='smessage'>"+les[x].message+"</div></div>");
+						$("#messboxsmall").append("<div style='clear:both;color:#ffffff;padding:5px;display:block;'><div class='smessage'>"+result[x].message+"</div></div>");
 					}else{
-						// Decide weather user sent message or another person sent message in bubbles
+						// Decide weather user sent message or another person sent message in bubbresult
 						if (opres == 0) {
 							// You sent message
-							$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div></div>");
-							opres = les[x].username;
+							$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+result[x].username+"</div><div class='sopmessage'>"+result[x].message+"</div></div>");
+							opres = result[x].username;
 						}else{
-							if (opres == les[x].username) {
+							if (opres == result[x].username) {
 								// Other user sent message
-								$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='sopmessage'>"+les[x].message+"</div></div>");
+								$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='sopmessage'>"+result[x].message+"</div></div>");
 							}else{
 								// Other user sent message for the first time (in a row), show there username
-								$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+les[x].username+"</div><div class='sopmessage'>"+les[x].message+"</div></div>");
-								opres = les[x].username;
+								$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+result[x].username+"</div><div class='sopmessage'>"+result[x].message+"</div></div>");
+								opres = result[x].username;
 							}
 						}
 					}
 				}
 				// scroll to bottom
-				if (oldmessage != resu) {
+				if (oldmessage != result) {
 					var objDiv = document.getElementById("messboxsmall");
 					objDiv.scrollTop = objDiv.scrollHeight;
 				}
-				oldmessage = resu;
+				oldmessage = result;
 			}
 		});
 	}
@@ -243,7 +243,7 @@ setInterval(function() {
 		success: function(contacts) {
 			if (unread == 0) {
 				for (var x = 0; x <= contacts.length-1; x++) {
-					meshan(x, contacts);
+					checkNotification(x, contacts);
 				}
 			}
 		}
@@ -256,9 +256,8 @@ setInterval(function() {
 
 },2000)
 
-function sendmessage() {
+function sendMessage() {
 	var usermessage = document.getElementById("chatbox").value;
-	usermessage = encodeURIComponent(usermessage);
 	$.ajax({
 		url: "../api/v1/",
 		type: 'GET',
@@ -281,10 +280,9 @@ function sendmessage() {
 				},
 				dataType: 'json',
 				success: function(contacts) {
-					var contacts = JSON.parse(data);
 					for (var x = 0; x <= contacts.length-1; x++) {
 						//console.log(contacts[x][1]);
-						meshan(x, contacts);
+						checkNotification(x, contacts);
 					}
 				}
 			});
@@ -292,7 +290,7 @@ function sendmessage() {
 	});
 }
 
-function addacontact() {
+function addContact() {
 	var toadd = encodeURIComponent(prompt("Please Enter Username to Add"));
 	$.ajax({
 		url: "../api/v1/",
