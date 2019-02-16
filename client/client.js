@@ -229,7 +229,7 @@ setInterval(function() {
 				}
 				oldmessage = resu;
 			}
-		}
+		});
 	}
 
 	$.ajax({
