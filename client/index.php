@@ -83,10 +83,6 @@ if ($doesexistnumrows >= 0 ) {
 		<h1>Options</h1>
 		<p><select id="theme" onchange="themeChange();">
 			<option value="default">Default</option>
-			<option value="night-blue">Night Blue</option>
-			<option value="hacker-green">Hacker Green</option>
-			<option value="sky-blue">Sky Blue</option>
-			<option value="material-pink">Material Pink</option>
 		</select></p>
 		<p><input type="button" value="Add Contact" onclick="addContact()" class="btn btn-light"><!-- TODO change this dialog to own function instead of alert --></p>
 		<p><a href="logout.php" class="btn btn-danger">Logout</a></p>

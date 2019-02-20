@@ -20,22 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Start connection to websocket
-var conn = new autobahn.Connection({url: 'ws://127.0.0.1:8080/'});
 var tmpid = null;
 var calling = false;
 if (jitsi === undefined) {
 	// True and false in string because it is derived from a PHP variable
 	jitsi = 'true';
 }
-
-conn.onopen = function(sess) {
-	function onevent(args) {
-		console.log("Event:", args[0]);
-	}
-};
-
-connection.open();
 
 var meslist = [];
 var oldmeslist = [];

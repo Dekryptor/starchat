@@ -137,22 +137,10 @@ die("END");
 <html lang="en">
 <head>
 	<title>Starchat Setup</title>
-	<style>
-	body {
-		background-color: #afafaf;
-		color: black;
-		font-family: arial;
-	}
-	.pushed {
-		padding: 60px;
-		margin: 15px;
-		background-color: #ffffff;
-		border: 1px solid #000000;
-	}
-</style>
+	<link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
 </head>
 <body>
-	<div class="pushed">
+	<div class="container">
 		<h1>Starchat Install</h1>
 		<p>You are here because you are doing the install. To proceed, the installer will create and setup mysql databases. Once this setup is done, starchat should be ready for production.</p>
 		<i>Note: The setup file will be removed once you press submit</i>
@@ -161,11 +149,11 @@ die("END");
 			<b>Do you want Jit.si support in web client (video calling)?</b><br>
 			<input type="radio" name="jitsi" value="true" checked> Yes<br>
 			<input type="radio" name="jitsi" value="false"> No<br><br>
-			Your <b>MYSQL</b> user: <input type="text" name="username" value="root"><br>
-			Your <b>MYSQL</b> password: <input type="password" name="password"><br>
-			MYSQL server url: <input type="text" name="location" value="localhost"> (leave default if unsure or if you are currently on the same server where mysql is installed and running)<br>
-			MYSQL Database name: <input type="text" name="dbname" value="starchat"><br><br>
-			<input type="submit" value="Submit">
+			Your <b>MYSQL</b> user: <input type="text" class="form-control" name="username" value="root"><br>
+			Your <b>MYSQL</b> password: <input type="password" class="form-control" name="password"><br>
+			MYSQL server url: <input type="text" class="form-control" name="location" value="localhost"> (leave default if unsure or if you are currently on the same server where mysql is installed and running)<br>
+			MYSQL Database name: <input type="text" class="form-control" name="dbname" value="starchat"><br><br>
+			<input type="submit" class="btn btn-submit" value="Submit">
 		</form>
 	</div>
 </body>
