@@ -33,7 +33,7 @@ if(isset($_POST["jitsi"])) {
 	$password = $_POST["password"];
 	$location = $_POST["location"];
 	$dbname = $_POST["dbname"];
-	$websocketurl = $_POST["websocket"]
+	$websocketurl = $_POST["websocket"];
 
 
 	if ($usetype = "public") {
