@@ -33,6 +33,7 @@ if(isset($_POST["jitsi"])) {
 	$password = $_POST["password"];
 	$location = $_POST["location"];
 	$dbname = $_POST["dbname"];
+	$websocketurl = $_POST["websocket"]
 
 
 	if ($usetype = "public") {
@@ -50,6 +51,7 @@ if(isset($_POST["jitsi"])) {
 			\$mysqlurl = \"".addslashes($location)."\";
 			\$dbname = \"".addslashes($dbname)."\";
 			\$jitsi = \"true\";
+			\$websocketUrl = \"".addslashes($websocketurl)."\";
 			\$conn = new mysqli(\$mysqlurl, \$user, \$pass, \$dbname);
 			?>
 			";
@@ -62,6 +64,7 @@ if(isset($_POST["jitsi"])) {
 			\$mysqlurl = \"".addslashes($location)."\";
 			\$dbname = \"".addslashes($dbname)."\";
 			\$jitsi = \"false\";
+			\$websocketUrl = \"".addslashes($websocketurl)."\";
 			\$conn = new mysqli(\$mysqlurl, \$user, \$pass, \$dbname);
 			?>
 			";
@@ -152,7 +155,8 @@ die("END");
 			Your <b>MYSQL</b> user: <input type="text" class="form-control" name="username" value="root"><br>
 			Your <b>MYSQL</b> password: <input type="password" class="form-control" name="password"><br>
 			MYSQL server url: <input type="text" class="form-control" name="location" value="localhost"> (leave default if unsure or if you are currently on the same server where mysql is installed and running)<br>
-			MYSQL Database name: <input type="text" class="form-control" name="dbname" value="starchat"><br><br>
+			MYSQL Database name: <input type="text" class="form-control" name="dbname" value="starchat"><br>
+			Websocket Host: <input type="text" class="form-control" name="websocket" value="<?php echo $_SERVER['SERVER_NAME']; ?>"><br>
 			<input type="submit" class="btn btn-submit" value="Submit">
 		</form>
 	</div>
