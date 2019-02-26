@@ -34,6 +34,8 @@ if(isset($_POST["username"])) {
 	$dbname = $_POST["dbname"];
 	$websocketurl = $_POST["websocket"];
 	$websocketport = $_POST["wsport"];
+	$wsencrypted = $_POST["wsencrypt"];
+	$wsenduri = $_POST["wsenduri"];
 
 
 	if ($usetype = "public") {
@@ -65,6 +67,8 @@ if(isset($_POST["username"])) {
 		\$jitsi = $isJitsi;
 		\$websocketUrl = \"".addslashes($websocketurl)."\";
 		\$wsport = $websocketport;
+		\$wsencrypt = \"$wsencrypted\";
+		\$wsenduri = \"$wsenduri\";
 		\$conn = new mysqli(\$mysqlurl, \$user, \$pass, \$dbname);
 		?>
 		";
@@ -148,7 +152,14 @@ if(isset($_POST["username"])) {
 			MYSQL Database name: <input type="text" class="form-control" name="dbname" value="starchat"><br>
 			Websocket Host: <input type="text" class="form-control" name="websocket" value="<?php echo $_SERVER['SERVER_NAME']; ?>"><br>
 			<p>Note: Port 8080 will work on some free services that anonymize your servers IP address</p>
-			Websocket Port: <input type="number" class="form-control" name="wsport" value="8080"><br><br>
+			Websocket Port: <input type="number" class="form-control" name="wsport" value="8080"><br>
+			Websocket WSS/WS?
+			<select name="wsencrypt">
+				<option value="wss">WSS</option>
+				<option value="ws">WS</option>
+			</select><br>
+			<i>Note: Do not begin Uri with slash</i><br>
+			Websocket Uri (location, wss): <input type="text" class="form-control" name="wsenduri"><br><br>
 			<input type="submit" class="btn btn-submit" value="Submit">
 		</form>
 	</div>

@@ -87,7 +87,11 @@ if ($doesexistnumrows >= 0 ) {
 		<p><a href="logout.php" class="btn btn-danger">Logout</a></p>
 	</div>
 	<script>
-		var jitsi = <?php echo htmlspecialchars($jitsi); ?>;
+		var jitsi = <?php echo $jitsi; ?>;
+		var wsUrl = <?php echo $websocketUrl; ?>;
+		var wsPort = <?php echo $wsport; ?>;
+		var wsType = <?php echo $wsencrypt; ?>;
+		var wsUri = <?php echo $wsenduri; ?>;
 	</script>
 
 	<!-- Jquery -->

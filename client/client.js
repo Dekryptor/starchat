@@ -32,10 +32,26 @@ var oldmeslist = [];
 var unread = 0;
 var oldmessage = 0;
 
+var conn = new WebSocket(wsType+'://'+wsUrl+':'+wsPort+'/'+wsUri);
+conn.onopen = function(event) {
+	console.log(wsType.toUpperCase()+": Connected established to "+wsType+"://"+wsUrl+":"+wsPort+"/"+wsUri)
+}
+
+// Needed to send to websocket
+function messageToJson(msg, userid) {
+	var jsonMsg = {
+		message: msg,
+		id: userid
+	}
+
+	return JSON.stringify(jsonMsg);
+}
+
 function openSettings() {
 	$("#settings").css({"visibility": "visible"});
 }
 
+// Simple cookie managers
 function setCookie(cname, cvalue, exdays) {
 	var d = new Date();
 	d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -59,10 +75,12 @@ function getCookie(cname) {
 	return "";
 }
 
+// Used for switching themes
 function swapSheet(sheet) {
-	document.getElementById("styresultheeta").setAttribute("href", sheet);
+	document.getElementById("stylesheeta").setAttribute("href", sheet);
 }
 
+// Remember previous theme
 if (getCookie("starchattheme") !== "") {
 	swapSheet(getCookie("starchattheme"));
 }
@@ -95,6 +113,7 @@ function closeSettings() {
 	$("#settings").css({"visibility": "hidden"});
 }
 
+// Sends message by listening for Enter key
 function checkKey(event) {
 	if (event.key === "Enter") {
 		sendMessage();
@@ -260,6 +279,8 @@ function sendMessage() {
 			document.getElementById("chatbox").value = "";
 			unread = 0;
 			prevmsg = false;
+			// Send message to websocket
+			conn.send(messageToJson(usermessage, tmpid));
 			$.ajax({
 				url: "../api/v1/",
 				type: 'GET',
