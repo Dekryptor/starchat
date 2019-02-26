@@ -26,7 +26,7 @@ if(file_exists('mysqlinfo.php')) {
 }
 
 if(isset($_POST["jitsi"])) {
-// $usetype = $_POST["usetype"];
+	// $usetype = $_POST["usetype"];
 	$usetype = "public";
 
 	$username = $_POST["username"];
@@ -72,14 +72,14 @@ if(isset($_POST["jitsi"])) {
 
 		file_put_contents("mysqlinfo.php", $info);
 
-// The database will not be created if it does not exist
-// Setup will crash otherwise
-// DO NOT use prepared statement to create object
-// We instead will use preg_replace and mysqli real escape string, that is safe enough
-// In the future, do not use real escape string, it is insecure
+		// The database will not be created if it does not exist
+		// Setup will crash otherwise
+		// DO NOT use prepared statement to create object
+		// We instead will use preg_replace and mysqli real escape string, that is safe enough
+		// In the future, do not use real escape string, it is insecure
 		$sql = "CREATE DATABASE IF NOT EXISTS ".$conn->real_escape_string($dbname);
 		if ($conn->query($sql) === TRUE) {
-	// Database created
+			// Database created
 		}else{
 			echo "Error creating database: " . $conn->error . "<br>";
 		}
@@ -92,48 +92,47 @@ if(isset($_POST["jitsi"])) {
 		password VARCHAR(100) NOT NULL,
 		anonid VARCHAR(70) NOT NULL,
 		contacts VARCHAR(2100) NOT NULL
-	)";
+		)";
 
-	if ($conns->query($sql) === TRUE) {
-	// Tables created
-	} else {
-		echo "Error creating table: " . $conns->error . "<br>";
+		if ($conns->query($sql) === TRUE) {
+		// Tables created
+		} else {
+			echo "Error creating table: " . $conns->error . "<br>";
+		}
+
+
+		$sqla = "CREATE TABLE messages (
+		id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		chatid VARCHAR(70) NOT NULL,
+		dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		username VARCHAR(50) NOT NULL,
+		message VARCHAR(2100) NOT NULL
+		)";
+
+		if ($conns->query($sqla) === TRUE) {
+			// Tables created
+		} else {
+			echo "Error creating table: " . $conns->error . "<br>";
+		}
+
+		$sqlb = "CREATE TABLE tokens (
+		id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		token VARCHAR(70) NOT NULL,
+		username VARCHAR(50) NOT NULL,
+		created VARCHAR(50) NOT NULL
+		)";
+
+		if ($conns->query($sqlb) === TRUE) {
+			// Tables created
+		} else {
+			echo "Error creating table: " . $conns->error . "<br>";
+		}
+
+		$conns->close();
+		unlink(__FILE__); // Delete the setup, just to prevent future issues
+		header("Location: index.php");
+		die("END");
 	}
-
-
-	$sqla = "CREATE TABLE messages (
-	id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	chatid VARCHAR(70) NOT NULL,
-	dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	username VARCHAR(50) NOT NULL,
-	message VARCHAR(2100) NOT NULL
-)";
-
-if ($conns->query($sqla) === TRUE) {
-	// Tables created
-} else {
-	echo "Error creating table: " . $conns->error . "<br>";
-}
-
-$sqlb = "CREATE TABLE tokens (
-id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-token VARCHAR(70) NOT NULL,
-username VARCHAR(50) NOT NULL,
-created VARCHAR(50) NOT NULL
-)";
-
-if ($conns->query($sqlb) === TRUE) {
-	// Tables created
-} else {
-	echo "Error creating table: " . $conns->error . "<br>";
-}
-
-$conns->close();
-unlink(__FILE__); // Delete the setup, just to prevent future issues
-header("Location: index.php");
-die("END");
-
-}
 }
 ?>
 <!DOCTYPE html>
