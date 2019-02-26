@@ -24,7 +24,7 @@ var tmpid = null;
 var calling = false;
 if (jitsi === undefined) {
 	// True and false in string because it is derived from a PHP variable
-	jitsi = 'true';
+	jitsi = false;
 }
 
 var meslist = [];
@@ -49,10 +49,10 @@ function getCookie(cname) {
 	var ca = decodedCookie.split(';');
 	for(var i = 0; i <ca.length; i++) {
 		var c = ca[i];
-		while (c.charAt(0) == ' ') {
+		while (c.charAt(0) === ' ') {
 			c = c.substring(1);
 		}
-		if (c.indexOf(name) == 0) {
+		if (c.indexOf(name) === 0) {
 			return c.substring(name.length, c.length);
 		}
 	}
@@ -96,19 +96,9 @@ function closeSettings() {
 }
 
 function checkKey(event) {
-	if (event.key == "Enter") {
+	if (event.key === "Enter") {
 		sendMessage();
 	}
-}
-
-function httpGet(theUrl, callback) {
-	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.onreadystatechange = function() {
-		if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-			callback(xmlHttp.responseText);
-	}
-	xmlHttp.open("GET", theUrl, true); // true for asynchronous, we need async to keep everything working
-	xmlHttp.send(null);
 }
 
 function loadContacts() {

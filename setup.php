@@ -21,12 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-if(file_exists('mysqlinfo.php')) {
-	die('For security reasons you are not allowed to run the setup again as long as mysqlinfo.php exists');
+if(file_exists('config.php')) {
+	die('Config file exists. Please delete the config file to start the setup for security reasons');
 }
 
-if(isset($_POST["jitsi"])) {
-	// $usetype = $_POST["usetype"];
+if(isset($_POST["username"])) {
 	$usetype = "public";
 
 	$username = $_POST["username"];
@@ -34,6 +33,7 @@ if(isset($_POST["jitsi"])) {
 	$location = $_POST["location"];
 	$dbname = $_POST["dbname"];
 	$websocketurl = $_POST["websocket"];
+	$websocketport = $_POST["wsport"];
 
 
 	if ($usetype = "public") {
@@ -42,35 +42,34 @@ if(isset($_POST["jitsi"])) {
 			die("Connection to MYSQL server failed! Reason: ".$conn->connect_error);
 		}
 
-		if ($_POST["jitsi"] == "true") {
-			$info = "
-			<?php
-
-			\$user = \"".addslashes($username)."\";
-			\$pass = \"".addslashes($password)."\";
-			\$mysqlurl = \"".addslashes($location)."\";
-			\$dbname = \"".addslashes($dbname)."\";
-			\$jitsi = \"true\";
-			\$websocketUrl = \"".addslashes($websocketurl)."\";
-			\$conn = new mysqli(\$mysqlurl, \$user, \$pass, \$dbname);
-			?>
-			";
-		}else{
-			$info = "
-			<?php
-
-			\$user = \"".addslashes($username)."\";
-			\$pass = \"".addslashes($password)."\";
-			\$mysqlurl = \"".addslashes($location)."\";
-			\$dbname = \"".addslashes($dbname)."\";
-			\$jitsi = \"false\";
-			\$websocketUrl = \"".addslashes($websocketurl)."\";
-			\$conn = new mysqli(\$mysqlurl, \$user, \$pass, \$dbname);
-			?>
-			";
+		// Make sure user does not bypass numeric port
+		if (filter_var($websocketport, FILTER_VALIDATE_INT) === false) {
+			die("Please check that your websocket port is an integer");
 		}
 
-		file_put_contents("mysqlinfo.php", $info);
+		// Setting these values as strings so they can output into setup file as boolean
+		if ($_POST["jitsi"] === true) {
+			$isJitsi = "true";
+		}else{
+			$isJitsi = "false";
+		}
+
+		// Setup file
+		$info = "
+		<?php
+
+		\$user = \"".addslashes($username)."\";
+		\$pass = \"".addslashes($password)."\";
+		\$mysqlurl = \"".addslashes($location)."\";
+		\$dbname = \"".addslashes($dbname)."\";
+		\$jitsi = $isJitsi;
+		\$websocketUrl = \"".addslashes($websocketurl)."\";
+		\$wsport = $websocketport;
+		\$conn = new mysqli(\$mysqlurl, \$user, \$pass, \$dbname);
+		?>
+		";
+
+		file_put_contents("config.php", $info);
 
 		// The database will not be created if it does not exist
 		// Setup will crash otherwise
@@ -78,9 +77,7 @@ if(isset($_POST["jitsi"])) {
 		// We instead will use preg_replace and mysqli real escape string, that is safe enough
 		// In the future, do not use real escape string, it is insecure
 		$sql = "CREATE DATABASE IF NOT EXISTS ".$conn->real_escape_string($dbname);
-		if ($conn->query($sql) === TRUE) {
-			// Database created
-		}else{
+		if ($conn->query($sql) === FALSE) {
 			echo "Error creating database: " . $conn->error . "<br>";
 		}
 
@@ -94,9 +91,7 @@ if(isset($_POST["jitsi"])) {
 		contacts VARCHAR(2100) NOT NULL
 		)";
 
-		if ($conns->query($sql) === TRUE) {
-		// Tables created
-		} else {
+		if ($conns->query($sql) === FALSE) {
 			echo "Error creating table: " . $conns->error . "<br>";
 		}
 
@@ -109,9 +104,7 @@ if(isset($_POST["jitsi"])) {
 		message VARCHAR(2100) NOT NULL
 		)";
 
-		if ($conns->query($sqla) === TRUE) {
-			// Tables created
-		} else {
+		if ($conns->query($sqla) === FALSE) {
 			echo "Error creating table: " . $conns->error . "<br>";
 		}
 
@@ -122,9 +115,7 @@ if(isset($_POST["jitsi"])) {
 		created VARCHAR(50) NOT NULL
 		)";
 
-		if ($conns->query($sqlb) === TRUE) {
-			// Tables created
-		} else {
+		if ($conns->query($sqlb) === FALSE) {
 			echo "Error creating table: " . $conns->error . "<br>";
 		}
 
@@ -156,6 +147,8 @@ if(isset($_POST["jitsi"])) {
 			MYSQL server url: <input type="text" class="form-control" name="location" value="localhost"> (leave default if unsure or if you are currently on the same server where mysql is installed and running)<br>
 			MYSQL Database name: <input type="text" class="form-control" name="dbname" value="starchat"><br>
 			Websocket Host: <input type="text" class="form-control" name="websocket" value="<?php echo $_SERVER['SERVER_NAME']; ?>"><br>
+			<p>Note: Port 8080 will work on some free services that anonymize your servers IP address</p>
+			Websocket Port: <input type="number" class="form-control" name="wsport" value="8080"><br><br>
 			<input type="submit" class="btn btn-submit" value="Submit">
 		</form>
 	</div>

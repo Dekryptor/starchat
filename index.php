@@ -22,12 +22,12 @@
 // SOFTWARE.
 
 session_start();
-if(!file_exists('mysqlinfo.php')) {
+if(!file_exists('config.php')) {
     header("Location: setup.php");
     die("You should be <a href='setup.php'>here</a>");
 }
 
-require 'mysqlinfo.php';
+require 'config.php';
 
 $is_error = false;
 $error;

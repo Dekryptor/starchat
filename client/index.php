@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 session_start();
-require '../mysqlinfo.php';
+require '../config.php';
 
 // Check connection
 if ($conn->connect_error) {
@@ -57,8 +57,7 @@ if ($doesexistnumrows >= 0 ) {
 	<link rel="stylesheet" type="text/css" href="../libs/bootstrap/css/bootstrap.min.css">
 	<link id="stylesheeta" rel="stylesheet" type="text/css" href="../themes/default.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<script src="../libs/jquery.min.js"></script>
-	<script src="../libs/autobahn.min.js"></script>
+
 </head>
 <body>
 	<div id="messbox">
@@ -88,8 +87,12 @@ if ($doesexistnumrows >= 0 ) {
 		<p><a href="logout.php" class="btn btn-danger">Logout</a></p>
 	</div>
 	<script>
-		var jitsi = '<?php echo htmlspecialchars($jitsi); ?>';
+		var jitsi = <?php echo htmlspecialchars($jitsi); ?>;
 	</script>
+
+	<!-- Jquery -->
+	<script src="../libs/jquery.min.js"></script>
+	<!-- Main JS code for client -->
 	<script src="client.js"></script>
 </body>
 </html>

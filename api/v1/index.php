@@ -28,7 +28,7 @@
 error_reporting(0); // Set to E_ALL for error reporting
 ini_set('display_errors', 0);
 
-require '../../mysqlinfo.php';
+require '../../config.php';
 // Check if connection works
 if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
@@ -61,7 +61,7 @@ if (isset($_GET["username"])) {
 	if ($check_login_numrows >= 0) {
 		while($row = $check_login_results->fetch_assoc()) {
 			if (password_verify($_GET["password"],$row['password'])) {
-				
+
 				// At this point the only thing the user can do is generate a token.
 				if (isset($_GET["gentoken"])) {
 					$token = generateRandomString();
@@ -72,7 +72,7 @@ if (isset($_GET["username"])) {
 					$token_check->execute();
 					$token_check_results = $token_check->get_result();
 					$token_check_rows = $token_check_results->num_rows;
-					
+
 					if ($token_check_rows > 0) {
 						starchat_error("Token has been used, please try again.");
 					}
@@ -95,7 +95,7 @@ if (isset($_GET["token"])) {
 	$token_use->execute();
 	$token_use_results = $token_use->get_result();
 	$token_use_rows = $token_use_results->num_rows;
-	
+
 	if ($token_use_rows == 1) {
 		while($row = $token_use_results->fetch_assoc()) {
 			if (strtotime($row["created"]) > strtotime("-24 hours")) {
@@ -177,8 +177,8 @@ if (isset($_GET["readmessages"])) {
 		$checkx->execute();
 		$keep = $checkx->get_result();
 	}
-		
-	
+
+
 	$mbuffer[0]["username"] = "!SYSTEM";
 	$mbuffer[0]["datetime"] = "None";
 	$mbuffer[0]["message"] = "Conversation Created.";
@@ -202,15 +202,15 @@ if (isset($_GET["sendmessage"])) {
 	}else{
 		starchat_error("The sender conversation id is invalid");
 	}
-	
+
 	$checka = $conn->prepare("SELECT contacts FROM accounts WHERE username = ?");
 	$checka->bind_param('s', $qusername);
 	$checka->execute();
 	$cheeka = $checka->get_result();
-	
+
 	$confirm = 0;
 	$vale = preg_replace("/^[a-zA-Z0-9\-]/","",$_GET["sendmessageto"]);
-	
+
 	if ($cheeka->num_rows > 0) {
 		while($row = $cheeka->fetch_assoc()) {
 			if (preg_match("/$vale/", $row["contacts"])) {
@@ -218,7 +218,7 @@ if (isset($_GET["sendmessage"])) {
 			}
 		}
 	}
-	
+
 	if ($confirm == 0) {
 		die("Error: Chat ID is unused therefor not yours");
 		starchat_error("Chat ID is not in your contacts list, or might not exist");
