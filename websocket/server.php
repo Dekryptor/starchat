@@ -1,10 +1,12 @@
 <?php
-require __DIR__ . '../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 require 'config.php';
 
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
+use Ratchet\MessageComponentInterface;
+use Ratchet\ConnectionInterface;
 
 class StarchatWs implements MessageComponentInterface {
   // Client sessions
@@ -22,6 +24,8 @@ class StarchatWs implements MessageComponentInterface {
     foreach ($this->csessions as $user) {
       $user->send($msg);
     }
+    // Contains information about user!
+    echo $user->resourceId;
   }
 
   public function onClose(ConnectionInterface $conn) {
