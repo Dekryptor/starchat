@@ -11,6 +11,7 @@ use Ratchet\ConnectionInterface;
 class StarchatWs implements MessageComponentInterface {
   // Client sessions
   protected $csessions;
+  protected $client_info = array();
 
   public function __construct() {
     $this->csessions = new \SplObjectStorage;
@@ -18,6 +19,9 @@ class StarchatWs implements MessageComponentInterface {
 
   public function onOpen(ConnectionInterface $conn) {
     $this->csessions->attach($conn);
+    $params = $conn->httpRequest->getUri()->getQuery();
+    print_r($params);
+    $this->csessions[$conn->resourceId] = $params;
   }
 
   public function onMessage(ConnectionInterface $from, $msg) {

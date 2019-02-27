@@ -32,13 +32,7 @@ var oldmeslist = [];
 var unread = 0;
 var oldmessage = 0;
 
-var conn = new WebSocket(wsType+'://'+wsUrl+':'+wsPort+'/'+wsUri);
-conn.onopen = function(event) {
-	console.log(wsType.toUpperCase()+": Connected established to "+wsType+"://"+wsUrl+":"+wsPort+"/"+wsUri);
-}
-conn.onmessage = function(event) {
-	console.log(event.data);
-}
+
 
 // Needed to send to websocket
 function messageToJson(msg, userid) {
@@ -94,6 +88,14 @@ var token = getCookie("stoken");
 function themeChange() {
 	setCookie("starchattheme", "../themes/"+document.getElementById("theme").value+".css", 365);
 	swapSheet(getCookie("starchattheme"));
+}
+
+var conn = new WebSocket(wsType+'://'+wsUrl+':'+wsPort+'/'+wsUri+"?"+token);
+conn.onopen = function(event) {
+	console.log(wsType.toUpperCase()+": Connected established to "+wsType+"://"+wsUrl+":"+wsPort+"/"+wsUri);
+}
+conn.onmessage = function(event) {
+	console.log(event.data);
 }
 
 function startCall() {
