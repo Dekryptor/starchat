@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '../vendor/autoload.php';
 require 'config.php';
 
 use Ratchet\Server\IoServer;
@@ -19,13 +19,13 @@ class StarchatWs implements MessageComponentInterface {
   }
 
   public function onMessage(ConnectionInterface $from, $msg) {
-    foreach ($this->$csessions as $user) {
+    foreach ($this->csessions as $user) {
       $user->send($msg);
     }
   }
 
   public function onClose(ConnectionInterface $conn) {
-    $this->$csessions->detach($conn);
+    $this->csessions->detach($conn);
   }
 
   public function onError(ConnectionInterface $conn, \Exception $e) {
