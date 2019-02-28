@@ -1,6 +1,8 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
-require 'config.php';
+require __DIR__ . '/../config.php';
+
+echo "Test: $dbname";
 
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
@@ -11,7 +13,7 @@ use Ratchet\ConnectionInterface;
 class StarchatWs implements MessageComponentInterface {
   // Client sessions
   protected $csessions;
-  protected $client_info = array();
+  private $client_info;
 
   public function __construct() {
     $this->csessions = new \SplObjectStorage;
@@ -20,16 +22,47 @@ class StarchatWs implements MessageComponentInterface {
   public function onOpen(ConnectionInterface $conn) {
     $this->csessions->attach($conn);
     $params = $conn->httpRequest->getUri()->getQuery();
-    print_r($params);
-    $this->csessions[$conn->resourceId] = $params;
+    $this->client_info[$conn->resourceId] = $params;
   }
 
   public function onMessage(ConnectionInterface $from, $msg) {
+    global $conn;
     foreach ($this->csessions as $user) {
-      $user->send($msg);
+      $user_token = $this->client_info[$user->resourceId];
+      $msg_json = json_decode($msg, true);
+
+      $tokens = $conn->prepare("SELECT username FROM tokens WHERE token=?");
+      $tokens->bind_param('s', $user_token);
+      $tokens->execute();
+      $tresults = $tokens->get_result();
+      $tresults_rows = $tresults->num_rows;
+
+      if ($tresults_rows === 1) {
+        while($row = $tresults->fetch_assoc()) {
+          $req_username = $row["username"];
+          $get_info = $conn->prepare("SELECT contacts FROM accounts WHERE username=?");
+          $get_info->bind_param('s', $req_username);
+          $get_info->execute();
+          $get_info_results = $get_info->get_result();
+          $get_info_results_rows = $get_info_results->num_rows;
+
+          if ($get_info_results_rows === 1) {
+            while($row_info = $get_info_results->fetch_assoc()) {
+              $req_contacts = $row_info["contacts"];
+              $req_json = json_decode($req_contacts, true);
+              foreach($req_json as $item) {
+                echo print_r($item);
+                echo print_r($msg_json);
+                echo "{$item[1]} Vs. {$msg_json["id"]}";
+                if ($item[1] === $msg_json["id"]) {
+                  $user->send($msg);
+                }
+              }
+            }
+          }
+        }
+      }
     }
-    // Contains information about user!
-    echo $user->resourceId;
   }
 
   public function onClose(ConnectionInterface $conn) {

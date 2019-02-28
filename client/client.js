@@ -27,27 +27,6 @@ if (jitsi === undefined) {
 	jitsi = false;
 }
 
-var meslist = [];
-var oldmeslist = [];
-var unread = 0;
-var oldmessage = 0;
-
-
-
-// Needed to send to websocket
-function messageToJson(msg, userid) {
-	var jsonMsg = {
-		message: msg,
-		id: userid
-	}
-
-	return JSON.stringify(jsonMsg);
-}
-
-function openSettings() {
-	$("#settings").css({"visibility": "visible"});
-}
-
 // Simple cookie managers
 function setCookie(cname, cvalue, exdays) {
 	var d = new Date();
@@ -72,6 +51,52 @@ function getCookie(cname) {
 	return "";
 }
 
+function scrollBottom(body) {
+	$(body).animate({ scrollTop: $(body).height() }, "slow");
+}
+
+var username = getCookie("usernamedata");
+var token = getCookie("stoken");
+
+// Needed to send to websocket
+function messageToJson(username, msg, userid) {
+	var jsonMsg = {
+		user: username,
+		message: msg,
+		id: userid
+	}
+
+	return JSON.stringify(jsonMsg);
+}
+
+function buildMessage(username, msg) {
+	var message = "<div class='message'><div class='username'>"+username.replace(/<(?:.|\n)*?>/gm, '')+"</div><div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div>";
+	$("#messboxsmall").append(message);
+}
+
+function openSettings() {
+	$("#settings").css({"visibility": "visible"});
+}
+
+function fetchConversation() {
+	$.ajax({
+		url: "../api/v1/",
+		type: 'GET',
+		data: {
+			'token': token,
+			'readmessages': tmpid,
+			'count': 25
+		},
+		dataType: 'json',
+		success: function(result) {
+			$("#messboxsmall").html("");
+			for (var x = 0; x < result.length; x++) {
+				buildMessage(result[x].username, result[x].message);
+			}
+		}
+	});
+}
+
 // Used for switching themes
 function swapSheet(sheet) {
 	document.getElementById("stylesheeta").setAttribute("href", sheet);
@@ -82,20 +107,21 @@ if (getCookie("starchattheme") !== "") {
 	swapSheet(getCookie("starchattheme"));
 }
 
-var username = getCookie("usernamedata");
-var token = getCookie("stoken");
 
 function themeChange() {
 	setCookie("starchattheme", "../themes/"+document.getElementById("theme").value+".css", 365);
 	swapSheet(getCookie("starchattheme"));
 }
 
+// Websocket stuff
 var conn = new WebSocket(wsType+'://'+wsUrl+':'+wsPort+'/'+wsUri+"?"+token);
 conn.onopen = function(event) {
 	console.log(wsType.toUpperCase()+": Connected established to "+wsType+"://"+wsUrl+":"+wsPort+"/"+wsUri);
 }
 conn.onmessage = function(event) {
-	console.log(event.data);
+	var msg = JSON.parse(event.data);
+	buildMessage(msg.user, msg.message);
+	scrollBottom("#messboxsmall");
 }
 
 function startCall() {
@@ -154,120 +180,9 @@ function switchContacts(vals) {
 	}
 	$("#messboxsmall").html("<div class='loading'></div>");
 	tmpid = vals;
+	fetchConversation();
 }
 
-function checkNotification(x, contacts) {
-	$.ajax({
-		url: "../api/v1/",
-		type: 'GET',
-		data: {
-			'token': token,
-			'readmessages': contacts[x][1],
-			'count': 5
-		},
-		success: function(data) {
-			meslist[x] = data;
-			if (document.hasFocus() == false) {
-				if (oldmeslist[x] != meslist[x]) {
-					var audio = new Audio('../sounds/notification.wav');
-					audio.play();
-					unread += 1;
-					document.title = "Starchat("+unread+"+)";
-				}
-			}
-			oldmeslist[x] = data;
-		}
-	});
-}
-
-if (meslist == []) {
-	$.ajax({
-		url: "../api/v1/",
-		type: 'GET',
-		data: {
-			'token': token,
-			'getcontacts': 'true'
-		},
-		dataType: 'json',
-		success: function(contacts) {
-			for (var x = 0; x <= contacts.length-1; x++) {
-				checkNotification(x, contacts);
-			}
-		}
-	});
-	oldmeslist = [];
-}
-
-// Loop for grabbing messages
-setInterval(function() {
-	if (tmpid != null) {
-		$.ajax({
-			url: "../api/v1/",
-			type: 'GET',
-			data: {
-				'token': token,
-				'readmessages': tmpid,
-				'count': 25
-			},
-			dataType: 'json',
-			success: function(result) {
-				$("#messboxsmall").html("");
-				var opres = 0;
-				for (var x = 0; x < result.length; x++) {
-					if (result[x].username == username) {
-						opres = 0;
-						$("#messboxsmall").append("<div style='clear:both;color:#ffffff;padding:5px;display:block;'><div class='smessage'>"+result[x].message+"</div></div>");
-					}else{
-						// Decide weather user sent message or another person sent message in bubbresult
-						if (opres == 0) {
-							// You sent message
-							$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+result[x].username+"</div><div class='sopmessage'>"+result[x].message+"</div></div>");
-							opres = result[x].username;
-						}else{
-							if (opres == result[x].username) {
-								// Other user sent message
-								$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='sopmessage'>"+result[x].message+"</div></div>");
-							}else{
-								// Other user sent message for the first time (in a row), show there username
-								$("#messboxsmall").append("<div style='clear:both;padding:5px;display:block;'><div class='susername'>"+result[x].username+"</div><div class='sopmessage'>"+result[x].message+"</div></div>");
-								opres = result[x].username;
-							}
-						}
-					}
-				}
-				// scroll to bottom
-				if (oldmessage != result) {
-					var objDiv = document.getElementById("messboxsmall");
-					objDiv.scrollTop = objDiv.scrollHeight;
-				}
-				oldmessage = result;
-			}
-		});
-	}
-
-	$.ajax({
-		url: "../api/v1/",
-		type: 'GET',
-		data: {
-			'token': token,
-			'getcontacts': true
-		},
-		dataType: 'json',
-		success: function(contacts) {
-			if (unread == 0) {
-				for (var x = 0; x <= contacts.length-1; x++) {
-					checkNotification(x, contacts);
-				}
-			}
-		}
-	});
-
-	if (document.hasFocus()) {
-		unread = 0;
-		document.title = "Starchat";
-	}
-
-},2000)
 
 function sendMessage() {
 	var usermessage = document.getElementById("chatbox").value;
@@ -282,25 +197,8 @@ function sendMessage() {
 		dataType: 'json',
 		success: function(data) {
 			document.getElementById("chatbox").value = "";
-			unread = 0;
-			prevmsg = false;
 			// Send message to websocket
-			conn.send(messageToJson(usermessage, tmpid));
-			$.ajax({
-				url: "../api/v1/",
-				type: 'GET',
-				data: {
-					'token': token,
-					'getcontacts': 'true'
-				},
-				dataType: 'json',
-				success: function(contacts) {
-					for (var x = 0; x <= contacts.length-1; x++) {
-						//console.log(contacts[x][1]);
-						checkNotification(x, contacts);
-					}
-				}
-			});
+			conn.send(messageToJson(username, usermessage, tmpid));
 		}
 	});
 }

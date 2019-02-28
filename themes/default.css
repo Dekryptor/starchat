@@ -161,32 +161,20 @@ body {
   }
 }
 
-.smessage {
-  padding: 7px;
-  margin: 3px;
-  font-size: 16px;
-  background-color: #0263ff;
-  color: #ffffff;
-  float: right;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 3px;
-  max-width: 400px;
+.message {
+  display: block;
+  padding: 5px;
 }
 
-.sopmessage {
-  padding: 7px;
-  margin: 3px;
-  font-size: 16px;
-  background-color: #e6e6e6;
-  color: #000000;
-  float: left;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 20px;
-  max-width: 400px;
+.message .username {
+  display: inline-block;
+  background-color: #eaeaea;
+  margin-right: 5px;
+  border-radius: 3px;
+}
+
+.message .contents {
+  display: inline-block;
 }
 
 #settings {
@@ -202,12 +190,6 @@ body {
   visibility: hidden;
   box-shadow: 0px 5px 10px #555555;
   z-index: 2;
-}
-
-.susername {
-  padding: 3px;
-  font-size: 10px;
-  text-transform: uppercase;
 }
 
 #call {
