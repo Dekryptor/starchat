@@ -36,6 +36,7 @@ if(isset($_POST["username"])) {
 	$websocketport = $_POST["wsport"];
 	$wsencrypted = $_POST["wsencrypt"];
 	$wsenduri = $_POST["wsenduri"];
+	$deletesetup = $_POST["delete"];
 
 
 	if ($usetype = "public") {
@@ -124,7 +125,9 @@ if(isset($_POST["username"])) {
 		}
 
 		$conns->close();
-		unlink(__FILE__); // Delete the setup, just to prevent future issues
+		if ($deletesetup == "true") {
+			unlink(__FILE__); // Delete the setup, just to prevent future issues
+		}
 		header("Location: index.php");
 		die("END");
 	}
@@ -157,6 +160,11 @@ if(isset($_POST["username"])) {
 			<select name="wsencrypt">
 				<option value="wss">WSS</option>
 				<option value="ws">WS</option>
+			</select><br>
+			Delete Setup?
+			<select name="delete">
+				<option value="true">Yes</option>
+				<option value="false">No</option>
 			</select><br>
 			<i>Note: Do not begin Uri with slash</i><br>
 			Websocket Uri (location, wss): <input type="text" class="form-control" name="wsenduri"><br><br>

@@ -25,8 +25,8 @@
 // SOFTWARE.
 
 // Usually for debugging, but also hide html warnings and errors if the users config is set up strangely
-error_reporting(0); // Set to E_ALL for error reporting
-ini_set('display_errors', 0);
+error_reporting(1); // Set to E_ALL for error reporting
+ini_set('display_errors', 1);
 
 require '../../config.php';
 // Check if connection works
@@ -164,31 +164,24 @@ if (isset($_GET["readmessages"])) {
 	}else{
 		starchat_error("Value of readmessages is not a valid id");
 	}
-	$readmessage = htmlspecialchars($_GET["readmessages"]);
+	$readmessage = $_GET["readmessages"];
 
-	if ($read_count == -1) {
-		$checkx = $conn->prepare("SELECT * FROM messages WHERE chatid = ?");
-		$checkx->bind_param('s', $readmessage);
-		$checkx->execute();
-		$keep = $checkx->get_result();
-	}else{
-		$checkx = $conn->prepare("(SELECT * FROM messages WHERE chatid = ? ORDER BY id DESC LIMIT ?) ORDER BY id ASC");
-		$checkx->bind_param('si', $readmessage, $read_count);
-		$checkx->execute();
-		$keep = $checkx->get_result();
-	}
+	$checkx = $conn->prepare("SELECT * FROM messages WHERE chatid = ?");
+	$checkx->bind_param('s', $readmessage);
+	$checkx->execute();
+	$keep = $checkx->get_result();
 
-
-	$mbuffer[0]["username"] = "!SYSTEM";
-	$mbuffer[0]["datetime"] = "None";
-	$mbuffer[0]["message"] = "Conversation Created.";
+	$start_count = $keep->num_rows - $read_count - 1;
 
 	if ($keep->num_rows > 0) {
+		$x = 0;
 		while($row = $keep->fetch_assoc()) {
-			$y = count($mbuffer);
-			$mbuffer[$y]["username"] = $row["username"];
-			$mbuffer[$y]["datetime"] = $row["datetime"];
-			$mbuffer[$y]["message"] = $row["message"];
+			if ($x >= $start_count) {
+				$mbuffer[$x]["username"] = $row["username"];
+				$mbuffer[$x]["datetime"] = $row["dt"];
+				$mbuffer[$x]["message"] = $row["message"];
+			}
+			$x++;
 		}
 		echo json_encode($mbuffer, JSON_PRETTY_PRINT);
 	}
