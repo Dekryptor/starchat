@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-var tmpid = null;
-var calling = false;
+let tmpid = null;
+let calling = false;
 if (jitsi === undefined) {
 	// True and false in string because it is derived from a PHP variable
 	jitsi = false;
@@ -29,18 +29,18 @@ if (jitsi === undefined) {
 
 // Simple cookie managers
 function setCookie(cname, cvalue, exdays) {
-	var d = new Date();
+	let d = new Date();
 	d.setTime(d.getTime() + (exdays*24*60*60*1000));
-	var expires = "expires="+ d.toUTCString();
+	let expires = "expires="+ d.toUTCString();
 	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
 function getCookie(cname) {
-	var name = cname + "=";
-	var decodedCookie = decodeURIComponent(document.cookie);
-	var ca = decodedCookie.split(';');
-	for(var i = 0; i <ca.length; i++) {
-		var c = ca[i];
+	let name = cname + "=";
+	let decodedCookie = decodeURIComponent(document.cookie);
+	let ca = decodedCookie.split(';');
+	for(let i = 0; i <ca.length; i++) {
+		let c = ca[i];
 		while (c.charAt(0) === ' ') {
 			c = c.substring(1);
 		}
@@ -55,12 +55,12 @@ function scrollBottom(body) {
 	$(body).animate({ scrollTop: $(body).height() }, "slow");
 }
 
-var username = getCookie("usernamedata");
-var token = getCookie("stoken");
+let username = getCookie("usernamedata");
+let token = getCookie("stoken");
 
 // Needed to send to websocket
 function messageToJson(username, msg, userid) {
-	var jsonMsg = {
+	let jsonMsg = {
 		user: username,
 		message: msg,
 		id: userid
@@ -70,7 +70,7 @@ function messageToJson(username, msg, userid) {
 }
 
 function buildMessage(username, msg) {
-	var message = "<div class='message'><div class='username'>"+username.replace(/<(?:.|\n)*?>/gm, '')+"</div><div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div>";
+	let message = "<div class='message'><div class='username'>"+username.replace(/<(?:.|\n)*?>/gm, '')+"</div><div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div>";
 	$("#messboxsmall").append(message);
 }
 
@@ -90,7 +90,7 @@ function fetchConversation() {
 		dataType: 'json',
 		success: function(result) {
 			$("#messboxsmall").html("");
-			for (var x = 0; x < result.length; x++) {
+			for (let x = 0; x < result.length; x++) {
 				buildMessage(result[x].username, result[x].message);
 			}
 		}
@@ -114,12 +114,12 @@ function themeChange() {
 }
 
 // Websocket stuff
-var conn = new WebSocket(wsType+'://'+wsUrl+':'+wsPort+'/'+wsUri+"?"+token);
+let conn = new WebSocket(wsType+'://'+wsUrl+':'+wsPort+'/'+wsUri+"?"+token);
 conn.onopen = function(event) {
 	console.log(wsType.toUpperCase()+": Connected established to "+wsType+"://"+wsUrl+":"+wsPort+"/"+wsUri);
 }
 conn.onmessage = function(event) {
-	var msg = JSON.parse(event.data);
+	let msg = JSON.parse(event.data);
 	buildMessage(msg.user, msg.message);
 	scrollBottom("#messboxsmall");
 }
@@ -163,7 +163,7 @@ function loadContacts() {
 		dataType: 'json',
 		success: function(contacts) {
 			$("#contacts").html(""); // Clear result to remove loading animation
-			for (var x = 0; x <= contacts.length-1; x++) {
+			for (let x = 0; x <= contacts.length-1; x++) {
 				$("#contacts").append("<div class='box' onclick='switchContacts(\""+contacts[x][1]+"\")'><img src='../img/user.png' class='pfp'><div class='info'>"+contacts[x][0]+"</div></div>");
 			}
 		}
@@ -185,7 +185,7 @@ function switchContacts(vals) {
 
 
 function sendMessage() {
-	var usermessage = document.getElementById("chatbox").value;
+	let usermessage = document.getElementById("chatbox").value;
 	$.ajax({
 		url: "../api/v1/",
 		type: 'GET',
@@ -204,7 +204,7 @@ function sendMessage() {
 }
 
 function addContact() {
-	var toadd = encodeURIComponent(prompt("Please Enter Username to Add"));
+	let toadd = encodeURIComponent(prompt("Please Enter Username to Add"));
 	$.ajax({
 		url: "../api/v1/",
 		type: 'GET',
