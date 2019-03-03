@@ -1,6 +1,6 @@
 <?php
 
-// Starchat API v0.8.1-git
+// Starchat API v0.8.1
 
 // MIT License
 

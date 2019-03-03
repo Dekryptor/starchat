@@ -22,7 +22,7 @@ Starchat has many cool features that I am working on and experimenting with, to 
 # Installation
 Starchat was made to be flexible in a way that lets you just drop in the files and then you are done, all setup is done server side.
 
-Run `chown apache:apache starchat -R` to give apache access for the setup script, replace apache with www-data if that doesnt work, like on debian.
+Run `chown apache:apache starchat -R` to give apache access for the setup script, replace `apache` with `www-data` if that doesnt work, like on debian.
 
 Then run `setup.php` in your web browser and simply accept the options like normal, once done it is safe to delete setup.php and the install is now complete! Make any custom modifications if you would like.
 
