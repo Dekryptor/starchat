@@ -29,18 +29,16 @@ class StarchatWs implements MessageComponentInterface {
       $user_token = $this->client_info[$user->resourceId];
       $msg_json = json_decode($msg, true);
 
-      $tokens = $conn->prepare("SELECT username FROM tokens WHERE token=?");
-      $tokens->bind_param('s', $user_token);
-      $tokens->execute();
+      $tokens = $conn->prepare("SELECT username FROM tokens WHERE token=?")
+          ->bind_param('s', $user_token)->execute();
       $tresults = $tokens->get_result();
       $tresults_rows = $tresults->num_rows;
 
       if ($tresults_rows === 1) {
         while($row = $tresults->fetch_assoc()) {
           $req_username = $row["username"];
-          $get_info = $conn->prepare("SELECT contacts FROM accounts WHERE username=?");
-          $get_info->bind_param('s', $req_username);
-          $get_info->execute();
+          $get_info = $conn->prepare("SELECT contacts FROM accounts WHERE username=?")
+              ->bind_param('s', $req_username)->execute();
           $get_info_results = $get_info->get_result();
           $get_info_results_rows = $get_info_results->num_rows;
 
