@@ -2,8 +2,6 @@
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../config.php';
 
-echo "Test: $dbname";
-
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
@@ -51,9 +49,6 @@ class StarchatWs implements MessageComponentInterface {
               $req_contacts = $row_info["contacts"];
               $req_json = json_decode($req_contacts, true);
               foreach($req_json as $item) {
-                echo print_r($item);
-                echo print_r($msg_json);
-                echo "{$item[1]} Vs. {$msg_json["id"]}";
                 if ($item[1] === $msg_json["id"]) {
                   $user->send($msg);
                 }

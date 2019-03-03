@@ -51,8 +51,8 @@ function getCookie(cname) {
 	return "";
 }
 
-function scrollBottom(body) {
-	$(body).animate({ scrollTop: $(body).height() }, "slow");
+function scrollBottom(body, speed = "slow") {
+	$(body).animate({ scrollTop: $(body).height() + $(body).scrollTop() }, speed);
 }
 
 let username = getCookie("usernamedata");
@@ -69,11 +69,15 @@ function messageToJson(username, msg, userid) {
 	return JSON.stringify(jsonMsg);
 }
 
-function buildMessage(username, msg) {
+function buildMessage(username, msg, doFade = true) {
 	let message = "<div class='message'><img class='profile-pic' src='../img/user.png'>" +
 								"<div class='message-right'><div class='username'>"+username.replace(/<(?:.|\n)*?>/gm, '')+"</div>" +
 								"<div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div></div>";
-	$("#message-box").append(message);
+	if (doFade === true) {
+		$(message).hide().appendTo("#message-box").fadeIn(200);
+	}else{
+		$(message).appendTo("#message-box");
+	}
 }
 
 function openSettings() {
@@ -93,8 +97,10 @@ function fetchConversation() {
 		success: function(result) {
 			$("#message-box").html("");
 			for (let x = 0; x < result.length; x++) {
-				buildMessage(result[x].username, result[x].message);
+				// False for param doFade because we do not want fade on old messages
+				buildMessage(result[x].username, result[x].message, false);
 			}
+			scrollBottom("#message-box", 0);
 		}
 	});
 }
