@@ -55,28 +55,35 @@ if ($doesexistnumrows >= 0 ) {
 <head>
 	<title>Starchat</title>
 	<link rel="stylesheet" type="text/css" href="../libs/bootstrap/css/bootstrap.min.css">
-	<link id="stylesheeta" rel="stylesheet" type="text/css" href="../themes/default.css">
+	<link id="stylesheeta" rel="stylesheet" type="text/css" href="../themes/default.css?v=f">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 </head>
 <body>
-	<div id="messbox">
-		<div id="messboxsmall">
-
-		</div>
-	</div>
-	<input type="text" id="chatbox" onkeypress="checkKey(event)">
-	<input type="button" value="Send" onclick="sendMessage()" id="chatboxbutton">
-	<div id="contacts"> <div class="loading"></div> </div>
-
+	<!-- Topbar -->
 	<div id="topbar">
 		<img src="../img/hammenu.png" class="logo" onclick="openSettings()"> <span class="logotext">Starchat</span>
 	</div>
 
-	<div id="callform">
+	<div class="group-container">
+		<!-- Contact box -->
+		<div id="contacts"> <div class="loading"></div> </div>
 
+		<!-- Message box -->
+		<div class="message-container">
+			<div id="message-box">
+
+			</div>
+			<!-- Message boxes -->
+			<input type="text" id="chatbox" onkeypress="checkKey(event)">
+			<input type="button" value="Send" onclick="sendMessage()" id="chatboxbutton">
+		</div>
 	</div>
 
+
+
+	<!-- Extra -->
+	<div id="callform"></div>
 	<div id="settings">
 		<a href="#" onclick="closeSettings()">Close Options</a>
 		<h1>Options</h1>

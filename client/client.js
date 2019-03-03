@@ -70,8 +70,10 @@ function messageToJson(username, msg, userid) {
 }
 
 function buildMessage(username, msg) {
-	let message = "<div class='message'><div class='username'>"+username.replace(/<(?:.|\n)*?>/gm, '')+"</div><div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div>";
-	$("#messboxsmall").append(message);
+	let message = "<div class='message'><img class='profile-pic' src='../img/user.png'>" +
+								"<div class='message-right'><div class='username'>"+username.replace(/<(?:.|\n)*?>/gm, '')+"</div>" +
+								"<div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div></div>";
+	$("#message-box").append(message);
 }
 
 function openSettings() {
@@ -89,7 +91,7 @@ function fetchConversation() {
 		},
 		dataType: 'json',
 		success: function(result) {
-			$("#messboxsmall").html("");
+			$("#message-box").html("");
 			for (let x = 0; x < result.length; x++) {
 				buildMessage(result[x].username, result[x].message);
 			}
@@ -121,7 +123,7 @@ conn.onopen = function(event) {
 conn.onmessage = function(event) {
 	let msg = JSON.parse(event.data);
 	buildMessage(msg.user, msg.message);
-	scrollBottom("#messboxsmall");
+	scrollBottom("#message-box");
 }
 
 function startCall() {
@@ -178,7 +180,7 @@ function switchContacts(vals) {
 			$("#topbar").append("<img src='../img/call.png' id='call' onclick='startCall()'>");
 		}
 	}
-	$("#messboxsmall").html("<div class='loading'></div>");
+	$("#message-box").html("<div class='loading'></div>");
 	tmpid = vals;
 	fetchConversation();
 }
@@ -204,7 +206,7 @@ function sendMessage() {
 }
 
 function addContact() {
-	let toadd = encodeURIComponent(prompt("Please Enter Username to Add"));
+	let toadd = prompt("Please Enter Username to Add");
 	$.ajax({
 		url: "../api/v1/",
 		type: 'GET',
@@ -213,7 +215,7 @@ function addContact() {
 			'addcontact': toadd
 		},
 		success: function(code) {
-			location.reload()
+			loadContacts();
 		}
 	});
 }

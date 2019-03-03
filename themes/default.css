@@ -1,51 +1,50 @@
 body {
-  background-color: #f6f6f6;
+  background-color: #323c4c;
   color: #000000;
   margin: 0;
 }
 
 #topbar {
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  height: 60px;
+  height: 35px;
   width: 100%;
-  background-color: #f6f6f6;
-  color: #000000;
-  z-index: -1;
+  background-color: #323c4c;
+  color: #ffffff;
 }
 
+.group-container {
+  position: absolute;
+  display: flex;
+  top: 35px;
+  width: 100%;
+  height: calc(100% - 35px);
+}
+
+/* Contacts */
 #contacts {
-  position: fixed;
   top: 60px;
   left:0px;
   width: 250px;
-  height: calc(100% - 60px);
-  background-color: #ffffff;
+  height: 100%;
+  background-color: #323c4c;
   transition: .5s;
   overflow-y: auto;
   overflow-x: hidden;
-  border-right: 1px solid #cccccc;
-  border-top-left-radius: 10px;
-  box-shadow: 0px 0px 5px #cccccc;
 }
 
 .box {
   height: 75px;
   padding: 10px;
-  transition: .15s;
+  transition: .15s box-shadow;
   cursor: pointer;
-  border-right: 0px solid #c2c2c2;
+  box-shadow: inset 0px 0px 0px 0px #2c3544;
 }
 
 .box:hover {
-  background-color: #f7f7f7;
-  border-right: 3px solid #c2c2c2;
+  box-shadow: inset 250px 0px 0px 0px #2c3544;
 }
 
 .pfp {
   border-radius: 50%;
-  box-shadow: 0px 2px 5px #afafaf;
   width: 50px;
   height: 50px;
   transition: .5s;
@@ -55,24 +54,24 @@ body {
   position: relative;
   left: 65px;
   font-family: arial;
-  top: -30px;
+  top: -35px;
+  color: #ffffff;
 }
 
+/* Logo */
 .logo {
-  position: relative;
   left: 2px;
   top: 2px;
-  width: 55px;
-  height: 55px;
-  filter: invert(5%);
+  width: 35px;
+  height: 35px;
+  filter: invert(85%);
 }
 
 .logotext {
   position: relative;
-  top: 5px;
-  left: 10px;
-  font-size: 20px;
-  color: #000000;
+  top: 2px;
+  font-size: 18px;
+  color: #cacaca;
 }
 
 * {
@@ -87,31 +86,24 @@ body {
   visibility: hidden;
 }
 
-#messbox {
-  position: fixed;
-  left: 250px;
-  top: 60px;
-  width: calc(100% - 250px);
-  height: calc(100% - 100px);
+.message-container {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
   background-color: #fcfcfc;
-  box-shadow: 0px 0px 5px #cacaca;
   z-index: 1;
 }
 
-#messboxsmall {
+#message-box {
   width: 100%;
   height: 100%;
-  word-wrap: break-word;
+  word-break: break-all;
   overflow: auto;
 }
 
 #chatbox {
-  position: fixed;
-  left: 250px;
-  top: calc(100% - 40px);
-  width: calc(100% - 313px);
   height: 40px;
   border: 0;
   border-top: 1px solid #bbbbbb;
@@ -138,6 +130,7 @@ body {
   cursor: pointer;
 }
 
+/* Loading animation */
 .loading {
   width: 50px;
   height: 50px;
@@ -161,22 +154,37 @@ body {
   }
 }
 
+/* Message */
 .message {
-  display: block;
-  padding: 5px;
+  display: flex;
+  margin: 20px;
+}
+
+.message-right {
+  display: inline-block;
+}
+
+.message .profile-pic {
+  width: 50px;
+  height: 50px;
+  vertical-align: top;
+  border-radius: 5px;
 }
 
 .message .username {
-  display: inline-block;
-  background-color: #eaeaea;
-  margin-right: 5px;
+  display: block;
+  margin-left: 5px;
+  color: #303030;
+  font-weight: bold;
   border-radius: 3px;
 }
 
 .message .contents {
   display: inline-block;
+  margin-left: 5px;
 }
 
+/* Extra */
 #settings {
   position: fixed;
   padding: 30px;
@@ -230,6 +238,7 @@ iframe {
   top: 20px;
 }
 
+/* Mobile */
 @media only screen and (max-width: 800px) {
   #contacts {
     width: 75px;
