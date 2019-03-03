@@ -35,7 +35,7 @@ if ($conn->connect_error) {
 }
 
 function starchat_error($message) {
-	die("Starchat Error: ".htmlspecialchars($message));
+	die("{\"Starchat Error\": \"".addslashes($message)."\"}");
 }
 
 // We start with the most secure options then slowly drop, great for supporting older releases
@@ -132,12 +132,11 @@ if (isset($_GET["token"])) {
 
 header('Content-type: application/json');
 
+// Make sure username and password is set
 if (!isset($qusername)) {
 	starchat_error("Username not set, possibly API error");
-}else{
-	if (!isset($qpassword)) {
-		starchat_error("Password not set, possibly API error");
-	}
+}elseif (!isset($qpassword)) {
+	starchat_error("Password not set, possibly API error");
 }
 
 if (isset($_GET["getcontacts"])) {
@@ -148,10 +147,11 @@ if (isset($_GET["getcontacts"])) {
 
 if (isset($_GET["readmessages"])) {
 	if(!isset($_GET["count"])) {
+		// Default to 25
 		$read_count = 25;
 	}
 	if(!ctype_digit($_GET["count"])) {
-		if($_GET["count"] != "all") {
+		if($_GET["count"] != -1) {
 			starchat_error("Value is not an integer or \"all\"");
 		}else{
 			$read_count = -1;
@@ -159,9 +159,7 @@ if (isset($_GET["readmessages"])) {
 	}else{
 		$read_count = (int)$_GET["count"];
 	}
-	if(preg_match('/[a-zA-Z0-9\-]{3,40}$/', $_GET["readmessages"])) {
-		// yep, seems safe enough
-	}else{
+	if(!preg_match('/[a-zA-Z0-9\-]{3,40}$/', $_GET["readmessages"])) {
 		starchat_error("Value of readmessages is not a valid id");
 	}
 	$readmessage = $_GET["readmessages"];
@@ -171,15 +169,21 @@ if (isset($_GET["readmessages"])) {
 	$checkx->execute();
 	$keep = $checkx->get_result();
 
-	$start_count = $keep->num_rows - $read_count - 1;
+	$start_count = $keep->num_rows - $read_count;
 
+	if ($read_count === -1) {
+		$start_count = 0;
+	}
+
+	$x = 0;
+	$y = 0;
 	if ($keep->num_rows > 0) {
-		$x = 0;
 		while($row = $keep->fetch_assoc()) {
 			if ($x >= $start_count) {
-				$mbuffer[$x]["username"] = $row["username"];
-				$mbuffer[$x]["datetime"] = $row["dt"];
-				$mbuffer[$x]["message"] = $row["message"];
+				$mbuffer[$y]["username"] = $row["username"];
+				$mbuffer[$y]["datetime"] = $row["dt"];
+				$mbuffer[$y]["message"] = $row["message"];
+				$y++;
 			}
 			$x++;
 		}
@@ -190,9 +194,7 @@ if (isset($_GET["readmessages"])) {
 }
 
 if (isset($_GET["sendmessage"])) {
-	if(preg_match('/[a-zA-Z0-9\-]{3,40}$/', $_GET["sendmessageto"])) {
-		// yep, seems safe enough
-	}else{
+	if(!preg_match('/[a-zA-Z0-9\-]{3,40}$/', $_GET["sendmessageto"])) {
 		starchat_error("The sender conversation id is invalid");
 	}
 
