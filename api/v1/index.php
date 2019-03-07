@@ -34,10 +34,6 @@ if ($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 }
 
-function starchat_error($message) {
-	die("{\"Starchat Error\": \"".addslashes($message)."\"}");
-}
-
 // We start with the most secure options then slowly drop, great for supporting older releases
 function generateRandomString($length = 32) {
 	if (function_exists("random_bytes")) {
