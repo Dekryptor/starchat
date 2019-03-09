@@ -25,8 +25,8 @@
 // SOFTWARE.
 
 // Usually for debugging, but also hide html warnings and errors if the users config is set up strangely
-error_reporting(1); // Set to E_ALL for error reporting
-ini_set('display_errors', 1);
+error_reporting(0); // Set to E_ALL for error reporting
+ini_set('display_errors', 0);
 
 require '../../config.php';
 // Check if connection works

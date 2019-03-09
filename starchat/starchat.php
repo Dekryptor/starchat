@@ -176,6 +176,40 @@ class Starchat {
 		return $json_token;
 	}
 
+	public function read_messages($chat_id, $count = 25) {
+		if ($this->check_token($this->username, $this->password) === false) {
+			$this->starchat_error("Please login.");
+		}
+		$count_int = (int)$count;
+		$messages = $this->starchat_sql("SELECT * FROM messages WHERE chatid = ?", true, "s", $chat_id);
+		$start_count = 0;
+
+		if ($messages->num_rows === 0) {
+			return false;
+		}
+
+		// If count is -1 then read all messages
+		if ($count !== -1) {
+			$start_count = $messages->num_rows - $count_int;
+		}
+
+		$json_index = 0;
+		$loop = 0;
+		while($row = fetch_assoc()) {
+			if ($loop >= $start_count) {
+				$message_json[$json_index]["username"] = $row["username"];
+				$message_json[$json_index]["datetime"] = $row["dt"];
+				$message_json[$json_index]["message"] = $row["message"];
+				$json_index++;
+			}
+			$loop++;
+		}
+
+		// Turn message_json array to JSON
+		$json_messages = json_encode($message_json);
+		return $json_messages;
+	}
+
 	function __construct($conn) {
 		$this->mysql = $conn;
 	}
