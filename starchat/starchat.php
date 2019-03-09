@@ -27,11 +27,15 @@
 namespace Starchat;
 
 class Starchat {
-	protected $mysql;
-	protected $token;
+	private $mysql;
 
-	private function starchat_error($message) {
-		$json_message = json_encode(array("starchat_error"=>$message));
+	protected $username;
+	private $password;
+	private $token;
+
+	// Used for formatting error messages and kills the script
+	private function starchat_error($message, $type = "starchat_error") {
+		$json_message = json_encode(array($type=>$message));
 		die($json_message);
 		$mysql->close();
 	}
@@ -80,7 +84,7 @@ class Starchat {
 		} elseif (function_exists("openssl_random_pseudo_bytes")) {
 			return bin2hex(openssl_random_pseudo_bytes($length));
 		} else {
-			starchat_error("Secure random number not generated, your PHP version is most likely out of date");
+			$this->starchat_error("Secure random number not generated, your PHP version is most likely out of date");
 		}
 	}
 
@@ -100,10 +104,44 @@ class Starchat {
 				return false;
 			}
 		}
+		return false;
 	}
 
-	public function generate_token($username, $password) {
-		if ($this->check_login($username, $password) === false) {
+	// Returns boolean if token is found and assigns username
+	private function check_token($token) {
+		$token_check = $this->starchat_sql("SELECT * FROM tokens WHERE token = ?", true, "s", $token);
+		$token_rows = $token_check->num_rows;
+
+		if ($token_rows !== 1) {
+			return false;
+		}
+
+		while($row = $token_check->fetch_assoc()) {
+			if ($token === $row["token"]) {
+				// Since token was found, set username
+				$this->username = $row["username"];
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Next 2 functions simply set variables
+	// Refer to check_token and check_login for actually verifying them
+
+	// Needed to generate token
+	public function set_login($username, $password) {
+		$this->username = $username;
+		$this->password = $password;
+	}
+
+	public function set_token($token) {
+		$this->token = $token;
+	}
+
+	public function generate_token() {
+		// In order to generate a token, we need to login first
+		if ($this->check_login($this->username, $this->password) === false) {
 			$this->starchat_error("Login failed, please verify the credentials");
 		}
 		$is_token_created_loop = 1;
@@ -140,7 +178,6 @@ class Starchat {
 
 	function __construct($conn) {
 		$this->mysql = $conn;
-		$this->token = $this->generate_token();
 	}
 }
 
