@@ -26,7 +26,7 @@
 
 namespace Starchat;
 
-class Starchat {
+class StarchatApi {
 	private $mysql;
 
 	protected $username;
@@ -34,7 +34,7 @@ class Starchat {
 	private $token;
 
 	// Used for formatting error messages and kills the script
-	private function starchat_error($message, $type = "starchat_error") {
+	public function starchat_error($message, $type = "starchat_error") {
 		$json_message = json_encode(array($type=>$message));
 		die($json_message);
 		$mysql->close();
@@ -168,7 +168,7 @@ class Starchat {
 
 		$this->starchat_sql("INSERT INTO tokens (token, username, created) VALUES (?, ?, ?)", false,
 			"s", $token,
-			"s", $username,
+			"s", $this->username,
 			"s", $token_date);
 
 		// Return the token in JSON
@@ -176,8 +176,24 @@ class Starchat {
 		return $json_token;
 	}
 
+	public function get_contacts() {
+		if ($this->check_token($this->token) === false) {
+			$this->starchat_error("Please login.");
+		}
+		$results = $this->starchat_sql("SELECT contacts FROM accounts WHERE username=?", true,
+			"s", $this->username);
+		if ($results->num_rows !== 1) {
+			$this->starchat_error("Account not found");
+			return false;
+		}
+		while($row = $results->fetch_assoc()) {
+			return $row["contacts"];
+		}
+		return false;
+	}
+
 	public function read_messages($chat_id, $count = 25) {
-		if ($this->check_token($this->username, $this->password) === false) {
+		if ($this->check_token($this->token) === false) {
 			$this->starchat_error("Please login.");
 		}
 		$count_int = (int)$count;
@@ -195,7 +211,7 @@ class Starchat {
 
 		$json_index = 0;
 		$loop = 0;
-		while($row = fetch_assoc()) {
+		while($row = $this->fetch_assoc()) {
 			if ($loop >= $start_count) {
 				$message_json[$json_index]["username"] = $row["username"];
 				$message_json[$json_index]["datetime"] = $row["dt"];
@@ -208,6 +224,30 @@ class Starchat {
 		// Turn message_json array to JSON
 		$json_messages = json_encode($message_json);
 		return $json_messages;
+	}
+
+	public function send_message($message, $to) {
+		if ($this->check_token($this->token) === false) {
+			$this->starchat_error("Please login.");
+		}
+		$check_user = $this->starchat_sql("SELECT contacts FROM accounts WHERE username = ?", true,
+			"s", $this->username);
+		$contact_exists = false;
+		while($row = $check_user->fetch_assoc()) {
+			$contacts_json = json_decode($row["contacts"], true);
+			if (in_array($to, $contacts_json)) {
+				$contact_exists = true;
+			}
+		}
+		if ($contact_exists === false) {
+			$this->starchat_error("Contact does not exist");
+			return false;
+		}
+		$this->starchat_sql("INSERT INTO messages (chatid, username, message) VALUES (?, ?, ?)",false,
+			"s", $to,
+			"s", $this->username,
+			"s", htmlspecialchars($message));
+		return true;
 	}
 
 	function __construct($conn) {
