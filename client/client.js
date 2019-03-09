@@ -86,7 +86,7 @@ function openSettings() {
 
 function fetchConversation() {
 	$.ajax({
-		url: "../api/v1/",
+		url: "../api/",
 		type: 'GET',
 		data: {
 			'token': token,
@@ -162,7 +162,7 @@ function checkKey(event) {
 function loadContacts() {
 	$("#contacts").html("<div class='loading'></div>")
 	$.ajax({
-		url: "../api/v1/",
+		url: "../api/",
 		type: 'GET',
 		data: {
 			"token": token,
@@ -172,7 +172,7 @@ function loadContacts() {
 		success: function(contacts) {
 			$("#contacts").html(""); // Clear result to remove loading animation
 			for (let x = 0; x <= contacts.length-1; x++) {
-				$("#contacts").append("<div class='box' onclick='switchContacts(\""+contacts[x][1]+"\")'><img src='../img/user.png' class='pfp'><div class='info'>"+contacts[x][0]+"</div></div>");
+				$("#contacts").append("<div class='box' onclick='switchContacts(\""+contacts[x]["chat_id"]+"\")'><img src='../img/user.png' class='pfp'><div class='info'>"+contacts[x]["roomname"]+"</div></div>");
 			}
 		}
 	});
@@ -195,7 +195,7 @@ function switchContacts(vals) {
 function sendMessage() {
 	let usermessage = document.getElementById("chatbox").value;
 	$.ajax({
-		url: "../api/v1/",
+		url: "../api/",
 		type: 'GET',
 		data: {
 			'token': token,
@@ -214,7 +214,7 @@ function sendMessage() {
 function addContact() {
 	let toadd = prompt("Please Enter Username to Add");
 	$.ajax({
-		url: "../api/v1/",
+		url: "../api/",
 		type: 'GET',
 		data: {
 			'token': token,

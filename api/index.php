@@ -48,6 +48,7 @@ if(isset($_GET["token"])) $token = $_GET["token"];
 
 // API Usages
 if(isset($_GET["getcontacts"])) $get_contacts = $_GET["getcontacts"];
+if(isset($_GET["readmessages"])) $get_messages = $_GET["readmessages"];
 if(isset($_GET["sendmessage"])) $send_message = $_GET["sendmessage"];
 if(isset($_GET["sendmessageto"])) $send_message_to = $_GET["sendmessageto"];
 if(isset($_GET["addcontact"])) $add_contact = $_GET["addcontact"];
@@ -68,7 +69,15 @@ if(isset($token)) {
         die($api->get_contacts());
     }
 
-    if (isset($send_message) and isset($send_message_to)) {
+    if (isset($get_messages)) {
+        die($api->read_messages($get_messages));
+    }
+
+    if (isset($send_message)) {
         $api->send_message($send_message, $send_message_to);
+    }
+
+    if (isset($add_contact)) {
+        $api->add_contact($add_contact);
     }
 }

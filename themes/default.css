@@ -2,6 +2,7 @@ body {
   background-color: #323c4c;
   color: #000000;
   margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 #topbar {
@@ -37,6 +38,7 @@ body {
   padding: 10px;
   transition: .15s box-shadow;
   cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
   box-shadow: inset 0px 0px 0px 0px #2c3544;
 }
 
@@ -54,7 +56,7 @@ body {
 .info {
   position: relative;
   left: 65px;
-  font-family: arial;
+  font-family: Arial, Helvetica, sans-serif;
   top: -35px;
   color: #ffffff;
 }
@@ -76,7 +78,7 @@ body {
 }
 
 * {
-  font-family: arial;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 *:focus {

@@ -51,11 +51,11 @@ if ($doesexistnumrows >= 0 ) {
 
 <!DOCTYPE html>
 <html lang="en">
-<!-- Starchat Web Client v0.8.1 -->
+<!-- Starchat Web Client v0.9.0 -->
 <head>
 	<title>Starchat</title>
 	<link rel="stylesheet" type="text/css" href="../libs/bootstrap/css/bootstrap.min.css">
-	<link id="stylesheeta" rel="stylesheet" type="text/css" href="../themes/default.css?v=f">
+	<link id="stylesheeta" rel="stylesheet" type="text/css" href="../themes/default.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 </head>

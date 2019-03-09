@@ -176,12 +176,13 @@ class StarchatApi {
 		return $json_token;
 	}
 
-	public function get_contacts() {
+	public function get_contacts($username = null) {
 		if ($this->check_token($this->token) === false) {
 			$this->starchat_error("Please login.");
 		}
+		if ($username === null) $username = $this->username;
 		$results = $this->starchat_sql("SELECT contacts FROM accounts WHERE username=?", true,
-			"s", $this->username);
+			"s", $username);
 		if ($results->num_rows !== 1) {
 			$this->starchat_error("Account not found");
 			return false;
@@ -200,6 +201,19 @@ class StarchatApi {
 		$messages = $this->starchat_sql("SELECT * FROM messages WHERE chatid = ?", true, "s", $chat_id);
 		$start_count = 0;
 
+		$contact_exists = false;
+		$contacts_json = json_decode($this->get_contacts(), true);
+		foreach($contacts_json as $json) {
+			if ($json["chat_id"] === $chat_id) {
+				$contact_exists = true;
+			}
+		}
+		
+		if ($contact_exists === false) {
+			$this->starchat_error("User is not in your contacts");
+			return false;
+		}
+
 		if ($messages->num_rows === 0) {
 			return false;
 		}
@@ -211,7 +225,7 @@ class StarchatApi {
 
 		$json_index = 0;
 		$loop = 0;
-		while($row = $this->fetch_assoc()) {
+		while($row = $messages->fetch_assoc()) {
 			if ($loop >= $start_count) {
 				$message_json[$json_index]["username"] = $row["username"];
 				$message_json[$json_index]["datetime"] = $row["dt"];
@@ -230,23 +244,59 @@ class StarchatApi {
 		if ($this->check_token($this->token) === false) {
 			$this->starchat_error("Please login.");
 		}
-		$check_user = $this->starchat_sql("SELECT contacts FROM accounts WHERE username = ?", true,
-			"s", $this->username);
+		
 		$contact_exists = false;
-		while($row = $check_user->fetch_assoc()) {
-			$contacts_json = json_decode($row["contacts"], true);
-			if (array_intersect($to, $contacts_json)) {
+		$contacts_json = json_decode($this->get_contacts(), true);
+		foreach($contacts_json as $json) {
+			if ($json["chat_id"] === $to) {
 				$contact_exists = true;
 			}
 		}
+		
 		if ($contact_exists === false) {
-			$this->starchat_error("Contact does not exist");
+			$this->starchat_error("User is not in your contacts");
 			return false;
 		}
 		$this->starchat_sql("INSERT INTO messages (chatid, username, message) VALUES (?, ?, ?)",false,
 			"s", $to,
 			"s", $this->username,
 			"s", htmlspecialchars($message));
+		return true;
+	}
+
+	public function add_contact($contact) {
+		if ($this->check_token($this->token) === false) {
+			$this->starchat_error("Please login.");
+		}
+		$user_contacts = json_decode($this->get_contacts(), true);
+		$other_contacts = json_decode($this->get_contacts($contact), true);
+		if ($other_contacts === false) {
+			$this->starchat_error("User does not exist");
+		}
+
+		// Randomly generated ID for conversation ID
+		$chat_id = $this->generate_secure_string();
+		$check_id = $this->starchat_sql("SELECT chatid FROM messages WHERE chatid=?", true, "s", $chat_id);
+		if ($check_id->num_rows > 0) {
+			$this->starchat_error("Chat ID collision, please rerun the function");
+			return false;
+		}
+
+		$user_contacts[count($user_contacts)]["roomname"] = htmlspecialchars($contact);
+		$other_contacts[count($other_contacts)]["roomname"] = htmlspecialchars($this->username);
+		$user_contacts[count($user_contacts)-1]["chat_id"] = $chat_id;
+		$other_contacts[count($other_contacts)-1]["chat_id"] = $chat_id;
+		
+		$user_contacts_json = json_encode($user_contacts);
+		$other_contacts_json = json_encode($other_contacts);
+
+		// Update both users contact list
+		$this->starchat_sql("UPDATE accounts SET contacts=? WHERE username=?", false,
+			"s", $user_contacts_json,
+			"s", $this->username);
+		$this->starchat_sql("UPDATE accounts SET contacts=? WHERE username=?", false,
+			"s", $other_contacts_json,
+			"s", $contact);
 		return true;
 	}
 
