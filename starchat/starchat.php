@@ -235,7 +235,7 @@ class StarchatApi {
 		$contact_exists = false;
 		while($row = $check_user->fetch_assoc()) {
 			$contacts_json = json_decode($row["contacts"], true);
-			if (in_array($to, $contacts_json)) {
+			if (array_intersect($to, $contacts_json)) {
 				$contact_exists = true;
 			}
 		}
@@ -254,5 +254,3 @@ class StarchatApi {
 		$this->mysql = $conn;
 	}
 }
-
-?>

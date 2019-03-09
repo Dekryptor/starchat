@@ -58,21 +58,17 @@ if(isset($_POST["username"])) {
 		}
 
 		// Setup file
-		$info = "
-		<?php
-
-		\$user = \"".addslashes($username)."\";
-		\$pass = \"".addslashes($password)."\";
-		\$mysqlurl = \"".addslashes($location)."\";
-		\$dbname = \"".addslashes($dbname)."\";
-		\$jitsi = $isJitsi;
-		\$websocketUrl = \"".addslashes($websocketurl)."\";
-		\$wsport = $websocketport;
-		\$wsencrypt = \"$wsencrypted\";
-		\$wsenduri = \"$wsenduri\";
-		\$conn = new mysqli(\$mysqlurl, \$user, \$pass, \$dbname);
-		?>
-		";
+		$info = "<?php
+\$user = \"".addslashes($username)."\";
+\$pass = \"".addslashes($password)."\";
+\$mysqlurl = \"".addslashes($location)."\";
+\$dbname = \"".addslashes($dbname)."\";
+\$jitsi = $isJitsi;
+\$websocketUrl = \"".addslashes($websocketurl)."\";
+\$wsport = $websocketport;
+\$wsencrypt = \"$wsencrypted\";
+\$wsenduri = \"$wsenduri\";
+\$conn = new mysqli(\$mysqlurl, \$user, \$pass, \$dbname);";
 
 		file_put_contents("config.php", $info);
 

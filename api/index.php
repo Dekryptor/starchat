@@ -67,7 +67,8 @@ if(isset($token)) {
     if (isset($get_contacts)) {
         die($api->get_contacts());
     }
+
+    if (isset($send_message) and isset($send_message_to)) {
+        $api->send_message($send_message, $send_message_to);
+    }
 }
-
-
-?>
