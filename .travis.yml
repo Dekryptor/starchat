@@ -22,7 +22,7 @@ before_script:
 
 script:
   - sleep 5
-  - php -l api/v1/index.php
+  - php -l api/index.php
   - php -l setup.php
   - php -l create/index.php
   - php -l client/index.php
