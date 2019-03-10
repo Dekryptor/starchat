@@ -89,6 +89,9 @@ if ($doesexistnumrows >= 0 ) {
 		<h1>Options</h1>
 		<p><select id="theme" onchange="themeChange();">
 			<option value="default">Default</option>
+			<option value="light">Light</option>
+			<option value="dark">Dark</option>
+			<option value="hacker">Hack</option>
 		</select></p>
 		<p><input type="button" value="Add Contact" onclick="addContact()" class="btn btn-light"><!-- TODO change this dialog to own function instead of alert --></p>
 		<p><a href="logout.php" class="btn btn-danger">Logout</a></p>

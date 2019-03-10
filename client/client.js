@@ -51,6 +51,19 @@ function getCookie(cname) {
 	return "";
 }
 
+function createNotification(html) {
+	$(html).hide().fadeIn(100).delay(3000).fadeOut(1000).appendTo("#notification-container");
+}
+
+console.log = function(msg) {
+	let html = "<div class='alert alert-light shadow-sm fade show'>"+
+		"<strong>Error</strong><br>"+
+		" "+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div>"
+	createNotification(html);
+}
+
+console.error = console.warn = console.info = console.log;
+
 function scrollBottom(body, speed = "slow") {
 	$(body).animate({ scrollTop: $(body).height() + $(body).scrollTop() }, speed);
 }
@@ -69,14 +82,12 @@ function messageToJson(username, msg, userid) {
 	return JSON.stringify(jsonMsg);
 }
 
-function createNotification(html) {
-	$(html).hide().fadeIn(100).delay(3000).fadeOut(1000).appendTo("#notification-container");
-}
+
 
 function buildMessage(username, msg, doFade = true) {
 	let message = "<div class='message'><img class='profile-pic' src='../img/user.png'>" +
-								"<div class='message-right'><div class='username'>"+username.replace(/<(?:.|\n)*?>/gm, '')+"</div>" +
-								"<div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div></div>";
+			"<div class='message-right'><div class='username'>"+username.replace(/<(?:.|\n)*?>/gm, '')+"</div>" +
+			"<div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div></div>";
 	if (doFade === true) {
 		$(message).hide().appendTo("#message-box").fadeIn(200);
 	}else{
@@ -132,8 +143,8 @@ function themeChange() {
 // Websocket stuff
 var conn = new WebSocket(wsType+'://'+wsUrl+':'+wsPort+'/'+wsUri+"?"+token);
 
-conn.onopen = function(event) {
-	console.log(wsType.toUpperCase()+": Connected established to "+wsType+"://"+wsUrl+":"+wsPort+"/"+wsUri);
+conn.onerror = function(error) {
+	console.error("Error connecting to websocket");
 }
 
 conn.onmessage = function(event) {
@@ -237,6 +248,3 @@ function addContact() {
 	});
 }
 
-message.error = function(msg) {
-	createNotification(msg);
-}
