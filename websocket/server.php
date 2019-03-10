@@ -49,7 +49,7 @@ class StarchatWs implements MessageComponentInterface {
               $req_contacts = $row_info["contacts"];
               $req_json = json_decode($req_contacts, true);
               foreach($req_json as $item) {
-                if ($item[1] === $msg_json["id"]) {
+                if ($item["chat_id"] === $msg_json["id"]) {
                   $user->send($msg);
                 }
               }

@@ -43,7 +43,7 @@ body {
 }
 
 .box:hover {
-  box-shadow: inset 250px 0px 0px 0px #2c3544;
+  box-shadow: inset -250px 0px 30px 0px #2c3544;
 }
 
 .pfp {
@@ -195,11 +195,11 @@ body {
   top: calc(50% - 200px);
   width: 400px;
   height: 400px;
-  background-color: #ffffff;
-  color: black;
-  border-radius: 10px;
-  visibility: hidden;
-  box-shadow: 0px 5px 10px #555555;
+  background-color: rgb(0,0,0,.8);
+  color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  display: none;
   z-index: 2;
 }
 
@@ -241,14 +241,23 @@ iframe {
   top: 20px;
 }
 
+/* Notifications */
+#notification-container {
+  position: absolute;
+  width: 400px;
+  right: 5px;
+  top: 5px;
+  z-index: 100;
+}
+
 /* Mobile */
 @media only screen and (max-width: 800px) {
   #contacts {
     width: 75px;
+    min-width:0;
   }
   #contacts:hover {
-    width: 50%;
-    box-shadow: 0px 0px 20px 2px #000000;
+    width: 250px;
   }
   #messbox {
     left: 75px;

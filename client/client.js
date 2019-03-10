@@ -69,6 +69,10 @@ function messageToJson(username, msg, userid) {
 	return JSON.stringify(jsonMsg);
 }
 
+function createNotification(html) {
+	$(html).hide().fadeIn(100).delay(3000).fadeOut(1000).appendTo("#notification-container");
+}
+
 function buildMessage(username, msg, doFade = true) {
 	let message = "<div class='message'><img class='profile-pic' src='../img/user.png'>" +
 								"<div class='message-right'><div class='username'>"+username.replace(/<(?:.|\n)*?>/gm, '')+"</div>" +
@@ -81,7 +85,11 @@ function buildMessage(username, msg, doFade = true) {
 }
 
 function openSettings() {
-	$("#settings").css({"visibility": "visible"});
+	$("#settings").slideToggle(500);
+}
+
+function closeSettings() {
+	$("#settings").slideToggle(100);
 }
 
 function fetchConversation() {
@@ -122,14 +130,23 @@ function themeChange() {
 }
 
 // Websocket stuff
-let conn = new WebSocket(wsType+'://'+wsUrl+':'+wsPort+'/'+wsUri+"?"+token);
+var conn = new WebSocket(wsType+'://'+wsUrl+':'+wsPort+'/'+wsUri+"?"+token);
+
 conn.onopen = function(event) {
 	console.log(wsType.toUpperCase()+": Connected established to "+wsType+"://"+wsUrl+":"+wsPort+"/"+wsUri);
 }
+
 conn.onmessage = function(event) {
 	let msg = JSON.parse(event.data);
-	buildMessage(msg.user, msg.message);
-	scrollBottom("#message-box");
+	if (msg.id === tmpid) {
+		buildMessage(msg.user, msg.message);
+		scrollBottom("#message-box");
+	}else{
+		let html = "<div onclick='switchContacts(\""+msg.id+"\");scrollBottom(\"#message-box\", 400);' class='alert alert-light shadow-sm fade show'>"+
+		"<strong>"+msg.user.replace(/<(?:.|\n)*?>/gm, '')+"</strong><br>"+
+		" "+msg.message.replace(/<(?:.|\n)*?>/gm, '')+"</div>"
+		createNotification(html);
+	}
 }
 
 function startCall() {
@@ -146,10 +163,6 @@ function endCall() {
 	$("#callform").html("");
 	$("#callform").css({"visibility": "hidden"});
 	calling = false;
-}
-
-function closeSettings() {
-	$("#settings").css({"visibility": "hidden"});
 }
 
 // Sends message by listening for Enter key
@@ -202,13 +215,11 @@ function sendMessage() {
 			'sendmessage': usermessage,
 			'sendmessageto': tmpid
 		},
-		dataType: 'json',
-		success: function(data) {
-			document.getElementById("chatbox").value = "";
-			// Send message to websocket
-			conn.send(messageToJson(username, usermessage, tmpid));
-		}
+		dataType: 'json'
 	});
+	// Send message to websocket
+	document.getElementById("chatbox").value = "";
+	conn.send(messageToJson(username, usermessage, tmpid));
 }
 
 function addContact() {
@@ -224,4 +235,8 @@ function addContact() {
 			loadContacts();
 		}
 	});
+}
+
+message.error = function(msg) {
+	createNotification(msg);
 }

@@ -101,6 +101,9 @@ if ($doesexistnumrows >= 0 ) {
 		var wsUri = "<?php echo $wsenduri; ?>";
 	</script>
 
+	<!-- Notifications -->
+	<div id="notification-container"></div>
+
 	<!-- Jquery -->
 	<script src="../libs/jquery.min.js"></script>
 	<!-- Main JS code for client -->
