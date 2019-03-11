@@ -84,15 +84,19 @@ function messageToJson(username, msg, userid) {
 
 
 
-function buildMessage(username, msg, doFade = true) {
-	let message = "<div class='message'><img class='profile-pic' src='../img/user.png'>" +
-			"<div class='message-right'><div class='username'>"+username.replace(/<(?:.|\n)*?>/gm, '')+"</div>" +
-			"<div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div></div>";
-	if (doFade === true) {
-		$(message).hide().appendTo("#message-box").fadeIn(200);
-	}else{
-		$(message).appendTo("#message-box");
+// Custom context menu builder
+function buildContextMenu(items, cx, cy) {
+	$(".menu").hide();
+	let menu = $("<div class='menu'></div>");
+	for (let i = 0; i < items.length; i++) {
+		let item = $("<a class='menu-item'>"+items[i].text+"</a>").click(items[i].run);
+		$(menu).append(item);
 	}
+	$(menu).css({
+		"position": "absolute",
+		"left": cx-2,
+		"top": cy-2
+	}).mouseleave(function() {$(this).hide(100)}).appendTo("body");
 }
 
 function openSettings() {
@@ -122,6 +126,27 @@ function fetchConversation() {
 			scrollBottom("#message-box", 0);
 		}
 	});
+}
+
+function buildMessage(username, msg, doFade = true) {
+	let message = $("<div class='message'><img class='profile-pic' src='../img/user.png'>" +
+			"<div class='message-right'><div class='username'>"+username.replace(/<(?:.|\n)*?>/gm, '')+"</div>" +
+			"<div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div></div>");
+	$(message).contextmenu(function(e) {
+		buildContextMenu([
+			{
+				text: "Delete message",
+				run: function() {
+					alert("hi");
+				}
+			}], e.pageX, e.pageY);
+		return false;
+	});
+	if (doFade === true) {
+		$(message).hide().appendTo("#message-box").fadeIn(200);
+	}else{
+		$(message).appendTo("#message-box");
+	}
 }
 
 // Used for switching themes
@@ -198,9 +223,33 @@ function loadContacts() {
 			for (let x = 0; x <= contacts.length-1; x++) {
 				$("#contacts").append("<div class='box' onclick='switchContacts(\""+contacts[x]["chat_id"]+"\")'><img src='../img/user.png' class='pfp'><div class='info'>"+contacts[x]["roomname"]+"</div></div>");
 			}
+			$(".box").contextmenu(function(e) {
+				buildContextMenu([
+					{
+						text: "Remove Contact",
+						run: function() {
+							alert("hi");
+						}
+					},
+					{
+						text: "Change info",
+						run: function() {
+							alert("hi");
+						}
+					}], e.pageX, e.pageY);
+				return false;
+			});
 		}
 	});
 }
+
+$(document).contextmenu(function() {
+	return false;
+})
+
+$(document).click(function() {
+	$(".menu").hide();
+})
 
 loadContacts(); // the function is defined, we run the code, just once for now
 
