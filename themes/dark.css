@@ -256,6 +256,7 @@ iframe {
 /* Right click menu */
 .menu {
   background-color: #323c4c;
+  color: #ffffff;
   border: 0;
   border-radius: 2px;
   box-shadow: 0px 2px 5px rgb(0,0,0,.2);
@@ -264,6 +265,7 @@ iframe {
 }
 
 .menu .menu-item {
+  color: #ffffff;
   display: block;
   padding: 5px;
   border-radius: 2px;

@@ -227,6 +227,7 @@ class StarchatApi {
 		$loop = 0;
 		while($row = $messages->fetch_assoc()) {
 			if ($loop >= $start_count) {
+				$message_json[$json_index]["id"] = $row["id"];
 				$message_json[$json_index]["username"] = $row["username"];
 				$message_json[$json_index]["datetime"] = $row["dt"];
 				$message_json[$json_index]["message"] = $row["message"];
@@ -262,6 +263,26 @@ class StarchatApi {
 			"s", $this->username,
 			"s", htmlspecialchars($message));
 		return true;
+	}
+
+	public function delete_message($id) {
+		if ($this->check_token($this->token) === false) {
+			$this->starchat_error("Please login.");
+		}
+
+		$check = $this->starchat_sql("SELECT id, username FROM messages WHERE id=? AND username=?", true,
+			"s", $id,
+			"s", $this->username);
+
+		if ($check->num_rows > 0) {
+			$this->starchat_sql("DELETE FROM messages WHERE id=? AND username=?", false,
+				"s", $id,
+				"s", $this->username);
+			return true;
+		}else{
+			$this->starchat_error("Could not delete message", "delete_fail");
+		}
+		return false;
 	}
 
 	public function add_contact($contact) {

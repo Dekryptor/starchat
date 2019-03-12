@@ -107,6 +107,40 @@ function closeSettings() {
 	$("#settings").slideToggle(100);
 }
 
+function buildMessage(musername, msg, doFade = true, id = "") {
+	let message = $("<div class='message'><img class='profile-pic' src='../img/user.png'>" +
+			"<div style='display:hidden;' class='id'>"+id.toString().replace(/<(?:.|\n)*?>/gm, '')+"</div><div class='message-right'><div class='username'>"+musername.replace(/<(?:.|\n)*?>/gm, '')+"</div>" +
+			"<div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div></div>");
+	let msgUsername = $(message).find(".username").text();
+	$(message).contextmenu(function(e) {
+		buildContextMenu([
+			{
+				text: "Delete message",
+				run: function() {
+					if (msgUsername === username) {
+						$.ajax({
+							url: "../api/",
+							type: 'GET',
+							data: {
+								'token': token,
+								'deletemessage': id
+							}
+						});
+						fetchConversation();
+					}else{
+						console.error("Cannot delete someone elses message.")
+					}
+				}
+			}], e.pageX, e.pageY);
+		return false;
+	});
+	if (doFade === true) {
+		$(message).hide().appendTo("#message-box").fadeIn(200);
+	}else{
+		$(message).appendTo("#message-box");
+	}
+}
+
 function fetchConversation() {
 	$.ajax({
 		url: "../api/",
@@ -121,33 +155,14 @@ function fetchConversation() {
 			$("#message-box").html("");
 			for (let x = 0; x < result.length; x++) {
 				// False for param doFade because we do not want fade on old messages
-				buildMessage(result[x].username, result[x].message, false);
+				buildMessage(result[x].username, result[x].message, false, result[x].id);
 			}
 			scrollBottom("#message-box", 0);
 		}
 	});
 }
 
-function buildMessage(username, msg, doFade = true) {
-	let message = $("<div class='message'><img class='profile-pic' src='../img/user.png'>" +
-			"<div class='message-right'><div class='username'>"+username.replace(/<(?:.|\n)*?>/gm, '')+"</div>" +
-			"<div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div></div>");
-	$(message).contextmenu(function(e) {
-		buildContextMenu([
-			{
-				text: "Delete message",
-				run: function() {
-					alert("hi");
-				}
-			}], e.pageX, e.pageY);
-		return false;
-	});
-	if (doFade === true) {
-		$(message).hide().appendTo("#message-box").fadeIn(200);
-	}else{
-		$(message).appendTo("#message-box");
-	}
-}
+
 
 // Used for switching themes
 function swapSheet(sheet) {

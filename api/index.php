@@ -53,6 +53,7 @@ if(isset($_GET["sendmessage"])) $send_message = $_GET["sendmessage"];
 if(isset($_GET["sendmessageto"])) $send_message_to = $_GET["sendmessageto"];
 if(isset($_GET["addcontact"])) $add_contact = $_GET["addcontact"];
 if(isset($_GET["gentoken"])) $gen_token = $_GET["gentoken"];
+if(isset($_GET["deletemessage"])) $delete_message = $_GET["deletemessage"];
 
 if(isset($username) and isset($password)) {
     $api->set_login($username, $password);
@@ -79,5 +80,9 @@ if(isset($token)) {
 
     if (isset($add_contact)) {
         $api->add_contact($add_contact);
+    }
+
+    if (isset($delete_message)) {
+        $api->delete_message($delete_message);
     }
 }
