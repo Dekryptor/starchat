@@ -27,6 +27,11 @@ if (jitsi === undefined) {
 	jitsi = false;
 }
 
+// Parse message
+String.prototype.parseString = function() {
+	return this.replace(/<(?:.|\n)*?>/gm, '');
+}
+
 // Simple cookie managers
 function setCookie(cname, cvalue, exdays) {
 	let d = new Date();
@@ -51,6 +56,10 @@ function getCookie(cname) {
 	return "";
 }
 
+let username = getCookie("usernamedata");
+let token = getCookie("stoken");
+let api = new Starchat(token);
+
 function createNotification(html) {
 	$(html).hide().fadeIn(100).delay(3000).fadeOut(1000).appendTo("#notification-container");
 }
@@ -58,7 +67,7 @@ function createNotification(html) {
 console.log = function(msg) {
 	let html = "<div class='alert alert-light shadow-sm fade show'>"+
 		"<strong>Error</strong><br>"+
-		" "+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div>"
+		" "+msg.parseString()+"</div>"
 	createNotification(html);
 }
 
@@ -68,8 +77,6 @@ function scrollBottom(body, speed = "slow") {
 	$(body).animate({ scrollTop: $(body).height() + $(body).scrollTop() }, speed);
 }
 
-let username = getCookie("usernamedata");
-let token = getCookie("stoken");
 
 // Needed to send to websocket
 function messageToJson(username, msg, userid) {
@@ -83,6 +90,23 @@ function messageToJson(username, msg, userid) {
 }
 
 
+
+// Upload profile picture
+$("#upload-file-btn").click(function() {
+	$.ajax({
+		url: "../api/?token="+token,
+		type: "POST",
+		data: new FormData($("#pfp-upload")[0]),
+		cache: false,
+		processData: false,
+		contentType: false,
+		xhr: function() {
+			var file = $.ajaxSettings.xhr();
+			file.upload;
+			return file;
+		}
+	})
+})
 
 // Custom context menu builder
 function buildContextMenu(items, cx, cy) {
@@ -109,8 +133,8 @@ function closeSettings() {
 
 function buildMessage(musername, msg, doFade = true, id = "") {
 	let message = $("<div class='message'><img class='profile-pic' src='../img/user.png'>" +
-			"<div style='display:hidden;' class='id'>"+id.toString().replace(/<(?:.|\n)*?>/gm, '')+"</div><div class='message-right'><div class='username'>"+musername.replace(/<(?:.|\n)*?>/gm, '')+"</div>" +
-			"<div class='contents'>"+msg.replace(/<(?:.|\n)*?>/gm, '')+"</div></div></div>");
+			"<div style='display:hidden;' class='id'>"+id.toString().parseString()+"</div><div class='message-right'><div class='username'>"+musername.parseString()+"</div>" +
+			"<div class='contents'>"+msg.parseString()+"</div></div></div>");
 	let msgUsername = $(message).find(".username").text();
 	$(message).contextmenu(function(e) {
 		buildContextMenu([
@@ -118,14 +142,7 @@ function buildMessage(musername, msg, doFade = true, id = "") {
 				text: "Delete message",
 				run: function() {
 					if (msgUsername === username) {
-						$.ajax({
-							url: "../api/",
-							type: 'GET',
-							data: {
-								'token': token,
-								'deletemessage': id
-							}
-						});
+						api.deleteMessage(id);
 						fetchConversation();
 					}else{
 						console.error("Cannot delete someone elses message.")
@@ -142,27 +159,16 @@ function buildMessage(musername, msg, doFade = true, id = "") {
 }
 
 function fetchConversation() {
-	$.ajax({
-		url: "../api/",
-		type: 'GET',
-		data: {
-			'token': token,
-			'readmessages': tmpid,
-			'count': 25
-		},
-		dataType: 'json',
-		success: function(result) {
-			$("#message-box").html("");
-			for (let x = 0; x < result.length; x++) {
-				// False for param doFade because we do not want fade on old messages
-				buildMessage(result[x].username, result[x].message, false, result[x].id);
-			}
-			scrollBottom("#message-box", 0);
+	let result = api.readMessages(tmpid, function(result) {
+		$("#message-box").html("");
+		for (let x = 0; x < result.length; x++) {
+			// False for param doFade because we do not want fade on old messages
+			buildMessage(result[x].username, result[x].message, false, result[x].id);
 		}
+		scrollBottom("#message-box", 0);
 	});
+	
 }
-
-
 
 // Used for switching themes
 function swapSheet(sheet) {
@@ -180,7 +186,7 @@ function themeChange() {
 	swapSheet(getCookie("starchattheme"));
 }
 
-// Websocket stuff
+// Websocket connection
 var conn = new WebSocket(wsType+'://'+wsUrl+':'+wsPort+'/'+wsUri+"?"+token);
 
 conn.onerror = function(error) {
@@ -194,8 +200,8 @@ conn.onmessage = function(event) {
 		scrollBottom("#message-box");
 	}else{
 		let html = "<div onclick='switchContacts(\""+msg.id+"\");scrollBottom(\"#message-box\", 400);' class='alert alert-light shadow-sm fade show'>"+
-		"<strong>"+msg.user.replace(/<(?:.|\n)*?>/gm, '')+"</strong><br>"+
-		" "+msg.message.replace(/<(?:.|\n)*?>/gm, '')+"</div>"
+		"<strong>"+msg.user.parseString()+"</strong><br>"+
+		" "+msg.message.parseString()+"</div>"
 		createNotification(html);
 	}
 }
@@ -225,36 +231,27 @@ function checkKey(event) {
 
 function loadContacts() {
 	$("#contacts").html("<div class='loading'></div>")
-	$.ajax({
-		url: "../api/",
-		type: 'GET',
-		data: {
-			"token": token,
-			"getcontacts": "yes"
-		},
-		dataType: 'json',
-		success: function(contacts) {
-			$("#contacts").html(""); // Clear result to remove loading animation
-			for (let x = 0; x <= contacts.length-1; x++) {
-				$("#contacts").append("<div class='box' onclick='switchContacts(\""+contacts[x]["chat_id"]+"\")'><img src='../img/user.png' class='pfp'><div class='info'>"+contacts[x]["roomname"]+"</div></div>");
-			}
-			$(".box").contextmenu(function(e) {
-				buildContextMenu([
-					{
-						text: "Remove Contact",
-						run: function() {
-							alert("hi");
-						}
-					},
-					{
-						text: "Change info",
-						run: function() {
-							alert("hi");
-						}
-					}], e.pageX, e.pageY);
-				return false;
-			});
+	api.getContacts(function(contacts) {
+		$("#contacts").html(""); // Clear result to remove loading animation
+		for (let x = 0; x <= contacts.length-1; x++) {
+			$("#contacts").append("<div class='box' onclick='switchContacts(\""+contacts[x]["chat_id"]+"\")'><img src='../img/user.png' class='pfp'><div class='info'>"+contacts[x]["roomname"]+"</div></div>");
 		}
+		$(".box").contextmenu(function(e) {
+			buildContextMenu([
+				{
+					text: "Remove Contact",
+					run: function() {
+						alert("hi");
+					}
+				},
+				{
+					text: "Change info",
+					run: function() {
+						alert("hi");
+					}
+				}], e.pageX, e.pageY);
+			return false;
+		});
 	});
 }
 

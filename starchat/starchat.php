@@ -321,6 +321,78 @@ class StarchatApi {
 		return true;
 	}
 
+	public function get_user_info($user) {
+		if ($this->check_token($this->token) === false) {
+			$this->starchat_error("Please login.");
+		}
+
+		$profile_sql = $this->starchat_sql("SELECT username, image FROM accounts WHERE username=?", true,
+			"s", $user);
+
+		if ($profile_sql->num_rows !== 1) {
+			$this->starchat_error("User not found");
+		}
+
+		while ($row = $profile_sql->fetch_assoc()) {
+			$profile["username"] = $row["username"];
+			$profile["image"] = $row["image"];
+		}
+
+		if (!file_exists("../img/profiles/".$profile["image"].".png")) {
+			// Default profile picture
+			$profile["image"] = "../img/user.png";
+		}
+
+		return json_encode($profile);
+	}
+
+	public function update_profile_image($file) {
+		if ($this->check_token($this->token) === false) {
+			$this->starchat_error("Please login.");
+		}
+		$directory = "../img/profiles/";
+		$ext = ".png";
+		$profile_sql = $this->starchat_sql("SELECT image FROM accounts WHERE username=?", true,
+			"s", $this->username);
+
+		while ($row = $profile_sql->fetch_assoc()) {
+			$profile = $row["image"];
+		}
+
+		// Path with file
+		$path = $directory.$profile.$ext;
+
+		$file_type = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+		if (getimagesize($file) === false) {
+			// Not a valid image
+			$this->starchat_error("Invalid image");
+			return false;
+		}
+
+		if ($file_type !== "png") {
+			$this->starchat_error("Only PNG files are allowed");
+			return false;
+		}
+
+		// 500 kb
+		$size_max = 500 * 1000;
+		
+		if ($file["size"] > $size_max) {
+			$this->starchat_error("Your image is too large, max is 500kb");
+			return false;
+		}
+
+		if (move_uploaded_file($file["tmp_name"], $path)) {
+			return true;
+		}else{
+			$this->starchat_error("File upload failed. Why: ".print_r($file));
+			return false;
+		}
+
+		return false;
+	}
+
 	function __construct($conn) {
 		$this->mysql = $conn;
 	}
