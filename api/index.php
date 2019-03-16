@@ -54,6 +54,8 @@ if(isset($_GET["sendmessageto"])) $send_message_to = $_GET["sendmessageto"];
 if(isset($_GET["addcontact"])) $add_contact = $_GET["addcontact"];
 if(isset($_GET["gentoken"])) $gen_token = $_GET["gentoken"];
 if(isset($_GET["deletemessage"])) $delete_message = $_GET["deletemessage"];
+if(isset($_GET["getuserinfo"])) $user_info = $_GET["getuserinfo"];
+if(isset($_FILES["pfp"])) $update_pfp = $_FILES["pfp"];
 
 if(isset($username) and isset($password)) {
     $api->set_login($username, $password);
@@ -84,5 +86,13 @@ if(isset($token)) {
 
     if (isset($delete_message)) {
         $api->delete_message($delete_message);
+    }
+
+    if (isset($update_pfp)) {
+        $api->update_profile_image($update_pfp);
+    }
+
+    if (isset($user_info)) {
+        $api->get_user_info($user_info);
     }
 }

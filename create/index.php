@@ -22,6 +22,10 @@
 // SOFTWARE.
 require '../config.php';
 
+
+// TODO Move all below to use Starchat Class API
+// Warning: Spaghetti code below
+
 if (isset($_GET["trycreate"])) {
 
 // Check connection
@@ -63,6 +67,17 @@ function generateRandomString($length = 32) {
 	}
 }
 
+$image_url = generateRandomString(16);
+
+$check = $conn->prepare("SELECT image FROM accounts WHERE image=?");
+$check->bind_param('s', $image_url);
+$check->execute();
+$check->get_result();
+
+if ($check->num_rows !== 0) {
+die("Please re-run, PFP id collided.");
+}
+
 $resu = $conn->prepare("SELECT id FROM accounts WHERE username = ?");
 $resu->bind_param('s', $_POST["username"]);
 $resu->execute();
@@ -74,8 +89,8 @@ echo "Name doesnt exist, thats good, lets keep going<br>";
 die("Name is used, please go back and try a different username");
 }
 
-$getn = $conn->prepare("INSERT INTO accounts (username, password, anonid, contacts) VALUES (?, ?, ?, \"\")");
-$getn->bind_param('sss', $_POST["username"], password_hash($_POST["password"], PASSWORD_BCRYPT), generateRandomString());
+$getn = $conn->prepare("INSERT INTO accounts (username, password, image, anonid, contacts) VALUES (?, ?, ?, ?, \"\")");
+$getn->bind_param('ssss', $_POST["username"], password_hash($_POST["password"], PASSWORD_BCRYPT), $image_url, generateRandomString());
 $getn->execute();
 
 

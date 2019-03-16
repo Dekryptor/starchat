@@ -62,7 +62,8 @@ if ($doesexistnumrows >= 0 ) {
 <body>
 	<!-- Topbar -->
 	<div id="topbar">
-		<img src="../img/hammenu.png" class="logo" onclick="openSettings()"> <span class="logotext">Starchat</span>
+		<img src="../img/hammenu.png" class="logo" onclick="openSettings()">
+		<span class="logotext">Starchat</span>
 	</div>
 
 	<div class="group-container">
@@ -93,10 +94,15 @@ if ($doesexistnumrows >= 0 ) {
 			<option value="dark">Dark</option>
 			<option value="hacker">Hack</option>
 		</select></p>
+		<form enctype="multipart/form-data" id="pfp-upload">
+			<input type="file" name="pfp" id="pfp"><br>
+		</form>
+		<p><input type="button" class="btn btn-light" id="upload-file-btn" value="Upload"></p>
 		<p><input type="button" value="Add Contact" onclick="addContact()" class="btn btn-light"><!-- TODO change this dialog to own function instead of alert --></p>
 		<p><a href="logout.php" class="btn btn-danger">Logout</a></p>
 	</div>
 	<script>
+		// Server information
 		var jitsi = <?php echo $jitsi ? "true" : "false"; ?>;
 		var wsUrl = "<?php echo $websocketUrl; ?>";
 		var wsPort = <?php echo $wsport; ?>;
@@ -109,6 +115,8 @@ if ($doesexistnumrows >= 0 ) {
 
 	<!-- Jquery -->
 	<script src="../libs/jquery.min.js"></script>
+	<!-- Starchat JS API Wrapper -->
+	<script src="starchat.js"></script>
 	<!-- Main JS code for client -->
 	<script src="client.js"></script>
 </body>

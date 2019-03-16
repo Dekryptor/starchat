@@ -88,6 +88,7 @@ if(isset($_POST["username"])) {
 		id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 		username VARCHAR(70) NOT NULL,
 		password VARCHAR(100) NOT NULL,
+		image VARCHAR(128) NOT NULL,
 		anonid VARCHAR(70) NOT NULL,
 		contacts VARCHAR(2100) NOT NULL
 		)";
@@ -100,7 +101,7 @@ if(isset($_POST["username"])) {
 		$sqla = "CREATE TABLE messages (
 		id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 		chatid VARCHAR(70) NOT NULL,
-		dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		dt timestamp NOT NULL,
 		username VARCHAR(50) NOT NULL,
 		message VARCHAR(2100) NOT NULL
 		)";
