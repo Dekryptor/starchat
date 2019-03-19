@@ -25,7 +25,7 @@ let Starchat = function(token = null) {
 	this.setToken = function(token) {
 		this.token = token;
 	}
-	this.deleteMessage = function(msgId, async = null) {
+	this.deleteMessage = function(msgId, callback = null) {
 		$.ajax({
 			url: "../api/",
 			type: 'GET',
@@ -33,12 +33,12 @@ let Starchat = function(token = null) {
 				'token': this.token,
 				'deletemessage': msgId
 			},
-			success: async
+			success: callback
 		});
 	}
 
 	// Recieves messages
-	this.readMessages = function(conversationId, async) {
+	this.readMessages = function(conversationId, callback = null) {
 		$.ajax({
 			url: "../api/",
 			type: 'GET',
@@ -48,11 +48,36 @@ let Starchat = function(token = null) {
 				'count': 25
 			},
 			dataType: 'json',
-			success: async
+			success: callback
 		});
 	}
 
-	this.getContacts = function(async) {
+	this.sendMessage = function(message, id) {
+		$.ajax({
+			url: "../api/",
+			type: 'GET',
+			data: {
+				'token': token,
+				'sendmessage': message,
+				'sendmessageto': id
+			},
+			dataType: 'json'
+		});
+	}
+
+	this.addContact = function(contactId, callback = null) {
+		$.ajax({
+			url: "../api/",
+			type: 'GET',
+			data: {
+				'token': token,
+				'addcontact': toadd
+			},
+			success: callback
+		});
+	}
+
+	this.getContacts = function(callback = null) {
 		$.ajax({
 			url: "../api/",
 			type: 'GET',
@@ -61,7 +86,7 @@ let Starchat = function(token = null) {
 				"getcontacts": "yes"
 			},
 			dataType: 'json',
-			success: async
+			success: callback
 		});
 	}
 }

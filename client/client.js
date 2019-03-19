@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-let tmpid = null;
+let id = null;
 let calling = false;
 if (jitsi === undefined) {
 	// True and false in string because it is derived from a PHP variable
@@ -159,7 +159,7 @@ function buildMessage(musername, msg, doFade = true, id = "") {
 }
 
 function fetchConversation() {
-	let result = api.readMessages(tmpid, function(result) {
+	let result = api.readMessages(id, function(result) {
 		$("#message-box").html("");
 		for (let x = 0; x < result.length; x++) {
 			// False for param doFade because we do not want fade on old messages
@@ -195,7 +195,7 @@ conn.onerror = function(error) {
 
 conn.onmessage = function(event) {
 	let msg = JSON.parse(event.data);
-	if (msg.id === tmpid) {
+	if (msg.id === id) {
 		buildMessage(msg.user, msg.message);
 		scrollBottom("#message-box");
 	}else{
@@ -210,7 +210,7 @@ function startCall() {
 	if (calling === true) {
 		endcall();
 	}else{
-		$("#callform").html("<button id='closeb' onclick='endCall()'>Close (end call)</button><iframe src='https://meet.jit.si/"+tmpid+"' allow='microphone; camera'>");
+		$("#callform").html("<button id='closeb' onclick='endCall()'>Close (end call)</button><iframe src='https://meet.jit.si/"+id+"' allow='microphone; camera'>");
 		$("#callform").css({"visibility": "visible"});
 		calling = true;
 	}
@@ -266,46 +266,30 @@ $(document).click(function() {
 loadContacts(); // the function is defined, we run the code, just once for now
 
 function switchContacts(vals) {
-	if (tmpid == null) {
+	if (id == null) {
 		if (jitsi == 'true') {
 			$("#topbar").append("<img src='../img/call.png' id='call' onclick='startCall()'>");
 		}
 	}
 	$("#message-box").html("<div class='loading'></div>");
-	tmpid = vals;
+	id = vals;
 	fetchConversation();
 }
 
 
 function sendMessage() {
 	let usermessage = document.getElementById("chatbox").value;
-	$.ajax({
-		url: "../api/",
-		type: 'GET',
-		data: {
-			'token': token,
-			'sendmessage': usermessage,
-			'sendmessageto': tmpid
-		},
-		dataType: 'json'
-	});
+	api.sendMessage(usermessage, id);
+
 	// Send message to websocket
 	document.getElementById("chatbox").value = "";
-	conn.send(messageToJson(username, usermessage, tmpid));
+	conn.send(messageToJson(username, usermessage, id));
 }
 
 function addContact() {
-	let toadd = prompt("Please Enter Username to Add");
-	$.ajax({
-		url: "../api/",
-		type: 'GET',
-		data: {
-			'token': token,
-			'addcontact': toadd
-		},
-		success: function(code) {
-			loadContacts();
-		}
+	let toAdd = prompt("Please Enter Username to Add");
+	api.addContact(toAdd, function() {
+		loadContacts();
 	});
 }
 

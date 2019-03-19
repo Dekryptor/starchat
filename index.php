@@ -112,7 +112,7 @@ body {
 margin:0;
 background-color: #fafafa;
 color: #000000;
-font-family: arial;
+font-family: Arial, Helvetica, sans-serif;
 }
 .login {
 position: absolute;

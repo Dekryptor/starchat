@@ -114,7 +114,7 @@ body {
 margin:0;
 background-color: #fafafa;
 color: #000000;
-font-family: arial;
+font-family: Arial, Helvetica, sans-serif;
 }
 .login {
 position: absolute;
@@ -150,6 +150,7 @@ top: 15px;
 <button type="submit" class="btn btn-outline-success">Create Account</button>
 </div>
 </form>
+<a href="../">&larr; Go back</a>
 </div>
 </body>
 </html>
