@@ -105,7 +105,7 @@ $("#upload-file-btn").click(function() {
 			file.upload;
 			return file;
 		}
-	})
+	});
 })
 
 // Custom context menu builder
@@ -131,8 +131,8 @@ function closeSettings() {
 	$("#settings").slideToggle(100);
 }
 
-function buildMessage(musername, msg, doFade = true, id = "") {
-	let message = $("<div class='message'><img class='profile-pic' src='../img/user.png'>" +
+function buildMessage(musername, msg, doFade = true, id = "", pfp = "../img/user.png") {
+	let message = $("<div class='message'><img class='profile-pic' src='"+((pfp === null) ? "../img/user.png" : "../img/profiles/"+pfp)+"'>" +
 			"<div style='display:hidden;' class='id'>"+id.toString().parseString()+"</div><div class='message-right'><div class='username'>"+musername.parseString()+"</div>" +
 			"<div class='contents'>"+msg.parseString()+"</div></div></div>");
 	let msgUsername = $(message).find(".username").text();
@@ -163,7 +163,7 @@ function fetchConversation() {
 		$("#message-box").html("");
 		for (let x = 0; x < result.length; x++) {
 			// False for param doFade because we do not want fade on old messages
-			buildMessage(result[x].username, result[x].message, false, result[x].id);
+			buildMessage(result[x].username, result[x].message, false, result[x].id, result[x].profile_picture);
 		}
 		scrollBottom("#message-box", 0);
 	});
@@ -230,11 +230,12 @@ function checkKey(event) {
 }
 
 function loadContacts() {
-	$("#contacts").html("<div class='loading'></div>")
+	$("#contacts").html("<div class='loading'></div>");
 	api.getContacts(function(contacts) {
 		$("#contacts").html(""); // Clear result to remove loading animation
 		for (let x = 0; x <= contacts.length-1; x++) {
-			$("#contacts").append("<div class='box' onclick='switchContacts(\""+contacts[x]["chat_id"]+"\")'><img src='../img/user.png' class='pfp'><div class='info'>"+contacts[x]["roomname"]+"</div></div>");
+			$("#contacts").append("<div class='box' onclick='switchContacts(\""+contacts[x]["chat_id"]+"\")'>"+
+				"<img src='../img/user.png' class='pfp'><div class='info'>"+contacts[x]["roomname"]+"</div></div>");
 		}
 		$(".box").contextmenu(function(e) {
 			buildContextMenu([

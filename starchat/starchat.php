@@ -228,6 +228,12 @@ class StarchatApi {
 		while($row = $messages->fetch_assoc()) {
 			if ($loop >= $start_count) {
 				$message_json[$json_index]["id"] = $row["id"];
+
+				// User information, we can add this to the messages
+				$info = $this->get_user_info($row["username"], false);
+
+				$message_json[$json_index]["profile_picture"] = $info["image"];
+
 				$message_json[$json_index]["username"] = $row["username"];
 				$message_json[$json_index]["datetime"] = $row["dt"];
 				$message_json[$json_index]["message"] = $row["message"];
@@ -321,7 +327,7 @@ class StarchatApi {
 		return true;
 	}
 
-	public function get_user_info($user) {
+	public function get_user_info($user, $asJson = true) {
 		if ($this->check_token($this->token) === false) {
 			$this->starchat_error("Please login.");
 		}
@@ -335,15 +341,16 @@ class StarchatApi {
 
 		while ($row = $profile_sql->fetch_assoc()) {
 			$profile["username"] = $row["username"];
-			$profile["image"] = $row["image"];
+			$profile["image"] = $row["image"] . ".png";
 		}
 
-		if (!file_exists("../img/profiles/".$profile["image"].".png")) {
+		if (!file_exists("../img/profiles/".$profile["image"])) {
 			// Default profile picture
-			$profile["image"] = "../img/user.png";
+			$profile["image"] = null;
 		}
 
-		return json_encode($profile);
+
+		return $asJSON ? json_encode($profile) : $profile;
 	}
 
 	public function update_profile_image($file) {

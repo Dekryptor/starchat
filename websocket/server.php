@@ -23,6 +23,7 @@ class StarchatWs implements MessageComponentInterface {
     $this->client_info[$conn->resourceId] = $params;
   }
 
+  // TODO: Living hell below
   public function onMessage(ConnectionInterface $from, $msg) {
     global $conn;
     foreach ($this->csessions as $user) {

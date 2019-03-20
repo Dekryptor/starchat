@@ -52,6 +52,19 @@ let Starchat = function(token = null) {
 		});
 	}
 
+	this.getUserInfo = function(user, callback) {
+		$.ajax({
+			url: '../api/',
+			type: 'GET',
+			data: {
+				'token': this.token,
+				'getuserinfo': user
+			},
+			dataType: 'json',
+			success: callback
+		})
+	}
+
 	this.sendMessage = function(message, id) {
 		$.ajax({
 			url: "../api/",
