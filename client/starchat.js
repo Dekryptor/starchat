@@ -84,7 +84,7 @@ let Starchat = function(token = null) {
 			type: 'GET',
 			data: {
 				'token': token,
-				'addcontact': toadd
+				'addcontact': contactId
 			},
 			success: callback
 		});
